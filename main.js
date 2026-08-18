@@ -1,5 +1,9 @@
 // console.log("Yoro está despertando...");
 
+const visits = Number(localStorage.getItem("yoro_visits")) || 0;
+localStorage.setItem("yoro_visits", visits + 1);
+console.log("Visitas:", visits + 1);
+
 const dialogueContainer = document.querySelector(".dialogue-text");
 const dialogueParagraph = dialogueContainer ? dialogueContainer.querySelector("p") : null;
 
@@ -29,7 +33,29 @@ function showDialogue(lines, onComplete) {
     setTimeout(showNext, 1000);
 }
 
-showDialogue(introDialogue, startGuessingGame);
+if (visits > 1) {
+    showDialogue(returningDialogue, showReplayChoice);
+} else {
+    showDialogue(introDialogue, startGuessingGame);
+}
+
+function showReplayChoice() {
+    const choiceUI = document.getElementById("choice-ui");
+    const yesButton = document.getElementById("choice-yes");
+    const noButton = document.getElementById("choice-no");
+
+    choiceUI.classList.remove("hidden");
+
+    yesButton.addEventListener("click", () => {
+        choiceUI.classList.add("hidden");
+        showDialogue(confirmYesDialogue, startGuessingGame);
+    }, { once: true });
+
+    noButton.addEventListener("click", () => {
+        choiceUI.classList.add("hidden");
+        showDialogue(confirmNoDialogue);
+    }, { once: true });
+}
 
 function startGuessingGame() {
     const secretNumber = pickSecretNumber();
