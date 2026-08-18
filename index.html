@@ -153,9 +153,18 @@
         <div class="dialogue-text font-body-lg text-body-lg max-w-md px-gutter">
             <p>"Oh.... No esperaba que alguien entrara."</p>
         </div>
+        <!-- Primer juego de Yoro: Adivina el número -->
+        <div id="game-ui" class="hidden mt-8 flex flex-col items-center gap-3">
+            <input type="number" id="guess-input"
+                class="px-3 py-2 rounded-lg text-on-background bg-surface-container border border-outline"
+                placeholder="Tu número..." />
+            <button id="guess-button"
+                class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Adivinar</button>
+        </div>
     </main>
     <!-- Lógica de Yoro -->
     <script src="robot/dialogue.js"></script>
+    <script src="games/number.js"></script>
     <script src="main.js"></script>
 </body>
 
