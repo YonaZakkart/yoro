@@ -4,6 +4,33 @@ const visits = Number(localStorage.getItem("yoro_visits")) || 0;
 localStorage.setItem("yoro_visits", visits + 1);
 console.log("Visitas:", visits + 1);
 
+function getCompletedEvents() {
+    const stored = localStorage.getItem("yoro_completed_events");
+    return stored ? JSON.parse(stored) : [];
+}
+
+function markEventCompleted(eventId) {
+    const completed = getCompletedEvents();
+    if (!completed.includes(eventId)) {
+        completed.push(eventId);
+        localStorage.setItem("yoro_completed_events", JSON.stringify(completed));
+    }
+}
+
+const events = [
+    {
+        id: "event_1_number_game",
+        introDialogue: introDialogue,
+        outroDialogue: outroDialogue,
+        start: startGuessingGame
+    }
+];
+
+function findNextEvent() {
+    const completed = getCompletedEvents();
+    return events.find(event => !completed.includes(event.id)) || null;
+}
+
 const dialogueContainer = document.querySelector(".dialogue-text");
 const dialogueParagraph = dialogueContainer ? dialogueContainer.querySelector("p") : null;
 
@@ -33,10 +60,12 @@ function showDialogue(lines, onComplete) {
     setTimeout(showNext, 1000);
 }
 
-if (visits > 1) {
-    showDialogue(returningDialogue, showReplayChoice);
+const nextEvent = findNextEvent();
+
+if (nextEvent) {
+    showDialogue(nextEvent.introDialogue, () => nextEvent.start(nextEvent));
 } else {
-    showDialogue(introDialogue, startGuessingGame);
+    showDialogue(returningDialogue, showReplayChoice);
 }
 
 function showReplayChoice() {
@@ -48,7 +77,7 @@ function showReplayChoice() {
 
     yesButton.addEventListener("click", () => {
         choiceUI.classList.add("hidden");
-        showDialogue(confirmYesDialogue, startGuessingGame);
+        showDialogue(confirmYesDialogue, () => startGuessingGame(events[events.length - 1]));
     }, { once: true });
 
     noButton.addEventListener("click", () => {
@@ -57,7 +86,7 @@ function showReplayChoice() {
     }, { once: true });
 }
 
-function startGuessingGame() {
+function startGuessingGame(event) {
     const secretNumber = pickSecretNumber();
     const gameUI = document.getElementById("game-ui");
     const guessInput = document.getElementById("guess-input");
@@ -81,7 +110,8 @@ function startGuessingGame() {
                 dialogueContainer.style.opacity = 0;
                 setTimeout(() => {
                     gameUI.classList.add("hidden");
-                    showDialogue(outroDialogue);
+                    markEventCompleted(event.id);
+                    showDialogue(event.outroDialogue);
                 }, FADE_DURATION);
             }, 3200);
         } else {
