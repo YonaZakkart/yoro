@@ -3,7 +3,8 @@
     --bg-void: #050505;
     --yoro-body: #24272B;
     --yoro-border: #454A50;
-    --yoro-eye: #6EE7F2; /* Cyan from prompt, matches primary-container */
+    --yoro-eye: #6EE7F2;
+    /* Cyan from prompt, matches primary-container */
     --yoro-indicator: #7AA7FF;
     --text-dialogue: #E8EAED;
 }
@@ -12,28 +13,64 @@ body {
     background-color: var(--bg-void);
     color: var(--text-dialogue);
     margin: 0;
-    overflow: hidden; /* Vast and empty */
+    overflow: hidden;
+    /* Vast and empty */
 }
 
 /* Animations */
 @keyframes yoroHover {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-12px); }
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
 }
 
 @keyframes yoroBlink {
-    0%, 96%, 98%, 100% { opacity: 1; height: 16px; }
-    97%, 99% { opacity: 0.1; height: 2px; }
+
+    0%,
+    96%,
+    98%,
+    100% {
+        opacity: 1;
+        height: 16px;
+    }
+
+    97%,
+    99% {
+        opacity: 0.1;
+        height: 2px;
+    }
 }
 
 @keyframes indicatorPulse {
-    0%, 100% { opacity: 0.8; box-shadow: 0 0 4px var(--yoro-indicator); }
-    50% { opacity: 0.3; box-shadow: 0 0 0px var(--yoro-indicator); }
+
+    0%,
+    100% {
+        opacity: 0.8;
+        box-shadow: 0 0 4px var(--yoro-indicator);
+    }
+
+    50% {
+        opacity: 0.3;
+        box-shadow: 0 0 0px var(--yoro-indicator);
+    }
 }
 
 @keyframes fadeInText {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Yoro CSS Entity */
@@ -51,13 +88,15 @@ body {
     height: 100px;
     background-color: var(--yoro-body);
     border: 2px solid var(--yoro-border);
-    border-radius: 40px; /* Rounded rectangle */
+    border-radius: 40px;
+    /* Rounded rectangle */
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 10;
-    box-shadow: inset 0 -4px 10px rgba(0,0,0,0.5); /* Slight inner depth */
+    box-shadow: inset 0 -4px 10px rgba(0, 0, 0, 0.5);
+    /* Slight inner depth */
 }
 
 /* Face Plate (inner dark area) */
@@ -84,7 +123,8 @@ body {
     width: 24px;
     height: 16px;
     background-color: var(--yoro-eye);
-    border-radius: 8px; /* Glowing rectangles per prompt, but slightly rounded for friendly feel */
+    border-radius: 8px;
+    /* Glowing rectangles per prompt, but slightly rounded for friendly feel */
     box-shadow: 0 0 12px 2px rgba(110, 231, 242, 0.4);
     animation: yoroBlink 6s infinite;
 }
@@ -106,14 +146,15 @@ body {
     border: 2px solid var(--yoro-border);
     /* Trapezoidal approximation using clip-path or border-radius */
     border-radius: 10px 10px 30px 30px;
-    margin-top: -10px; /* Tuck under head */
+    margin-top: -10px;
+    /* Tuck under head */
     z-index: 5;
     display: flex;
     justify-content: center;
     align-items: flex-end;
     padding-bottom: 20px;
     position: relative;
-    box-shadow: inset 0 -6px 15px rgba(0,0,0,0.6);
+    box-shadow: inset 0 -6px 15px rgba(0, 0, 0, 0.6);
 }
 
 /* Light Indicator */
@@ -129,7 +170,8 @@ body {
 .yoro-arms {
     position: absolute;
     top: 20px;
-    width: 130px; /* Wider than body */
+    width: 130px;
+    /* Wider than body */
     display: flex;
     justify-content: space-between;
     z-index: 4;
@@ -164,10 +206,10 @@ body {
 .dialogue-text {
     color: var(--text-dialogue);
     opacity: 0;
-    animation: fadeInText 2s ease-out forwards;
-    animation-delay: 1.5s; /* Wait for scene to settle */
+    transition: opacity 0.8s ease;
     text-align: center;
-    margin-top: 64px; /* Generous spacing */
+    margin-top: 64px;
+    /* Generous spacing */
 }
 
 /* Utilities */
