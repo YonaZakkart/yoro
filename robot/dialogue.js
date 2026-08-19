@@ -1,10 +1,11 @@
+// Inicio 
 const introDialogue = [
     { text: "Oh....", pause: 1200 },
     { text: "No esperaba que alguien entrara...", pause: 2400 },
     { text: "Hola, me llamo Yoro", pause: 1800 },
     { text: "Estoy intentando hacer un juego...", pause: 2400 },
     { text: "uhm...", pause: 1200 },
-    { text: "¿Quieres jugar?", pause: 1800 },
+    { text: "¿Quieres jugar 'Adivina el número'?", pause: 2200 },
     { text: "Debes adivinar el numero que estoy pensado", pause: 2600 },
     { text: "Esta entre 1 y 10", pause: 1600 }
 ];
@@ -12,12 +13,12 @@ const introDialogue = [
 const outroDialogue = [
     { text: "Fue divertido jeje", pause: 2000 },
     { text: "Gracias por jugar conmigo", pause: 2400 },
-    { text: "Intentare mejorar", pause: 1800 },
+    { text: "Intentare mejorar el juego", pause: 1800 },
     { text: "Espero regreses...", pause: 1400 }
 ];
 
 const returningDialogue = [
-    { text: "Volviste.", pause: 1600 },
+    { text: "Volviste!", pause: 1600 },
     { text: "¿Quieres jugar otra vez?", pause: 1800 },
 ];
 
@@ -29,4 +30,29 @@ const confirmYesDialogue = [
 const confirmNoDialogue = [
     { text: "Oh... está bien", pause: 1600 },
     { text: "Seguiré trabajando", pause: 1800 }
+];
+
+// Juego 1.1: Adivina el número con pistas
+const introDialogue2 = [
+    { text: "Si volviste...", pause: 800 },
+    { text: "He mejorado un poco...", pause: 2000 },
+    { text: "Ahora te daré pistas si fallas", pause: 2200 },
+    { text: "¿Jugamos \"Adivina el número 1.1\"?", pause: 2200 },
+    { text: "Ah, si. Ahora el número esta entre 1 y 20!", pause: 2400 },
+];
+
+const outroDialogue2 = [
+    { text: "Seguiré mejorando el juego", pause: 2000 },
+    { text: "Regresa pronto...", pause: 1800 }
+];
+
+const replayAcceptDialogue2 = [
+    { text: "Bien, ya sabes cómo va, ¿no?", pause: 1800 },
+    { text: "¡Vamos!", pause: 1200 }
+];
+
+const replayDeclineDialogue2 = [
+    { text: "Ohh... está bien", pause: 1600 },
+    { text: "Seguiré mejorando el juego", pause: 2000 },
+    { text: "Espero puedas jugar la próxima vez", pause: 2000 }
 ];
