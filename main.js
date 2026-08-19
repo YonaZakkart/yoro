@@ -22,7 +22,17 @@ const events = [
         id: "event_1_number_game",
         introDialogue: introDialogue,
         outroDialogue: outroDialogue,
+        replayAcceptDialogue: confirmYesDialogue,
+        replayDeclineDialogue: confirmNoDialogue,
         start: startGuessingGame
+    },
+    {
+        id: "event_2_number_game_1_1",
+        introDialogue: introDialogue2,
+        outroDialogue: outroDialogue2,
+        replayAcceptDialogue: replayAcceptDialogue2,
+        replayDeclineDialogue: replayDeclineDialogue2,
+        start: startGuessingGame_1_1
     }
 ];
 
@@ -75,19 +85,21 @@ function showReplayChoice() {
 
     choiceUI.classList.remove("hidden");
 
+    const latestEvent = events[events.length - 1];
+
     yesButton.addEventListener("click", () => {
         choiceUI.classList.add("hidden");
-        showDialogue(confirmYesDialogue, () => startGuessingGame(events[events.length - 1]));
+        showDialogue(latestEvent.replayAcceptDialogue, () => latestEvent.start(latestEvent));
     }, { once: true });
 
     noButton.addEventListener("click", () => {
         choiceUI.classList.add("hidden");
-        showDialogue(confirmNoDialogue);
+        showDialogue(latestEvent.replayDeclineDialogue);
     }, { once: true });
 }
 
 function startGuessingGame(event) {
-    const secretNumber = pickSecretNumber();
+    const secretNumber = pickSecretNumber(10);
     const gameUI = document.getElementById("game-ui");
     const guessInput = document.getElementById("guess-input");
     const guessButton = document.getElementById("guess-button");
@@ -121,4 +133,41 @@ function startGuessingGame(event) {
             }, 2000);
         }
     });
+}
+
+function startGuessingGame_1_1(event) {
+    const secretNumber = pickSecretNumber(20);
+    const gameUI = document.getElementById("game-ui");
+    const guessInput = document.getElementById("guess-input");
+    const guessButton = document.getElementById("guess-button");
+
+    gameUI.classList.remove("hidden");
+
+    let attempts = 0;
+
+    guessButton.onclick = () => {
+        const guess = Number(guessInput.value);
+        attempts++;
+        dialogueContainer.style.opacity = 1;
+
+        if (guess === secretNumber) {
+            dialogueParagraph.textContent = getResultMessage(attempts);
+            guessInput.disabled = true;
+            guessButton.disabled = true;
+
+            setTimeout(() => {
+                dialogueContainer.style.opacity = 0;
+                setTimeout(() => {
+                    gameUI.classList.add("hidden");
+                    markEventCompleted(event.id);
+                    showDialogue(event.outroDialogue);
+                }, FADE_DURATION);
+            }, 3200);
+        } else {
+            dialogueParagraph.textContent = guess < secretNumber ? "Más arriba..." : "Más abajo...";
+            setTimeout(() => {
+                dialogueContainer.style.opacity = 0;
+            }, 2000);
+        }
+    };
 }
