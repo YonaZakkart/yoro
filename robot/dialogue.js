@@ -1,4 +1,4 @@
-// Inicio 
+// Inicio: Evento 1
 const introDialogue = [
     { text: "Oh....", pause: 1200 },
     { text: "No esperaba que alguien entrara...", pause: 2400 },
@@ -32,6 +32,7 @@ const confirmNoDialogue = [
     { text: "Seguiré trabajando", pause: 1800 }
 ];
 
+//Evento 2
 // Juego 1.1: Adivina el número con pistas
 const introDialogue2 = [
     { text: "Si volviste...", pause: 800 },
@@ -56,3 +57,21 @@ const replayDeclineDialogue2 = [
     { text: "Seguiré mejorando el juego", pause: 2000 },
     { text: "Espero puedas jugar la próxima vez", pause: 2000 }
 ];
+
+//Evento 3
+// Agregar nombre de usuario
+const introDialogue3 = [
+    { text: "Hola, bienvenido de vuelta...", pause: 1800 },
+    { text: "Ah... cierto, aún no sé tu nombre", pause: 2000 },
+    { text: "¿Puedo saber tu nombre?", pause: 1800 }
+];
+
+function buildNameDialogue(name) {
+    return [
+        { text: `${name}...`, pause: 1600 },
+        { text: "Me gusta tu nombre", pause: 1800 },
+        { text: `Gracias por acompañarme, ${name}...`, pause: 2200 },
+        { text: `Aún sigo mejorando el juego, no hay nada nuevo por ahora`, pause: 2800 },
+        { text: "Trataré de hacer un mejor juego para ti", pause: 2400 }
+    ];
+}
