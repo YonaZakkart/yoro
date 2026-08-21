@@ -171,3 +171,24 @@ function startGuessingGame_1_1(event) {
         }
     };
 }
+
+const originalTitle = document.title;
+let awayTimeout1;
+let awayTimeout2;
+
+document.addEventListener("visibilitychange", () => {
+    clearTimeout(awayTimeout1);
+    clearTimeout(awayTimeout2);
+
+    if (document.hidden) {
+        awayTimeout1 = setTimeout(() => {
+            document.title = "¿Te vas...?";
+        }, 2000);
+
+        awayTimeout2 = setTimeout(() => {
+            document.title = "¿Sigues ahí...?";
+        }, 12000);
+    } else {
+        document.title = originalTitle;
+    }
+});
