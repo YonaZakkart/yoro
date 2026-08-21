@@ -1,14 +1,15 @@
-// console.log("Yoro está despertando...");
-
+//guarda visitas (prueba)
 const visits = Number(localStorage.getItem("yoro_visits")) || 0;
 localStorage.setItem("yoro_visits", visits + 1);
 console.log("Visitas:", visits + 1);
 
+//obtiene los eventos ya completados
 function getCompletedEvents() {
     const stored = localStorage.getItem("yoro_completed_events");
     return stored ? JSON.parse(stored) : [];
 }
 
+//marca los eventos como completos
 function markEventCompleted(eventId) {
     const completed = getCompletedEvents();
     if (!completed.includes(eventId)) {
@@ -17,25 +18,34 @@ function markEventCompleted(eventId) {
     }
 }
 
+//lista de eventos
 const events = [
-    {
+    {   //evento 1. Inicio number_game 1
         id: "event_1_number_game",
         introDialogue: introDialogue,
         outroDialogue: outroDialogue,
         replayAcceptDialogue: confirmYesDialogue,
         replayDeclineDialogue: confirmNoDialogue,
-        start: startGuessingGame
+        start: startGuessingGame,
+        isGame: true
     },
-    {
+    {   //evento 2. number_game 1.1
         id: "event_2_number_game_1_1",
         introDialogue: introDialogue2,
         outroDialogue: outroDialogue2,
         replayAcceptDialogue: replayAcceptDialogue2,
         replayDeclineDialogue: replayDeclineDialogue2,
-        start: startGuessingGame_1_1
-    }
+        start: startGuessingGame_1_1,
+        isGame: true
+    },
+    {   //evento 3. Pregunta el nombre
+        id: "event_3_player_name",
+        introDialogue: introDialogue3,
+        start: askForName
+    },
 ];
 
+// busca el siguiente evnto sin completar
 function findNextEvent() {
     const completed = getCompletedEvents();
     return events.find(event => !completed.includes(event.id)) || null;
@@ -46,6 +56,7 @@ const dialogueParagraph = dialogueContainer ? dialogueContainer.querySelector("p
 
 const FADE_DURATION = 800; // debe coincidir con el "transition" de style.css
 
+// muestra dialogo en la pantalla
 function showDialogue(lines, onComplete) {
     if (!dialogueContainer || !dialogueParagraph) {
         console.warn("Contenedor o párrafo de diálogo no encontrado.");
@@ -78,6 +89,7 @@ if (nextEvent) {
     showDialogue(returningDialogue, showReplayChoice);
 }
 
+// muestra opcion para volver a jugar
 function showReplayChoice() {
     const choiceUI = document.getElementById("choice-ui");
     const yesButton = document.getElementById("choice-yes");
@@ -85,7 +97,8 @@ function showReplayChoice() {
 
     choiceUI.classList.remove("hidden");
 
-    const latestEvent = events[events.length - 1];
+    const games = events.filter(event => event.isGame);
+    const latestEvent = games[games.length - 1];
 
     yesButton.addEventListener("click", () => {
         choiceUI.classList.add("hidden");
@@ -98,6 +111,7 @@ function showReplayChoice() {
     }, { once: true });
 }
 
+// Evento 1. Juego: Adivina el numero (1)
 function startGuessingGame(event) {
     const secretNumber = pickSecretNumber(10);
     const gameUI = document.getElementById("game-ui");
@@ -135,6 +149,7 @@ function startGuessingGame(event) {
     });
 }
 
+//Evento 2. Juego: Adivina el numero 1.1
 function startGuessingGame_1_1(event) {
     const secretNumber = pickSecretNumber(20);
     const gameUI = document.getElementById("game-ui");
@@ -172,10 +187,33 @@ function startGuessingGame_1_1(event) {
     };
 }
 
+//Evento 3. preguntaa el nombre al usuario
+function askForName(event) {
+    const nameUI = document.getElementById("name-ui");
+    const nameInput = document.getElementById("name-input");
+    const nameButton = document.getElementById("name-button");
+
+    nameUI.classList.remove("hidden");
+
+    nameButton.onclick = () => {
+        const name = nameInput.value.trim();
+        if (!name) return;
+
+        localStorage.setItem("yoro_player_name", name);
+        nameUI.classList.add("hidden");
+
+        showDialogue(buildNameDialogue(name), () => {
+            markEventCompleted(event.id);
+        });
+    };
+}
+
+// guarda titulo original
 const originalTitle = document.title;
 let awayTimeout1;
 let awayTimeout2;
 
+//cambia el titulo al salir de la pestania
 document.addEventListener("visibilitychange", () => {
     clearTimeout(awayTimeout1);
     clearTimeout(awayTimeout2);
