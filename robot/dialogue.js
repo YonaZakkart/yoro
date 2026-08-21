@@ -19,12 +19,12 @@ const outroDialogue = [
 
 const returningDialogue = [
     { text: "Volviste!", pause: 1600 },
-    { text: "¿Quieres jugar otra vez?", pause: 1800 },
+    { text: "¿Qué quieres jugar?", pause: 1800 },
 ];
 
 const confirmYesDialogue = [
     { text: "Bien, ya sabes cómo va, ¿no?", pause: 1800 },
-    { text: "Intenta adivinar el número que estoy pensando", pause: 2200 }
+    { text: "¡Buena suerte!", pause: 1200 }
 ];
 
 const confirmNoDialogue = [

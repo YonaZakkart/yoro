@@ -162,12 +162,8 @@
                 class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Adivinar</button>
         </div>
 
-        <!-- Elección: volver a jugar -->
-        <div id="choice-ui" class="hidden mt-8 flex gap-3">
-            <button id="choice-yes"
-                class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Sí</button>
-            <button id="choice-no"
-                class="px-4 py-2 rounded-lg bg-surface-container border border-outline text-on-background">No</button>
+        <!-- Menu: elegir que juego jugar -->
+        <div id="game-menu-ui" class="hidden mt-8 flex flex-col items-center gap-3">
         </div>
 
         <!-- Evento 3: preguntar el nombre -->
@@ -179,6 +175,16 @@
                 class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Continuar</button>
         </div>
     </main>
+
+    <!-- Footer -->
+    <footer
+        class="fixed bottom-2 left-3 text-label-code font-label-code opacity-30 hover:opacity-70 transition-opacity">
+        by <a href="https://github.com/YonaZakkart" target="_blank" rel="noopener noreferrer"
+            class="underline">YonaZakkart</a>
+        · <a href="https://github.com/YonaZakkart/yoro" target="_blank" rel="noopener noreferrer" class="underline">see
+            repository</a>
+    </footer>
+
     <!-- Lógica de Yoro -->
     <script src="robot/dialogue.js"></script>
     <script src="games/number.js"></script>
