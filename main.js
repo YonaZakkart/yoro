@@ -22,6 +22,8 @@ function markEventCompleted(eventId) {
 const events = [
     {   //evento 1. Inicio number_game 1
         id: "event_1_number_game",
+        gameId: "guess_number",
+        gameName: "Adivina el Número",
         introDialogue: introDialogue,
         outroDialogue: outroDialogue,
         replayAcceptDialogue: confirmYesDialogue,
@@ -31,6 +33,8 @@ const events = [
     },
     {   //evento 2. number_game 1.1
         id: "event_2_number_game_1_1",
+        gameId: "guess_number",
+        gameName: "Adivina el Número 1.1",
         introDialogue: introDialogue2,
         outroDialogue: outroDialogue2,
         replayAcceptDialogue: replayAcceptDialogue2,
@@ -49,6 +53,18 @@ const events = [
 function findNextEvent() {
     const completed = getCompletedEvents();
     return events.find(event => !completed.includes(event.id)) || null;
+}
+
+// devuelve solo la version mas reciente de cada juego (por gameId)
+function getLatestGames() {
+    const games = events.filter(event => event.isGame);
+    const latestByFamily = {};
+
+    games.forEach(game => {
+        latestByFamily[game.gameId] = game;
+    });
+
+    return Object.values(latestByFamily);
 }
 
 const dialogueContainer = document.querySelector(".dialogue-text");
@@ -86,29 +102,30 @@ const nextEvent = findNextEvent();
 if (nextEvent) {
     showDialogue(nextEvent.introDialogue, () => nextEvent.start(nextEvent));
 } else {
-    showDialogue(returningDialogue, showReplayChoice);
+    showDialogue(returningDialogue, showGameMenu);
 }
 
-// muestra opcion para volver a jugar
-function showReplayChoice() {
-    const choiceUI = document.getElementById("choice-ui");
-    const yesButton = document.getElementById("choice-yes");
-    const noButton = document.getElementById("choice-no");
+// muestra el menu de seleccion de juego
+function showGameMenu() {
+    const menuUI = document.getElementById("game-menu-ui");
+    const latestGames = getLatestGames();
 
-    choiceUI.classList.remove("hidden");
+    menuUI.innerHTML = "";
 
-    const games = events.filter(event => event.isGame);
-    const latestEvent = games[games.length - 1];
+    latestGames.forEach(game => {
+        const button = document.createElement("button");
+        button.textContent = game.gameName;
+        button.className = "px-4 py-2 rounded-lg bg-primary-container text-on-primary-container";
 
-    yesButton.addEventListener("click", () => {
-        choiceUI.classList.add("hidden");
-        showDialogue(latestEvent.replayAcceptDialogue, () => latestEvent.start(latestEvent));
-    }, { once: true });
+        button.onclick = () => {
+            menuUI.classList.add("hidden");
+            showDialogue(game.replayAcceptDialogue, () => game.start(game));
+        };
 
-    noButton.addEventListener("click", () => {
-        choiceUI.classList.add("hidden");
-        showDialogue(latestEvent.replayDeclineDialogue);
-    }, { once: true });
+        menuUI.appendChild(button);
+    });
+
+    menuUI.classList.remove("hidden");
 }
 
 // Evento 1. Juego: Adivina el numero (1)
