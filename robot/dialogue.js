@@ -17,6 +17,7 @@ const outroDialogue = [
     { text: "Espero regreses...", pause: 1400 }
 ];
 
+// mensaje de regreso a la pagina
 const returningDialogue = [
     { text: "Volviste!", pause: 1600 },
     { text: "¿Qué quieres jugar?", pause: 1800 },
@@ -75,3 +76,41 @@ function buildNameDialogue(name) {
         { text: "Trataré de hacer un mejor juego para ti", pause: 2400 }
     ];
 }
+//Evento 4
+// Juego 1.2: Adivina el número con modos Casual y Desafío
+// function buildIntroDialogue4() {
+//     const name = localStorage.getItem("yoro_player_name");
+//     return [
+//         { text: `Hola ${name}!`, pause: 2400 },
+//         { text: "He mejorado un poco el juego...", pause: 2000 },
+//         { text: "Ahora el número está entre 1 y 50", pause: 2000 }
+//     ];
+// };
+
+function buildIntroDialogue4() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `Bienvenido de vuelta, ${name}`, pause: 1800 },
+        { text: `He mejorado el juego`, pause: 1400 },
+        { text: "Ahora hay 2 modos de juego y el número está entre 1 y 50", pause: 2800 }
+    ];
+}
+
+function buildOutroDialogue4() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `¿Que te pareció, ${name}?`, pause: 1800 },
+        { text: `Ahora intentaré crear un nuevo juego`, pause: 2800 },
+        { text: "Regresa pronto...", pause: 1800 }
+    ];
+}
+
+const replayAcceptDialogue4 = [
+    { text: "Bien, ya sabes cómo va, ¿no?", pause: 1800 },
+    { text: "¡Vamos!", pause: 1200 }
+];
+
+const replayDeclineDialogue4 = [
+    { text: "Ohh... está bien", pause: 1600 },
+    { text: "Seguiré mejorando el juego", pause: 2000 }
+];
