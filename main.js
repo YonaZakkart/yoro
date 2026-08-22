@@ -8,6 +8,10 @@ function getCompletedEvents() {
     const stored = localStorage.getItem("yoro_completed_events");
     return stored ? JSON.parse(stored) : [];
 }
+// si el dialogo es una funcion, la ejecuta; si ya es un arreglo, lo devuelve tal cual
+function resolveDialogue(dialogue) {
+    return typeof dialogue === "function" ? dialogue() : dialogue;
+}
 
 //marca los eventos como completos
 function markEventCompleted(eventId) {
@@ -46,6 +50,17 @@ const events = [
         id: "event_3_player_name",
         introDialogue: introDialogue3,
         start: askForName
+    },
+    {   //evento 4. number_game 1.2
+        id: "event_4_number_game_1_2",
+        gameId: "guess_number",
+        gameName: "Adivina el Número 1.2",
+        introDialogue: buildIntroDialogue4,
+        outroDialogue: buildOutroDialogue4,
+        replayAcceptDialogue: replayAcceptDialogue4,
+        replayDeclineDialogue: replayDeclineDialogue4,
+        start: startGuessingGame_1_2,
+        isGame: true
     },
 ];
 
@@ -100,7 +115,7 @@ function showDialogue(lines, onComplete) {
 const nextEvent = findNextEvent();
 
 if (nextEvent) {
-    showDialogue(nextEvent.introDialogue, () => nextEvent.start(nextEvent));
+    showDialogue(resolveDialogue(nextEvent.introDialogue), () => nextEvent.start(nextEvent));
 } else {
     showDialogue(returningDialogue, showGameMenu);
 }
@@ -119,7 +134,7 @@ function showGameMenu() {
 
         button.onclick = () => {
             menuUI.classList.add("hidden");
-            showDialogue(game.replayAcceptDialogue, () => game.start(game));
+            showDialogue(resolveDialogue(game.replayAcceptDialogue), () => game.start(game));
         };
 
         menuUI.appendChild(button);
@@ -222,6 +237,78 @@ function askForName(event) {
         showDialogue(buildNameDialogue(name), () => {
             markEventCompleted(event.id);
         });
+    };
+}
+
+//Evento 4. Muestra el menu de modo y arranca el juego segun eleccion
+function startGuessingGame_1_2(event) {
+    const modeMenuUI = document.getElementById("mode-menu-ui");
+    const casualButton = document.getElementById("mode-casual-button");
+    const desafioButton = document.getElementById("mode-desafio-button");
+
+    modeMenuUI.classList.remove("hidden");
+
+    casualButton.onclick = () => {
+        modeMenuUI.classList.add("hidden");
+        runGuessingGame_1_2(event, "casual");
+    };
+
+    desafioButton.onclick = () => {
+        modeMenuUI.classList.add("hidden");
+        runGuessingGame_1_2(event, "desafio");
+    };
+}
+
+//Evento 4. Logica del juego, compartida entre ambos modos
+function runGuessingGame_1_2(event, mode) {
+    let secretNumber = pickSecretNumber(50);
+    let failStreak = 0;
+
+    const gameUI = document.getElementById("game-ui");
+    const guessInput = document.getElementById("guess-input");
+    const guessButton = document.getElementById("guess-button");
+
+    gameUI.classList.remove("hidden");
+
+    let attempts = 0;
+
+    guessButton.onclick = () => {
+        const guess = Number(guessInput.value);
+        attempts++;
+        dialogueContainer.style.opacity = 1;
+
+        if (guess === secretNumber) {
+            dialogueParagraph.textContent = mode === "casual"
+                ? getResultMessageCasual(attempts)
+                : getResultMessageDesafio(attempts);
+            guessInput.disabled = true;
+            guessButton.disabled = true;
+
+            setTimeout(() => {
+                dialogueContainer.style.opacity = 0;
+                setTimeout(() => {
+                    gameUI.classList.add("hidden");
+                    markEventCompleted(event.id);
+                    showDialogue(resolveDialogue(event.outroDialogue));
+                }, FADE_DURATION);
+            }, 3200);
+        } else {
+            if (mode === "casual") {
+                dialogueParagraph.textContent = getHintCasual(secretNumber, guess);
+            } else {
+                const result = handleDesafioFail(secretNumber, failStreak);
+                secretNumber = result.secretNumber;
+                failStreak = result.failStreak;
+
+                const hint = guess < secretNumber ? "Más arriba..." : "Más abajo...";
+                dialogueParagraph.textContent = result.changed
+                    ? `El número secreto ha cambiado... Ahora está ${hint}`
+                    : hint;
+            }
+            setTimeout(() => {
+                dialogueContainer.style.opacity = 0;
+            }, 2000);
+        }
     };
 }
 
