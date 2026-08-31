@@ -13,6 +13,15 @@ function resolveDialogue(dialogue) {
     return typeof dialogue === "function" ? dialogue() : dialogue;
 }
 
+// permite confirmar con Enter en vez de solo hacer click
+function enableEnterKey(inputElement, buttonElement) {
+    inputElement.onkeydown = (event) => {
+        if (event.key === "Enter") {
+            buttonElement.click();
+        }
+    };
+}
+
 //marca los eventos como completos
 function markEventCompleted(eventId) {
     const completed = getCompletedEvents();
@@ -151,6 +160,7 @@ function startGuessingGame(event) {
     const guessButton = document.getElementById("guess-button");
 
     gameUI.classList.remove("hidden");
+    enableEnterKey(guessInput, guessButton);
 
     let attempts = 0;
 
@@ -189,6 +199,7 @@ function startGuessingGame_1_1(event) {
     const guessButton = document.getElementById("guess-button");
 
     gameUI.classList.remove("hidden");
+    enableEnterKey(guessInput, guessButton);
 
     let attempts = 0;
 
@@ -226,6 +237,7 @@ function askForName(event) {
     const nameButton = document.getElementById("name-button");
 
     nameUI.classList.remove("hidden");
+    enableEnterKey(nameInput, nameButton);
 
     nameButton.onclick = () => {
         const name = nameInput.value.trim();
@@ -269,6 +281,7 @@ function runGuessingGame_1_2(event, mode) {
     const guessButton = document.getElementById("guess-button");
 
     gameUI.classList.remove("hidden");
+    enableEnterKey(guessInput, guessButton);
 
     let attempts = 0;
 
