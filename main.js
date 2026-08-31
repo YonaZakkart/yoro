@@ -96,6 +96,19 @@ const dialogueParagraph = dialogueContainer ? dialogueContainer.querySelector("p
 
 const FADE_DURATION = 800; // debe coincidir con el "transition" de style.css
 
+// controla si se puede saltar la pausa actual del dialogo con un click
+let dialogueSkipTimeout = null;
+let dialogueSkippable = false;
+let advanceDialogue = null; // referencia a la funcion "avanzar ya" de la linea actual
+
+// click en cualquier parte de la pantalla salta la pausa (el fade se respeta igual)
+document.addEventListener("click", () => {
+    if (dialogueSkippable && advanceDialogue) {
+        clearTimeout(dialogueSkipTimeout);
+        advanceDialogue();
+    }
+});
+
 // muestra dialogo en la pantalla
 function showDialogue(lines, onComplete) {
     if (!dialogueContainer || !dialogueParagraph) {
@@ -104,8 +117,14 @@ function showDialogue(lines, onComplete) {
     }
 
     let i = 0;
+    function advance() {
+        dialogueSkippable = false;
+        dialogueContainer.style.opacity = 0;
+        setTimeout(showNext, FADE_DURATION);
+    }
     function showNext() {
         if (i >= lines.length) {
+            dialogueSkippable = false;
             if (onComplete) onComplete();
             return;
         }
@@ -113,10 +132,9 @@ function showDialogue(lines, onComplete) {
         dialogueParagraph.textContent = line.text;
         dialogueContainer.style.opacity = 1;
         i++;
-        setTimeout(() => {
-            dialogueContainer.style.opacity = 0;
-            setTimeout(showNext, FADE_DURATION);
-        }, line.pause);
+        advanceDialogue = advance;
+        dialogueSkippable = true;
+        dialogueSkipTimeout = setTimeout(advance, line.pause);
     }
     setTimeout(showNext, 1000);
 }
