@@ -146,3 +146,34 @@ const replayDeclineDialogue5 = [
     { text: "Ohh... está bien", pause: 1600 },
     { text: "Seguiré practicando por mi cuenta", pause: 2000 }
 ];
+
+//Evento 6
+// Cuenta Conmigo 1.1: modos Casual e Infinito
+function buildIntroDialogue6() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `${name}, mejoré "Cuenta Conmigo" jeje`, pause: 2000 },
+        { text: "Ahora tiene dos modos distintos", pause: 2000 },
+        { text: "Elige el que prefieras", pause: 1800 }
+    ];
+}
+
+function buildOutroDialogue6() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `¿Cómo te fue, ${name}?`, pause: 1800 },
+        { text: "Ahora intentare crear un nuevo juego", pause: 2200 },
+        { text: "Ya no será sobre numeros jeje", pause: 2200 },
+        { text: "Regresa pronto...", pause: 1800 }
+    ];
+}
+
+const replayAcceptDialogue6 = [
+    { text: "Bien, elige un modo de nuevo", pause: 1800 },
+    { text: "¡Suerte!", pause: 1200 }
+];
+
+const replayDeclineDialogue6 = [
+    { text: "Ohh... está bien", pause: 1600 },
+    { text: "Seguiré practicando por mi cuenta", pause: 2000 }
+];
