@@ -1,7 +1,30 @@
-//guarda visitas (prueba)
-const visits = Number(localStorage.getItem("yoro_visits")) || 0;
-localStorage.setItem("yoro_visits", visits + 1);
-console.log("Visitas:", visits + 1);
+// Carga las estadisticas guardadas, o crea la estructura inicial si es la primera vez
+function loadStats() {
+    const stored = localStorage.getItem("yoro_stats");
+    if (stored) return JSON.parse(stored);
+
+    // primera vez con este sistema: migramos el contador de visitas viejo si existia
+    const oldVisits = Number(localStorage.getItem("yoro_visits")) || 0;
+
+    return {
+        visits: oldVisits,
+        games: {
+            number: { plays: 0, wins: 0, bestAttempts: null },
+            countWithMe: { plays: 0, bestTen: null, bestInfinite: null, totalAnswers: 0, correctAnswers: 0 }
+        }
+    };
+}
+
+// Guarda las estadisticas actuales
+function saveStats(stats) {
+    localStorage.setItem("yoro_stats", JSON.stringify(stats));
+}
+
+// carga estadisticas y registra la visita actual
+const stats = loadStats();
+stats.visits++;
+saveStats(stats);
+console.log("Visitas:", stats.visits);
 
 //obtiene los eventos ya completados
 function getCompletedEvents() {
@@ -133,6 +156,8 @@ let advanceDialogue = null; // referencia a la funcion "avanzar ya" de la linea 
 
 // click en cualquier parte de la pantalla salta la pausa (el fade se respeta igual)
 document.addEventListener("click", () => {
+    cancelIdleDialogues();
+
     if (dialogueSkippable && advanceDialogue) {
         clearTimeout(dialogueSkipTimeout);
         advanceDialogue();
@@ -169,6 +194,83 @@ function showDialogue(lines, onComplete) {
     setTimeout(showNext, 1000);
 }
 
+// Frases de relleno para cuando Yoro "piensa" entre una curiosidad y otra
+const idleFillers = [". . .", "trabajando...", "hmm...", "bleh :b", "Guardando datos...", "Revisando detalles..."];
+
+// Arma la lista de curiosidades disponibles ahora mismo, a partir de las estadisticas actuales
+function getAvailableCuriosities() {
+    const n = stats.games.number;
+    const c = stats.games.countWithMe;
+    const totalPlays = n.plays + c.plays;
+
+    const list = [
+        `Haz entrado ${stats.visits} veces`,
+        n.plays > 0 ? `Jugamos "Adivina el Número" ${n.plays} veces` : null,
+        n.bestAttempts !== null ? `Tu mejor partida de "Adivina el Número" fue en ${n.bestAttempts} intentos` : null,
+        c.plays > 0 ? `Jugamos "Cuenta Conmigo" ${c.plays} veces` : null,
+        c.bestTen !== null ? `Tu mejor puntaje en modo 10 fue ${c.bestTen}/10` : null,
+        c.bestInfinite !== null ? `Tu mejor racha en modo Infinito fue de ${c.bestInfinite}` : null,
+        c.totalAnswers > 0 ? `He recibido ${c.totalAnswers} respuestas en total` : null,
+        totalPlays > 0 ? `En total hemos jugado ${totalPlays} partidas` : null
+    ];
+
+    return list.filter(text => text !== null);
+}
+
+// Mezcla un arreglo sin modificar el original (Fisher-Yates)
+function shuffleArray(array) {
+    const result = [...array];
+    for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+}
+
+// Sistema de dialogo ocioso: Yoro comenta cosas cuando la pantalla queda en silencio
+let idleTimeouts = [];
+
+function cancelIdleDialogues() {
+    idleTimeouts.forEach(clearTimeout);
+    idleTimeouts = [];
+}
+
+function startIdleDialogues() {
+    cancelIdleDialogues(); // evita que se solapen dos secuencias
+
+    const gaps = [5000, 5000, 8000, 8000, 10000, 10000];
+    const repeatGap = 12000;
+    const messageDuration = 3000;
+
+    const curiosities = shuffleArray(getAvailableCuriosities());
+    if (curiosities.length === 0) return; // todavia no hay nada que decir
+
+    const queue = [];
+    curiosities.forEach(stat => {
+        queue.push(stat);
+        queue.push(idleFillers[Math.floor(Math.random() * idleFillers.length)]);
+    });
+
+    let elapsed = 0;
+    queue.forEach((text, index) => {
+        const gap = gaps[index] !== undefined ? gaps[index] : repeatGap;
+        elapsed += gap;
+
+        const showId = setTimeout(() => {
+            dialogueParagraph.textContent = text;
+            dialogueContainer.style.opacity = 1;
+
+            const hideId = setTimeout(() => {
+                dialogueContainer.style.opacity = 0;
+            }, messageDuration);
+            idleTimeouts.push(hideId);
+        }, elapsed);
+
+        idleTimeouts.push(showId);
+        elapsed += messageDuration;
+    });
+}
+
 const nextEvent = findNextEvent();
 
 if (nextEvent) {
@@ -198,6 +300,9 @@ function showGameMenu() {
     });
 
     menuUI.classList.remove("hidden");
+
+    menuUI.classList.remove("hidden");
+    startIdleDialogues();
 }
 
 // muestra el menu de seleccion de modo (generico, para cualquier evento con "modes")
@@ -251,12 +356,19 @@ function startGuessingGame(event) {
             guessInput.disabled = true;
             guessButton.disabled = true;
 
+            stats.games.number.plays++;
+            stats.games.number.wins++;
+            if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
+                stats.games.number.bestAttempts = attempts;
+            }
+            saveStats(stats);
+
             setTimeout(() => {
                 dialogueContainer.style.opacity = 0;
                 setTimeout(() => {
                     gameUI.classList.add("hidden");
                     markEventCompleted(event.id);
-                    showDialogue(event.outroDialogue);
+                    showDialogue(event.outroDialogue, startIdleDialogues);
                 }, FADE_DURATION);
             }, 3200);
         } else {
@@ -290,12 +402,19 @@ function startGuessingGame_1_1(event) {
             guessInput.disabled = true;
             guessButton.disabled = true;
 
+            stats.games.number.plays++;
+            stats.games.number.wins++;
+            if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
+                stats.games.number.bestAttempts = attempts;
+            }
+            saveStats(stats);
+
             setTimeout(() => {
                 dialogueContainer.style.opacity = 0;
                 setTimeout(() => {
                     gameUI.classList.add("hidden");
                     markEventCompleted(event.id);
-                    showDialogue(event.outroDialogue);
+                    showDialogue(event.outroDialogue, startIdleDialogues);
                 }, FADE_DURATION);
             }, 3200);
         } else {
@@ -325,6 +444,7 @@ function askForName(event) {
 
         showDialogue(buildNameDialogue(name), () => {
             markEventCompleted(event.id);
+            startIdleDialogues();
         });
     };
 }
@@ -355,12 +475,19 @@ function runGuessingGame_1_2(event, mode) {
             guessInput.disabled = true;
             guessButton.disabled = true;
 
+            stats.games.number.plays++;
+            stats.games.number.wins++;
+            if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
+                stats.games.number.bestAttempts = attempts;
+            }
+            saveStats(stats);
+
             setTimeout(() => {
                 dialogueContainer.style.opacity = 0;
                 setTimeout(() => {
                     gameUI.classList.add("hidden");
                     markEventCompleted(event.id);
-                    showDialogue(resolveDialogue(event.outroDialogue));
+                    showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
                 }, FADE_DURATION);
             }, 3200);
         } else {
@@ -411,6 +538,9 @@ function startMathGame(event) {
         guessInput.disabled = true;
         guessButton.disabled = true;
 
+        stats.games.countWithMe.plays++;
+        saveStats(stats);
+
         setTimeout(() => {
             dialogueContainer.style.opacity = 0;
             setTimeout(() => {
@@ -418,7 +548,7 @@ function startMathGame(event) {
                 guessInput.disabled = false;
                 guessButton.disabled = false;
                 markEventCompleted(event.id);
-                showDialogue(resolveDialogue(event.outroDialogue));
+                showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
             }, FADE_DURATION);
         }, 3200);
     }
@@ -428,6 +558,10 @@ function startMathGame(event) {
         const correct = answer === currentProblem.answer;
         if (correct) hits++;
         problemIndex++;
+
+        stats.games.countWithMe.totalAnswers++;
+        if (correct) stats.games.countWithMe.correctAnswers++;
+        saveStats(stats);
 
         dialogueParagraph.textContent = correct ? "¡Correcto!" : `Casi... era ${currentProblem.answer}`;
         dialogueContainer.style.opacity = 1;
@@ -477,6 +611,12 @@ function runMathGameCasual(event) {
         guessInput.disabled = true;
         guessButton.disabled = true;
 
+        stats.games.countWithMe.plays++;
+        if (stats.games.countWithMe.bestTen === null || hits > stats.games.countWithMe.bestTen) {
+            stats.games.countWithMe.bestTen = hits;
+        }
+        saveStats(stats);
+
         setTimeout(() => {
             dialogueContainer.style.opacity = 0;
             setTimeout(() => {
@@ -484,7 +624,7 @@ function runMathGameCasual(event) {
                 guessInput.disabled = false;
                 guessButton.disabled = false;
                 markEventCompleted(event.id);
-                showDialogue(resolveDialogue(event.outroDialogue));
+                showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
             }, FADE_DURATION);
         }, 3200);
     }
@@ -501,6 +641,10 @@ function runMathGameCasual(event) {
             racha = 0;
             dialogueParagraph.textContent = `Casi... era ${currentProblem.answer}`;
         }
+
+        stats.games.countWithMe.totalAnswers++;
+        if (correct) stats.games.countWithMe.correctAnswers++;
+        saveStats(stats);
 
         problemIndex++;
         dialogueContainer.style.opacity = 1;
@@ -541,10 +685,17 @@ function runMathGameInfinito(event) {
     }
 
     function finishGame() {
-        dialogueParagraph.textContent = `Fallaste... realizaste ${attempts} ejercicios ¡Fueron ${attempts-1} aciertos!`;
+        const racha = attempts - 1;
+        dialogueParagraph.textContent = `Fallaste... realizaste ${attempts} ejercicios ¡Fueron ${attempts - 1} aciertos!`;
         dialogueContainer.style.opacity = 1;
         guessInput.disabled = true;
         guessButton.disabled = true;
+
+        stats.games.countWithMe.plays++;
+        if (stats.games.countWithMe.bestInfinite === null || racha > stats.games.countWithMe.bestInfinite) {
+            stats.games.countWithMe.bestInfinite = racha;
+        }
+        saveStats(stats);
 
         setTimeout(() => {
             dialogueContainer.style.opacity = 0;
@@ -553,7 +704,7 @@ function runMathGameInfinito(event) {
                 guessInput.disabled = false;
                 guessButton.disabled = false;
                 markEventCompleted(event.id);
-                showDialogue(resolveDialogue(event.outroDialogue));
+                showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
             }, FADE_DURATION);
         }, 4200);
     }
@@ -562,14 +713,17 @@ function runMathGameInfinito(event) {
         const answer = Number(guessInput.value);
         attempts++;
         dialogueContainer.style.opacity = 1;
+        stats.games.countWithMe.totalAnswers++;
 
         if (answer === currentProblem.answer) {
-            dialogueParagraph.textContent = `¡Correcto! van ${attempts} aciertos seguidos`;
+            stats.games.countWithMe.correctAnswers++; saveStats(stats);
+            dialogueParagraph.textContent = `¡Correcto! (${attempts} seguidos)`;
             setTimeout(() => {
                 dialogueContainer.style.opacity = 0;
                 setTimeout(showProblem, FADE_DURATION);
             }, 1200);
         } else {
+            saveStats(stats);
             finishGame();
         }
     };
