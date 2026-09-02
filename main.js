@@ -68,7 +68,11 @@ const events = [
         outroDialogue: buildOutroDialogue4,
         replayAcceptDialogue: replayAcceptDialogue4,
         replayDeclineDialogue: replayDeclineDialogue4,
-        start: startGuessingGame_1_2,
+        modes: [
+            { id: "casual", label: "Casual", description: "Pistas más detalladas según qué tan cerca estés", start: runGuessingGame_1_2 },
+            { id: "desafio", label: "Desafío", description: "Pistas simples, pero el número escapa si fallas demasiado", start: runGuessingGame_1_2 }
+        ],
+        start: showModeMenu,
         isGame: true
     },
     {   //evento 5. Cuenta Conmigo
@@ -80,6 +84,21 @@ const events = [
         replayAcceptDialogue: replayAcceptDialogue5,
         replayDeclineDialogue: replayDeclineDialogue5,
         start: startMathGame,
+        isGame: true
+    },
+    {   //evento 6. Cuenta Conmigo 1.1
+        id: "event_6_math_game_1_1",
+        gameId: "cuenta_conmigo",
+        gameName: "Cuenta Conmigo 1.1",
+        introDialogue: buildIntroDialogue6,
+        outroDialogue: buildOutroDialogue6,
+        replayAcceptDialogue: replayAcceptDialogue6,
+        replayDeclineDialogue: replayDeclineDialogue6,
+        modes: [
+            { id: "casual", label: "Casual", description: "10 preguntas, números más grandes", start: runMathGameCasual },
+            { id: "infinito", label: "Infinito", description: "Sigue mientras aciertes, termina hasta que falles", start: runMathGameInfinito }
+        ],
+        start: showModeMenu,
         isGame: true
     },
 ];
@@ -181,6 +200,35 @@ function showGameMenu() {
     menuUI.classList.remove("hidden");
 }
 
+// muestra el menu de seleccion de modo (generico, para cualquier evento con "modes")
+function showModeMenu(event) {
+    const modeMenuUI = document.getElementById("mode-menu-ui");
+    modeMenuUI.innerHTML = "";
+
+    event.modes.forEach(mode => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "flex flex-col items-center gap-2 max-w-[160px] text-center";
+
+        const button = document.createElement("button");
+        button.textContent = mode.label;
+        button.className = "px-4 py-2 rounded-lg bg-primary-container text-on-primary-container w-full";
+        button.onclick = () => {
+            modeMenuUI.classList.add("hidden");
+            mode.start(event, mode.id);
+        };
+
+        const description = document.createElement("p");
+        description.textContent = mode.description;
+        description.className = "text-label-code font-label-code opacity-70";
+
+        wrapper.appendChild(button);
+        wrapper.appendChild(description);
+        modeMenuUI.appendChild(wrapper);
+    });
+
+    modeMenuUI.classList.remove("hidden");
+}
+
 // Evento 1. Juego: Adivina el numero (1)
 function startGuessingGame(event) {
     const secretNumber = pickSecretNumber(10);
@@ -278,25 +326,6 @@ function askForName(event) {
         showDialogue(buildNameDialogue(name), () => {
             markEventCompleted(event.id);
         });
-    };
-}
-
-//Evento 4. Muestra el menu de modo y arranca el juego segun eleccion
-function startGuessingGame_1_2(event) {
-    const modeMenuUI = document.getElementById("mode-menu-ui");
-    const casualButton = document.getElementById("mode-casual-button");
-    const desafioButton = document.getElementById("mode-desafio-button");
-
-    modeMenuUI.classList.remove("hidden");
-
-    casualButton.onclick = () => {
-        modeMenuUI.classList.add("hidden");
-        runGuessingGame_1_2(event, "casual");
-    };
-
-    desafioButton.onclick = () => {
-        modeMenuUI.classList.add("hidden");
-        runGuessingGame_1_2(event, "desafio");
     };
 }
 
@@ -413,6 +442,136 @@ function startMathGame(event) {
                 }
             }, FADE_DURATION);
         }, 1500);
+    };
+
+    showProblem();
+}
+
+// Evento 6. Modo Casual: 10 preguntas, rango mayor
+function runMathGameCasual(event) {
+    const gameUI = document.getElementById("game-ui");
+    const guessInput = document.getElementById("guess-input");
+    const guessButton = document.getElementById("guess-button");
+
+    gameUI.classList.remove("hidden");
+    enableEnterKey(guessInput, guessButton);
+
+    const totalProblems = 10;
+    const maxRange = 50;
+    let problemIndex = 0;
+    let hits = 0;
+    let racha = 0;
+    let currentProblem = null;
+
+    function showProblem() {
+        currentProblem = generateMathProblem(maxRange);
+        guessInput.value = "";
+        dialogueParagraph.textContent = `${currentProblem.text} = ?`;
+        dialogueContainer.style.opacity = 1;
+    }
+
+    function finishGame() {
+        const result = getMathResultMessage10(hits);
+        dialogueParagraph.textContent = result.text;
+        dialogueContainer.style.opacity = 1;
+        guessInput.disabled = true;
+        guessButton.disabled = true;
+
+        setTimeout(() => {
+            dialogueContainer.style.opacity = 0;
+            setTimeout(() => {
+                gameUI.classList.add("hidden");
+                guessInput.disabled = false;
+                guessButton.disabled = false;
+                markEventCompleted(event.id);
+                showDialogue(resolveDialogue(event.outroDialogue));
+            }, FADE_DURATION);
+        }, 3200);
+    }
+
+    guessButton.onclick = () => {
+        const answer = Number(guessInput.value);
+        const correct = answer === currentProblem.answer;
+
+        if (correct) {
+            hits++;
+            racha++;
+            dialogueParagraph.textContent = `¡Correcto! (racha: ${racha})`;
+        } else {
+            racha = 0;
+            dialogueParagraph.textContent = `Casi... era ${currentProblem.answer}`;
+        }
+
+        problemIndex++;
+        dialogueContainer.style.opacity = 1;
+
+        setTimeout(() => {
+            dialogueContainer.style.opacity = 0;
+            setTimeout(() => {
+                if (problemIndex >= totalProblems) {
+                    finishGame();
+                } else {
+                    showProblem();
+                }
+            }, FADE_DURATION);
+        }, 1500);
+    };
+
+    showProblem();
+}
+
+// Evento 6. Modo Infinito: sin limite de preguntas, termina al primer fallo
+function runMathGameInfinito(event) {
+    const gameUI = document.getElementById("game-ui");
+    const guessInput = document.getElementById("guess-input");
+    const guessButton = document.getElementById("guess-button");
+
+    gameUI.classList.remove("hidden");
+    enableEnterKey(guessInput, guessButton);
+
+    const maxRange = 50;
+    let attempts = 0;
+    let currentProblem = null;
+
+    function showProblem() {
+        currentProblem = generateMathProblem(maxRange);
+        guessInput.value = "";
+        dialogueParagraph.textContent = `${currentProblem.text} = ?`;
+        dialogueContainer.style.opacity = 1;
+    }
+
+    function finishGame() {
+        dialogueParagraph.textContent = `Fallaste... realizaste ${attempts} ejercicios ¡Fueron ${attempts-1} aciertos!`;
+        dialogueContainer.style.opacity = 1;
+        guessInput.disabled = true;
+        guessButton.disabled = true;
+
+        setTimeout(() => {
+            dialogueContainer.style.opacity = 0;
+            setTimeout(() => {
+                gameUI.classList.add("hidden");
+                guessInput.disabled = false;
+                guessButton.disabled = false;
+                markEventCompleted(event.id);
+                showDialogue(resolveDialogue(event.outroDialogue));
+            }, FADE_DURATION);
+        }, 4200);
+    }
+
+    guessButton.onclick = () => {
+        const answer = Number(guessInput.value);
+        attempts++;
+        dialogueContainer.style.opacity = 1;
+
+        if (answer === currentProblem.answer) {
+            dialogueParagraph.textContent = `¡Correcto! van ${attempts} aciertos seguidos`;
+            setTimeout(() => {
+                dialogueContainer.style.opacity = 0;
+                setTimeout(showProblem, FADE_DURATION);
+            }, 1200);
+        } else {
+            finishGame();
+        }
     };
 
     showProblem();
