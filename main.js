@@ -71,6 +71,17 @@ const events = [
         start: startGuessingGame_1_2,
         isGame: true
     },
+    {   //evento 5. Cuenta Conmigo
+        id: "event_5_math_game",
+        gameId: "cuenta_conmigo",
+        gameName: "Cuenta Conmigo",
+        introDialogue: buildIntroDialogue5,
+        outroDialogue: buildOutroDialogue5,
+        replayAcceptDialogue: replayAcceptDialogue5,
+        replayDeclineDialogue: replayDeclineDialogue5,
+        start: startMathGame,
+        isGame: true
+    },
 ];
 
 // busca el siguiente evnto sin completar
@@ -341,6 +352,70 @@ function runGuessingGame_1_2(event, mode) {
             }, 2000);
         }
     };
+}
+
+// Evento 5. Juego: Cuenta Conmigo (suma y resta)
+function startMathGame(event) {
+    const gameUI = document.getElementById("game-ui");
+    const guessInput = document.getElementById("guess-input");
+    const guessButton = document.getElementById("guess-button");
+
+    gameUI.classList.remove("hidden");
+    enableEnterKey(guessInput, guessButton);
+
+    const totalProblems = 5;
+    let problemIndex = 0;
+    let hits = 0;
+    let currentProblem = null;
+
+    function showProblem() {
+        currentProblem = generateMathProblem();
+        guessInput.value = "";
+        dialogueParagraph.textContent = `${currentProblem.text} = ?`;
+        dialogueContainer.style.opacity = 1;
+    }
+
+    function finishGame() {
+        const result = getMathResultMessage(hits, totalProblems);
+        dialogueParagraph.textContent = result.text;
+        dialogueContainer.style.opacity = 1;
+        guessInput.disabled = true;
+        guessButton.disabled = true;
+
+        setTimeout(() => {
+            dialogueContainer.style.opacity = 0;
+            setTimeout(() => {
+                gameUI.classList.add("hidden");
+                guessInput.disabled = false;
+                guessButton.disabled = false;
+                markEventCompleted(event.id);
+                showDialogue(resolveDialogue(event.outroDialogue));
+            }, FADE_DURATION);
+        }, 3200);
+    }
+
+    guessButton.onclick = () => {
+        const answer = Number(guessInput.value);
+        const correct = answer === currentProblem.answer;
+        if (correct) hits++;
+        problemIndex++;
+
+        dialogueParagraph.textContent = correct ? "¡Correcto!" : `Casi... era ${currentProblem.answer}`;
+        dialogueContainer.style.opacity = 1;
+
+        setTimeout(() => {
+            dialogueContainer.style.opacity = 0;
+            setTimeout(() => {
+                if (problemIndex >= totalProblems) {
+                    finishGame();
+                } else {
+                    showProblem();
+                }
+            }, FADE_DURATION);
+        }, 1500);
+    };
+
+    showProblem();
 }
 
 // guarda titulo original
