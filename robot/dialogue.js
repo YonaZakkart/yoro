@@ -114,3 +114,35 @@ const replayDeclineDialogue4 = [
     { text: "Ohh... está bien", pause: 1600 },
     { text: "Seguiré mejorando el juego", pause: 2000 }
 ];
+
+//Evento 5
+// Juego: Cuenta Conmigo (suma y resta)
+function buildIntroDialogue5() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `Oye ${name}...`, pause: 1600 },
+        { text: "Hice algo nuevo esta vez", pause: 2000 },
+        { text: "Se llama \"Cuenta Conmigo\"", pause: 1800 },
+        { text: "Son sumas y restas, nada complicado", pause: 2200 },
+        { text: "Vamos a resolver solo 5 ejercicios", pause: 2400 }
+    ];
+}
+
+function buildOutroDialogue5() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `¿Qué tal estuvo, ${name}?`, pause: 1800 },
+        { text: "Creo que las matemáticas no son tan difíciles", pause: 2200 },
+        { text: "Seguiré practicando...", pause: 1800 }
+    ];
+}
+
+const replayAcceptDialogue5 = [
+    { text: "Bien, vamos de nuevo", pause: 1600 },
+    { text: "¡Suerte!", pause: 1200 }
+];
+
+const replayDeclineDialogue5 = [
+    { text: "Ohh... está bien", pause: 1600 },
+    { text: "Seguiré practicando por mi cuenta", pause: 2000 }
+];
