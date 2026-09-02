@@ -177,3 +177,17 @@ const replayDeclineDialogue6 = [
     { text: "Ohh... está bien", pause: 1600 },
     { text: "Seguiré practicando por mi cuenta", pause: 2000 }
 ];
+
+//Sistema: preguntar si el jugador quiere seguir jugando (tras repetir un juego desde el menu)
+const askContinueDialogue = [
+    { text: "¿Te diviertes?", pause: 1800 },
+    { text: "¿Quieres seguir jugando?", pause: 1800 }
+];
+
+const replayOutroDialogue = [
+    { text: "Buena partida", pause: 1500 }
+];
+
+const continueLaterDialogue = [
+    { text: "Oh... está bien", pause: 1800 }
+];

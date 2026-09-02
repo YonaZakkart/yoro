@@ -17,7 +17,11 @@ function loadStats() {
 
 // Guarda las estadisticas actuales
 function saveStats(stats) {
-    localStorage.setItem("yoro_stats", JSON.stringify(stats));
+    try {
+        localStorage.setItem("yoro_stats", JSON.stringify(stats));
+    } catch (error) {
+        console.warn("No se pudo guardar el progreso de Yoro:", error);
+    }
 }
 
 // carga estadisticas y registra la visita actual
@@ -50,7 +54,26 @@ function markEventCompleted(eventId) {
     const completed = getCompletedEvents();
     if (!completed.includes(eventId)) {
         completed.push(eventId);
-        localStorage.setItem("yoro_completed_events", JSON.stringify(completed));
+        try {
+            localStorage.setItem("yoro_completed_events", JSON.stringify(completed));
+        } catch (error) {
+            console.warn("No se pudo guardar el progreso de Yoro:", error);
+        }
+    }
+}
+
+// muestra el outro de un evento; si ya se habia completado antes (repeticion desde el menu),
+// al terminar pregunta si el jugador quiere seguir jugando en vez de pasar directo a los dialogos ociosos
+function finishEvent(event) {
+    const alreadyCompleted = getCompletedEvents().includes(event.id);
+    markEventCompleted(event.id);
+
+    if (alreadyCompleted) {
+        showDialogue(replayOutroDialogue, () => {
+            showDialogue(askContinueDialogue, showContinueMenu);
+        });
+    } else {
+        showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
     }
 }
 
@@ -238,8 +261,8 @@ function cancelIdleDialogues() {
 function startIdleDialogues() {
     cancelIdleDialogues(); // evita que se solapen dos secuencias
 
-    const gaps = [5000, 5000, 8000, 8000, 10000, 10000];
-    const repeatGap = 12000;
+    const gaps = [6000, 8000, 10000, 12000, 15000, 18000];
+    const repeatGap = 24000;
     const messageDuration = 3000;
 
     const curiosities = shuffleArray(getAvailableCuriosities());
@@ -280,34 +303,44 @@ if (nextEvent) {
 }
 
 // muestra el menu de seleccion de juego
+let latestGamesList = [];
+
 function showGameMenu() {
     const menuUI = document.getElementById("game-menu-ui");
-    const latestGames = getLatestGames();
+    latestGamesList = getLatestGames();
 
     menuUI.innerHTML = "";
 
-    latestGames.forEach(game => {
+    latestGamesList.forEach(game => {
         const button = document.createElement("button");
         button.textContent = game.gameName;
         button.className = "px-4 py-2 rounded-lg bg-primary-container text-on-primary-container";
-
-        button.onclick = () => {
-            menuUI.classList.add("hidden");
-            showDialogue(resolveDialogue(game.replayAcceptDialogue), () => game.start(game));
-        };
+        button.dataset.gameId = game.gameId;
 
         menuUI.appendChild(button);
     });
 
     menuUI.classList.remove("hidden");
-
-    menuUI.classList.remove("hidden");
     startIdleDialogues();
 }
 
+document.getElementById("game-menu-ui").onclick = (clickEvent) => {
+    const button = clickEvent.target.closest("button[data-game-id]");
+    if (!button) return;
+
+    const game = latestGamesList.find(g => g.gameId === button.dataset.gameId);
+    if (!game) return;
+
+    document.getElementById("game-menu-ui").classList.add("hidden");
+    showDialogue(resolveDialogue(game.replayAcceptDialogue), () => game.start(game));
+};
+
 // muestra el menu de seleccion de modo (generico, para cualquier evento con "modes")
+let currentModeMenuEvent = null;
+
 function showModeMenu(event) {
     const modeMenuUI = document.getElementById("mode-menu-ui");
+    currentModeMenuEvent = event;
     modeMenuUI.innerHTML = "";
 
     event.modes.forEach(mode => {
@@ -317,10 +350,7 @@ function showModeMenu(event) {
         const button = document.createElement("button");
         button.textContent = mode.label;
         button.className = "px-4 py-2 rounded-lg bg-primary-container text-on-primary-container w-full";
-        button.onclick = () => {
-            modeMenuUI.classList.add("hidden");
-            mode.start(event, mode.id);
-        };
+        button.dataset.modeId = mode.id;
 
         const description = document.createElement("p");
         description.textContent = mode.description;
@@ -334,6 +364,32 @@ function showModeMenu(event) {
     modeMenuUI.classList.remove("hidden");
 }
 
+// un solo listener para todos los botones de modo, sin importar cuantas veces se regenere el menu
+document.getElementById("mode-menu-ui").onclick = (clickEvent) => {
+    const button = clickEvent.target.closest("button[data-mode-id]");
+    if (!button || !currentModeMenuEvent) return;
+
+    const mode = currentModeMenuEvent.modes.find(m => m.id === button.dataset.modeId);
+    if (!mode) return;
+
+    document.getElementById("mode-menu-ui").classList.add("hidden");
+    mode.start(currentModeMenuEvent, mode.id);
+};
+
+function showContinueMenu() {
+    document.getElementById("continue-menu-ui").classList.remove("hidden");
+}
+
+document.getElementById("continue-yes-button").onclick = () => {
+    document.getElementById("continue-menu-ui").classList.add("hidden");
+    showGameMenu();
+};
+
+document.getElementById("continue-later-button").onclick = () => {
+    document.getElementById("continue-menu-ui").classList.add("hidden");
+    showDialogue(continueLaterDialogue, startIdleDialogues);
+};
+
 // Evento 1. Juego: Adivina el numero (1)
 function startGuessingGame(event) {
     const secretNumber = pickSecretNumber(10);
@@ -343,6 +399,7 @@ function startGuessingGame(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
+    guessButton.textContent = "Adivinar";
 
     let attempts = 0;
 
@@ -367,8 +424,7 @@ function startGuessingGame(event) {
                 dialogueContainer.style.opacity = 0;
                 setTimeout(() => {
                     gameUI.classList.add("hidden");
-                    markEventCompleted(event.id);
-                    showDialogue(event.outroDialogue, startIdleDialogues);
+                    finishEvent(event);
                 }, FADE_DURATION);
             }, 3200);
         } else {
@@ -389,6 +445,7 @@ function startGuessingGame_1_1(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
+    guessButton.textContent = "Adivinar";
 
     let attempts = 0;
 
@@ -413,8 +470,7 @@ function startGuessingGame_1_1(event) {
                 dialogueContainer.style.opacity = 0;
                 setTimeout(() => {
                     gameUI.classList.add("hidden");
-                    markEventCompleted(event.id);
-                    showDialogue(event.outroDialogue, startIdleDialogues);
+                    finishEvent(event);
                 }, FADE_DURATION);
             }, 3200);
         } else {
@@ -460,6 +516,7 @@ function runGuessingGame_1_2(event, mode) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
+    guessButton.textContent = "Adivinar";
 
     let attempts = 0;
 
@@ -486,8 +543,7 @@ function runGuessingGame_1_2(event, mode) {
                 dialogueContainer.style.opacity = 0;
                 setTimeout(() => {
                     gameUI.classList.add("hidden");
-                    markEventCompleted(event.id);
-                    showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
+                    finishEvent(event);
                 }, FADE_DURATION);
             }, 3200);
         } else {
@@ -518,6 +574,7 @@ function startMathGame(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
+    guessButton.textContent = "Responder";
 
     const totalProblems = 5;
     let problemIndex = 0;
@@ -547,8 +604,7 @@ function startMathGame(event) {
                 gameUI.classList.add("hidden");
                 guessInput.disabled = false;
                 guessButton.disabled = false;
-                markEventCompleted(event.id);
-                showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
+                finishEvent(event);
             }, FADE_DURATION);
         }, 3200);
     }
@@ -589,6 +645,7 @@ function runMathGameCasual(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
+    guessButton.textContent = "Responder";
 
     const totalProblems = 10;
     const maxRange = 50;
@@ -623,8 +680,7 @@ function runMathGameCasual(event) {
                 gameUI.classList.add("hidden");
                 guessInput.disabled = false;
                 guessButton.disabled = false;
-                markEventCompleted(event.id);
-                showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
+                finishEvent(event);
             }, FADE_DURATION);
         }, 3200);
     }
@@ -672,6 +728,7 @@ function runMathGameInfinito(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
+    guessButton.textContent = "Responder";
 
     const maxRange = 50;
     let attempts = 0;
@@ -703,8 +760,7 @@ function runMathGameInfinito(event) {
                 gameUI.classList.add("hidden");
                 guessInput.disabled = false;
                 guessButton.disabled = false;
-                markEventCompleted(event.id);
-                showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
+                finishEvent(event);
             }, FADE_DURATION);
         }, 4200);
     }
