@@ -191,3 +191,35 @@ const replayOutroDialogue = [
 const continueLaterDialogue = [
     { text: "Oh... está bien", pause: 1800 }
 ];
+
+//Evento 7
+// Juego: Ahorcado (version base)
+function buildIntroDialogue7() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `${name}, tengo un juego nuevo`, pause: 1800 },
+        { text: "Se llama \"Ahorcado\"", pause: 1800 },
+        { text: "Pensé en una palabra secreta...", pause: 2000 },
+        { text: "Debes adivinarla letra por letra", pause: 2200 },
+        { text: "O intentar la palabra completa si crees saberla", pause: 2400 }
+    ];
+}
+
+function buildOutroDialogue7() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `¿Qué te pareció, ${name}?`, pause: 1800 },
+        { text: "Ya no era solo sobre números jeje", pause: 2000 },
+        { text: "Regresa pronto...", pause: 1800 }
+    ];
+}
+
+const replayAcceptDialogue7 = [
+    { text: "Bien, pensaré en otra palabra", pause: 1800 },
+    { text: "¡Suerte!", pause: 1200 }
+];
+
+const replayDeclineDialogue7 = [
+    { text: "Ohh... está bien", pause: 1600 },
+    { text: "Seguiré pensando en algo nuevo", pause: 2000 }
+];

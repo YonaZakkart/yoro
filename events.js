@@ -106,6 +106,17 @@ const events = [
         start: showModeMenu,
         isGame: true
     },
+    {   //evento 7. Ahorcado (version base)
+        id: "event_7_hangman",
+        gameId: "ahorcado",
+        gameName: "Ahorcado",
+        introDialogue: buildIntroDialogue7,
+        outroDialogue: buildOutroDialogue7,
+        replayAcceptDialogue: replayAcceptDialogue7,
+        replayDeclineDialogue: replayDeclineDialogue7,
+        start: startHangmanGame,
+        isGame: true
+    },
 ];
 
 // busca el siguiente evento sin completar
