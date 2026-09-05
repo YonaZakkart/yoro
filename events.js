@@ -126,8 +126,8 @@ const events = [
         replayAcceptDialogue: replayAcceptDialogue8,
         replayDeclineDialogue: replayDeclineDialogue8,
         modes: [
-            { id: "casual", label: "Casual", description: "15 intentos fijos; letras y palabra completa cuestan igual", start: runHangmanGame_1_1 },
-            { id: "desafio", label: "Desafío", description: "Intentos aleatorios (12-16); un único intento para adivinar la palabra completa", start: runHangmanGame_1_1 }
+            { id: "casual", label: "Casual", description: "15 intentos; letras y palabra completa restan intentos solo cuando fallas, puedes intentar adivinar la palabra cuanto quieras", start: runHangmanGame_1_1 },
+            { id: "desafio", label: "Desafío", description: "12 intentos; solo resta intentos si fallas letras, un único intento para adivinar la palabra completa, si fallas pierdes", start: runHangmanGame_1_1 }
         ],
         start: showModeMenu,
         isGame: true

@@ -167,6 +167,11 @@
             <p id="hangman-hint" class="text-label-code font-label-code opacity-70"></p>
             <p id="hangman-progress" class="text-body-lg font-body-lg tracking-widest"></p>
         </div>
+        <!-- Dibujo ASCII del Ahorcado y lista de letras/palabras ya intentadas -->
+        <div id="hangman-figure-wrapper" class="hidden mt-4 flex flex-col items-center gap-2">
+            <pre id="hangman-figure" class="text-label-code font-label-code leading-tight"></pre>
+            <p id="hangman-used" class="text-label-code font-label-code opacity-70 text-center"></p>
+        </div>
         <!-- Tabla de resultados del Ahorcado (aparece unos segundos al terminar la partida) -->
         <div id="hangman-results"
             class="hidden mt-6 flex flex-col items-center gap-1 text-center text-body-md font-body-md">
