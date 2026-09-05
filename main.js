@@ -540,3 +540,172 @@ function startHangmanGame(event) {
         }, 2000);
     };
 }
+
+// Muestra la tabla de resultados del Ahorcado durante 15 segundos y luego continua con onComplete
+function showHangmanResults(lines, onComplete) {
+    const resultsUI = document.getElementById("hangman-results");
+    resultsUI.innerHTML = lines.map(line => `<p>${line}</p>`).join("");
+    resultsUI.classList.remove("hidden");
+
+    setTimeout(() => {
+        resultsUI.classList.add("hidden");
+        onComplete();
+    }, 10000);
+}
+
+// Evento 8. Ahorcado 1.1: logica compartida entre modo Casual y Desafio
+function runHangmanGame_1_1(event, mode) {
+    const secretWord = pickSecretWord();
+    const maxAttempts = mode === "casual"
+        ? 15
+        : Math.floor(Math.random() * 5) + 12; // desafio: entre 12 y 16
+
+    const gameUI = document.getElementById("game-ui");
+    const guessInput = document.getElementById("guess-input");
+    const guessButton = document.getElementById("guess-button");
+    const hangmanStatus = document.getElementById("hangman-status");
+    const hangmanHint = document.getElementById("hangman-hint");
+    const hangmanProgress = document.getElementById("hangman-progress");
+
+    gameUI.classList.remove("hidden");
+    enableEnterKey(guessInput, guessButton);
+    guessButton.textContent = "Adivinar";
+    guessInput.type = "text";
+    guessInput.placeholder = "Una letra o la palabra...";
+
+    let guessedLetters = [];
+    let guessedWords = [];
+    let attemptsLeft = maxAttempts;
+    let letterAttemptsUsed = 0;
+    let wordAttemptsUsed = 0;
+    let wordGuessUsed = false; // solo relevante en desafio
+
+    updateHint();
+    updateProgress();
+    hangmanStatus.classList.remove("hidden");
+
+    function updateProgress() {
+        hangmanProgress.textContent = secretWord.split("").map(char =>
+            guessedLetters.includes(char) ? char : "_"
+        ).join(" ");
+    }
+
+    function updateHint() {
+        hangmanHint.textContent = `La palabra secreta tiene ${secretWord.length} letras (${attemptsLeft} intentos)`;
+    }
+
+    function isWordFullyRevealed() {
+        return secretWord.split("").every(char => guessedLetters.includes(char));
+    }
+
+    function formatAttemptCount(count) {
+        return count === 0 ? "Ninguno" : count;
+    }
+
+    function endGame(won) {
+        guessInput.disabled = true;
+        guessButton.disabled = true;
+
+        const resultLines = [
+            `Modo de juego: ${mode === "casual" ? "Casual" : "Desafío"}`,
+            won
+                ? `Palabra secreta encontrada: ${secretWord}`
+                : `Palabra secreta que buscabas: ${secretWord}`,
+            !won ? `Estado final de tu búsqueda: ${hangmanProgress.textContent}` : null,
+            `Intentos de adivinar letra: ${letterAttemptsUsed}`,
+            `Intentos de adivinar palabra: ${formatAttemptCount(wordAttemptsUsed)}`,
+            `Intentos sobrantes: ${attemptsLeft}`
+        ].filter(line => line !== null);
+
+        showHangmanResults(resultLines, () => {
+            gameUI.classList.add("hidden");
+            hangmanStatus.classList.add("hidden");
+            guessInput.disabled = false;
+            guessButton.disabled = false;
+            finishEvent(event);
+        });
+    }
+
+    guessButton.onclick = () => {
+        const raw = guessInput.value.trim().toLowerCase();
+        guessInput.value = "";
+        if (raw.length === 0) return;
+
+        dialogueContainer.style.opacity = 1;
+
+        if (raw.length === 1) {
+            const letter = raw;
+            if (guessedLetters.includes(letter)) {
+                dialogueParagraph.textContent = `Ya probaste la letra "${letter}" antes, este intento no cuenta jeje`;
+            } else {
+                guessedLetters.push(letter);
+                letterAttemptsUsed++;
+                attemptsLeft--;
+
+                const count = countLetterOccurrences(secretWord, letter);
+                const message = count > 0
+                    ? `La letra "${letter}" aparece ${count} ${count === 1 ? "vez" : "veces"} en la palabra secreta`
+                    : `La letra "${letter}" no aparece en la palabra secreta`;
+
+                updateProgress();
+                updateHint();
+
+                if (isWordFullyRevealed()) {
+                    dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
+                    endGame(true);
+                    return;
+                }
+                if (attemptsLeft <= 0) {
+                    dialogueParagraph.textContent = `${message}. Te quedaste sin intentos...`;
+                    endGame(false);
+                    return;
+                }
+                dialogueParagraph.textContent = message;
+            }
+        } else if (raw.length === 2) {
+            dialogueParagraph.textContent = "Ingresa solo una letra o una palabra completa";
+        } else if (mode === "desafio") {
+            if (wordGuessUsed) return; // no deberia poder pasar, la partida ya termino en el primer intento
+            wordGuessUsed = true;
+            wordAttemptsUsed++;
+
+            if (isWordMatch(secretWord, raw)) {
+                guessedLetters = getUniqueLetters(secretWord);
+                updateProgress();
+                dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
+                endGame(true);
+            } else {
+                dialogueParagraph.textContent = "Nope... esa no era, perdiste tu único intento de palabra";
+                endGame(false);
+            }
+            return;
+        } else {
+            if (guessedWords.includes(raw)) {
+                dialogueParagraph.textContent = `Ya probaste la palabra "${raw}" antes, este intento no cuenta jeje`;
+            } else {
+                guessedWords.push(raw);
+                wordAttemptsUsed++;
+                attemptsLeft--;
+                updateHint();
+
+                if (isWordMatch(secretWord, raw)) {
+                    guessedLetters = getUniqueLetters(secretWord);
+                    updateProgress();
+                    dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
+                    endGame(true);
+                    return;
+                }
+                if (attemptsLeft <= 0) {
+                    dialogueParagraph.textContent = "Nope... no es esa. Te quedaste sin intentos...";
+                    endGame(false);
+                    return;
+                }
+                dialogueParagraph.textContent = "Nope... no es esa";
+            }
+        }
+
+        setTimeout(() => {
+            dialogueContainer.style.opacity = 0;
+        }, 2000);
+    };
+}
