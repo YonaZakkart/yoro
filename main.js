@@ -23,6 +23,7 @@ function startGuessingGame(event) {
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
     guessButton.textContent = "Adivinar";
+    guessInput.type = "number";
 
     let attempts = 0;
 
@@ -69,6 +70,7 @@ function startGuessingGame_1_1(event) {
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
     guessButton.textContent = "Adivinar";
+    guessInput.type = "number";
 
     let attempts = 0;
 
@@ -140,6 +142,7 @@ function runGuessingGame_1_2(event, mode) {
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
     guessButton.textContent = "Adivinar";
+    guessInput.type = "number";
 
     let attempts = 0;
 
@@ -198,6 +201,7 @@ function startMathGame(event) {
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
     guessButton.textContent = "Responder";
+    guessInput.type = "number";
 
     const totalProblems = 5;
     let problemIndex = 0;
@@ -269,6 +273,7 @@ function runMathGameCasual(event) {
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
     guessButton.textContent = "Responder";
+    guessInput.type = "number";
 
     const totalProblems = 10;
     const maxRange = 50;
@@ -352,6 +357,7 @@ function runMathGameInfinito(event) {
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
     guessButton.textContent = "Responder";
+    guessInput.type = "number";
 
     const maxRange = 50;
     let attempts = 0;
@@ -432,3 +438,105 @@ document.addEventListener("visibilitychange", () => {
         document.title = originalTitle;
     }
 });
+
+// Evento 7. Juego: Ahorcado (version base) - letra por letra o palabra completa, sin limite de intentos
+function startHangmanGame(event) {
+    const secretWord = pickSecretWord();
+
+    const gameUI = document.getElementById("game-ui");
+    const guessInput = document.getElementById("guess-input");
+    const guessButton = document.getElementById("guess-button");
+    const hangmanStatus = document.getElementById("hangman-status");
+    const hangmanHint = document.getElementById("hangman-hint");
+    const hangmanProgress = document.getElementById("hangman-progress");
+
+    gameUI.classList.remove("hidden");
+    enableEnterKey(guessInput, guessButton);
+    guessButton.textContent = "Adivinar";
+    guessInput.type = "text";
+    guessInput.placeholder = "Una letra o la palabra...";
+
+    let guessedLetters = [];
+    let guessedWords = [];
+
+    hangmanHint.textContent = `La palabra secreta tiene ${secretWord.length} letras`;
+    updateProgress();
+    hangmanStatus.classList.remove("hidden");
+
+    function updateProgress() {
+        hangmanProgress.textContent = secretWord.split("").map(char =>
+            guessedLetters.includes(char) ? char : "_"
+        ).join(" ");
+    }
+
+    function isWordFullyRevealed() {
+        return secretWord.split("").every(char => guessedLetters.includes(char));
+    }
+
+    function finishGame() {
+        guessInput.disabled = true;
+        guessButton.disabled = true;
+
+        setTimeout(() => {
+            dialogueContainer.style.opacity = 0;
+            setTimeout(() => {
+                gameUI.classList.add("hidden");
+                hangmanStatus.classList.add("hidden");
+                guessInput.disabled = false;
+                guessButton.disabled = false;
+                finishEvent(event);
+            }, FADE_DURATION);
+        }, 3200);
+    }
+
+    guessButton.onclick = () => {
+        const raw = guessInput.value.trim().toLowerCase();
+        guessInput.value = "";
+        if (raw.length === 0) return;
+
+        dialogueContainer.style.opacity = 1;
+
+        if (raw.length === 1) {
+            const letter = raw;
+            if (guessedLetters.includes(letter)) {
+                dialogueParagraph.textContent = `Ya probaste la letra "${letter}"`;
+            } else {
+                guessedLetters.push(letter);
+                const count = countLetterOccurrences(secretWord, letter);
+                if (count > 0) {
+                    dialogueParagraph.textContent = `La letra "${letter}" aparece ${count} ${count === 1 ? "vez" : "veces"} en la palabra secreta`;
+                    updateProgress();
+                } else {
+                    dialogueParagraph.textContent = `La letra "${letter}" no aparece en la palabra secreta`;
+                }
+            }
+        } else if (raw.length === 2) {
+            dialogueParagraph.textContent = "Ingresa solo una letra o una palabra completa";
+        } else {
+            if (guessedWords.includes(raw)) {
+                dialogueParagraph.textContent = `Ya intentaste la palabra "${raw}"`;
+            } else {
+                guessedWords.push(raw);
+                if (isWordMatch(secretWord, raw)) {
+                    dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
+                    guessedLetters = getUniqueLetters(secretWord);
+                    updateProgress();
+                    finishGame();
+                    return;
+                } else {
+                    dialogueParagraph.textContent = "Nope... no es esa";
+                }
+            }
+        }
+
+        if (raw.length === 1 && isWordFullyRevealed()) {
+            dialogueParagraph.textContent = "¡Completaste la palabra! :D";
+            finishGame();
+            return;
+        }
+
+        setTimeout(() => {
+            dialogueContainer.style.opacity = 0;
+        }, 2000);
+    };
+}
