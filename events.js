@@ -117,6 +117,21 @@ const events = [
         start: startHangmanGame,
         isGame: true
     },
+    {   //evento 8. Ahorcado 1.1 (modos Casual y Desafio)
+        id: "event_8_hangman_1_1",
+        gameId: "ahorcado",
+        gameName: "Ahorcado 1.1",
+        introDialogue: buildIntroDialogue8,
+        outroDialogue: buildOutroDialogue8,
+        replayAcceptDialogue: replayAcceptDialogue8,
+        replayDeclineDialogue: replayDeclineDialogue8,
+        modes: [
+            { id: "casual", label: "Casual", description: "15 intentos fijos; letras y palabra completa cuestan igual", start: runHangmanGame_1_1 },
+            { id: "desafio", label: "Desafío", description: "Intentos aleatorios (12-16); un único intento para adivinar la palabra completa", start: runHangmanGame_1_1 }
+        ],
+        start: showModeMenu,
+        isGame: true
+    },
 ];
 
 // busca el siguiente evento sin completar

@@ -185,7 +185,7 @@ const askContinueDialogue = [
 ];
 
 const replayOutroDialogue = [
-    { text: "Buena partida", pause: 1500 }
+    { text: "¿Como estuvo?", pause: 1500 }
 ];
 
 const continueLaterDialogue = [
@@ -222,4 +222,35 @@ const replayAcceptDialogue7 = [
 const replayDeclineDialogue7 = [
     { text: "Ohh... está bien", pause: 1600 },
     { text: "Seguiré pensando en algo nuevo", pause: 2000 }
+];
+
+//Evento 8
+// Ahorcado 1.1: modos Casual y Desafio
+function buildIntroDialogue8() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `${name}, mejoré el Ahorcado`, pause: 1800 },
+        { text: "Ahora hay dos modos distintos", pause: 2000 },
+        { text: "Y ya no tienes intentos infinitos jeje", pause: 2200 },
+        { text: "Elige el que prefieras", pause: 1800 }
+    ];
+}
+
+function buildOutroDialogue8() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `¿Cómo te fue, ${name}?`, pause: 1800 },
+        { text: "Los intentos limitados le dan más emoción, ¿no crees?", pause: 2400 },
+        { text: "Regresa pronto :p", pause: 1800 }
+    ];
+}
+
+const replayAcceptDialogue8 = [
+    { text: "Bien, elige un modo de nuevo", pause: 1800 },
+    { text: "¡Suerte!", pause: 1200 }
+];
+
+const replayDeclineDialogue8 = [
+    { text: "Ohh... está bien", pause: 1600 },
+    { text: "Seguiré pensando en más mejoras", pause: 2000 }
 ];
