@@ -592,6 +592,11 @@ function runHangmanGame_1_1(event, mode) {
     const hangmanFigureWrapper = document.getElementById("hangman-figure-wrapper");
     const hangmanFigure = document.getElementById("hangman-figure");
     const hangmanUsed = document.getElementById("hangman-used");
+    const hintButton = document.getElementById("hint-button");
+    const hintCooldownText = document.getElementById("hint-cooldown");
+    const hintConfirmUI = document.getElementById("hint-confirm-ui");
+    const hintCancelButton = document.getElementById("hint-cancel-button");
+    const hintAcceptButton = document.getElementById("hint-accept-button");
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
@@ -606,12 +611,26 @@ function runHangmanGame_1_1(event, mode) {
     let wordGuessUsed = false; // solo relevante en desafio
     let wrongGuesses = 0;
 
+    const hintsEnabled = mode === "experto";
+    const hintCooldownLimit = 3;
+    const hintCost = 2;
+    let letterFailsSinceHint = 0;
+
     updateHint();
     updateProgress();
     updateFigure();
     updateUsedList();
     hangmanStatus.classList.remove("hidden");
     hangmanFigureWrapper.classList.remove("hidden");
+
+    if (hintsEnabled) {
+        hintButton.classList.remove("hidden");
+        hintCooldownText.classList.remove("hidden");
+        updateHintButton();
+    } else {
+        hintButton.classList.add("hidden");
+        hintCooldownText.classList.add("hidden");
+    }
 
     function attemptsLeft() {
         return maxWrongGuesses - wrongGuesses;
@@ -637,6 +656,55 @@ function runHangmanGame_1_1(event, mode) {
         if (guessedLetters.length > 0) parts.push(`Letras usadas: ${guessedLetters.join(", ")}`);
         if (guessedWords.length > 0) parts.push(`Palabras intentadas: ${guessedWords.join(", ")}`);
         hangmanUsed.textContent = parts.join(" · ");
+    }
+
+    function updateHintButton() {
+        if (!hintsEnabled) return;
+        const remaining = hintCooldownLimit - letterFailsSinceHint;
+
+        if (remaining <= 0) {
+            hintButton.disabled = false;
+            hintButton.classList.add("hint-ready");
+            hintCooldownText.textContent = "Pista disponible";
+        } else {
+            hintButton.disabled = true;
+            hintButton.classList.remove("hint-ready");
+            hintCooldownText.textContent = `Enfriamiento: ${remaining}`;
+        }
+    }
+
+    function useHint() {
+        const unrevealed = getUniqueLetters(secretWord).filter(letter => !guessedLetters.includes(letter));
+        if (unrevealed.length === 0) return;
+
+        const revealedLetter = unrevealed[Math.floor(Math.random() * unrevealed.length)];
+        guessedLetters.push(revealedLetter);
+        wrongGuesses = Math.min(wrongGuesses + hintCost, maxWrongGuesses);
+        letterFailsSinceHint = 0;
+
+        updateProgress();
+        updateHint();
+        updateFigure();
+        updateUsedList();
+        updateHintButton();
+
+        dialogueContainer.style.opacity = 1;
+        dialogueParagraph.textContent = `Pista usada: la letra "${revealedLetter}" ya está revelada`;
+
+        if (isWordFullyRevealed()) {
+            dialogueParagraph.textContent += ". ¡Completaste la palabra! :D";
+            endGame(true);
+            return;
+        }
+        if (wrongGuesses >= maxWrongGuesses) {
+            dialogueParagraph.textContent += ". El ahorcado se completó...";
+            endGame(false);
+            return;
+        }
+
+        setTimeout(() => {
+            dialogueContainer.style.opacity = 0;
+        }, 2000);
     }
 
     function isWordFullyRevealed() {
@@ -666,11 +734,27 @@ function runHangmanGame_1_1(event, mode) {
 
         showHangmanResults(won, resultLines, () => {
             hangmanFigureWrapper.classList.add("hidden");
+            hintButton.classList.add("hidden");
+            hintCooldownText.classList.add("hidden");
             guessInput.disabled = false;
             guessButton.disabled = false;
             finishEvent(event);
         });
     }
+
+    hintButton.onclick = () => {
+        if (hintButton.disabled) return;
+        hintConfirmUI.classList.remove("hidden");
+    };
+
+    hintCancelButton.onclick = () => {
+        hintConfirmUI.classList.add("hidden");
+    };
+
+    hintAcceptButton.onclick = () => {
+        hintConfirmUI.classList.add("hidden");
+        useHint();
+    };
 
     guessButton.onclick = () => {
         const raw = guessInput.value.trim().toLowerCase();
@@ -692,11 +776,15 @@ function runHangmanGame_1_1(event, mode) {
                     ? `La letra "${letter}" aparece ${count} ${count === 1 ? "vez" : "veces"} en la palabra secreta`
                     : `La letra "${letter}" no aparece en la palabra secreta`;
 
-                if (count === 0) wrongGuesses++;
+                if (count === 0) {
+                    wrongGuesses++;
+                    letterFailsSinceHint++;
+                }
                 updateProgress();
                 updateHint();
                 updateFigure();
                 updateUsedList();
+                updateHintButton();
 
                 if (isWordFullyRevealed()) {
                     dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
