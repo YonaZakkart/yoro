@@ -637,6 +637,7 @@ function runHangmanGame_1_1(event, mode) {
     const hintCost = 2;
     let letterFailsSinceHint = 0;
     let hintsUsedCount = 0;
+    let hasRevivedOnce = false;
 
     updateHint();
     updateProgress();
@@ -698,7 +699,7 @@ function runHangmanGame_1_1(event, mode) {
 
     function updateGithubPrompt() {
         if (mode !== "experto") return;
-        if (attemptsLeft() === 2) {
+        if (hasRevivedOnce && attemptsLeft() === 1) {
             hangmanGithubPrompt.classList.remove("hidden");
         } else {
             hangmanGithubPrompt.classList.add("hidden");
@@ -802,7 +803,7 @@ function runHangmanGame_1_1(event, mode) {
     }
 
     function handleDefeat() {
-        if (mode !== "experto") {
+        if (mode !== "experto" || hasRevivedOnce) {
             endGame(false);
             return;
         }
@@ -888,6 +889,7 @@ function runHangmanGame_1_1(event, mode) {
     hangmanRewardAccept.onclick = () => {
         hangmanRewardModal.classList.add("hidden");
         showGameplayUI();
+        hasRevivedOnce = true;
         applyRevive();
     };
 
