@@ -216,3 +216,26 @@ body {
 .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
+
+
+/* Ahorcado Experto: boton de pista */
+@keyframes hintGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 4px 1px rgba(255, 215, 0, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 12px 4px rgba(255, 215, 0, 0.9);
+    }
+}
+
+.hint-ready {
+    background-color: #3a2f00;
+    border-color: #FFD700 !important;
+    color: #FFD700;
+    opacity: 1 !important;
+    cursor: pointer !important;
+    animation: hintGlow 1.6s ease-in-out infinite;
+}

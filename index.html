@@ -164,8 +164,14 @@
             <input type="number" id="guess-input"
                 class="px-3 py-2 rounded-lg text-on-background bg-surface-container border border-outline"
                 placeholder="Tu número..." />
-            <button id="guess-button"
-                class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Adivinar</button>
+            <div class="flex items-center gap-2">
+                <button id="hint-button" disabled
+                    class="hidden px-3 py-2 rounded-lg bg-surface-container border border-outline text-on-background opacity-40 cursor-not-allowed">💡
+                    Pista</button>
+                <button id="guess-button"
+                    class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Adivinar</button>
+            </div>
+            <p id="hint-cooldown" class="hidden text-label-code font-label-code opacity-70"></p>
         </div>
 
         <!-- Evento 7: pista de longitud y estado actual del Ahorcado (no usa fade, se mantiene visible) -->
@@ -207,6 +213,17 @@
             <button id="continue-later-button"
                 class="px-4 py-2 rounded-lg bg-surface-container border border-outline text-on-background">Quizás más
                 tarde</button>
+        </div>
+        <!-- Modal: confirmar uso de pista (Ahorcado modo Experto) -->
+        <div id="hint-confirm-ui" class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto">
+            <p class="text-body-md font-body-md opacity-80">Se agregará una letra aleatoria a tu avance, pero el
+                ahorcado avanzará y perderás 2 vidas.</p>
+            <div class="flex gap-4">
+                <button id="hint-cancel-button"
+                    class="px-4 py-2 rounded-lg bg-surface-container border border-outline text-on-background">Cancelar</button>
+                <button id="hint-accept-button"
+                    class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Aceptar</button>
+            </div>
         </div>
     </main>
 
