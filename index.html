@@ -184,6 +184,15 @@
             <pre id="hangman-figure" class="text-label-code font-label-code leading-tight"></pre>
             <p id="hangman-used" class="text-label-code font-label-code opacity-70 text-center"></p>
         </div>
+        <!-- Aviso persistente: pedir mas vidas via GitHub (Ahorcado Experto, a 2 vidas) -->
+        <div id="hangman-github-prompt"
+            class="hidden mt-4 flex flex-col items-center gap-2 text-center max-w-xs mx-auto">
+            <p class="text-label-code font-label-code opacity-80">¿Quieres más intentos?<br>Marca con una estrella el
+                repositorio de GitHub!</p>
+            <button id="hangman-github-button"
+                class="px-3 py-2 rounded-lg bg-surface-container border border-outline text-on-background">Ir a
+                GitHub</button>
+        </div>
         <!-- Tabla de resultados del Ahorcado (aparece unos segundos al terminar la partida) -->
         <div id="hangman-results"
             class="hidden mt-6 flex flex-col items-center gap-1 text-center text-body-md font-body-md">
@@ -224,6 +233,22 @@
                 <button id="hint-accept-button"
                     class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Aceptar</button>
             </div>
+        </div>
+        <!-- Modal: oferta de revivir al perder en modo Experto -->
+        <div id="hangman-lose-menu" class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto">
+            <p id="hangman-lose-message" class="text-body-md font-body-md opacity-90 whitespace-pre-line"></p>
+            <div class="flex gap-4">
+                <button id="hangman-lose-cancel"
+                    class="px-4 py-2 rounded-lg bg-surface-container border border-outline text-on-background"></button>
+                <button id="hangman-lose-accept"
+                    class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container"></button>
+            </div>
+        </div>
+        <!-- Modal: recompensa tras usar el enlace de GitHub al perder -->
+        <div id="hangman-reward-modal" class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto">
+            <p class="text-body-md font-body-md opacity-90">¡Ha funcionado!<br>Has recibido 3 vidas adicionales</p>
+            <button id="hangman-reward-accept"
+                class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Gracias</button>
         </div>
     </main>
 

@@ -439,6 +439,18 @@ document.addEventListener("visibilitychange", () => {
     }
 });
 
+// Sistema de recompensa por "visitar GitHub" (Ahorcado Experto): un solo listener global,
+// en vez de uno nuevo por partida, evitando que se acumulen al repetir el juego.
+let pendingHangmanReward = null;
+
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && pendingHangmanReward) {
+        const reward = pendingHangmanReward;
+        pendingHangmanReward = null;
+        reward.onReturn();
+    }
+});
+
 // Evento 7. Juego: Ahorcado (version base) - letra por letra o palabra completa, sin limite de intentos
 function startHangmanGame(event) {
     const secretWord = pickSecretWord();
@@ -577,11 +589,12 @@ function showHangmanResults(won, lines, onComplete) {
         onComplete();
     };
 }
-// Evento 8. Ahorcado 1.1: logica compartida entre modo Casual y Desafio
+
+// Evento 8/9. Ahorcado 1.1/1.2: logica compartida entre modo Casual, Desafio y Experto
 function runHangmanGame_1_1(event, mode) {
     const secretWord = mode === "experto" ? pickSecretWordExperto() : pickSecretWord();
     const stages = mode === "casual" ? hangmanStagesCasual : mode === "desafio" ? hangmanStagesDesafio : hangmanStagesExperto;
-    const maxWrongGuesses = stages.length - 1; // el ultimo indice del arreglo es la figura completa (perdida)
+    const maxWrongGuesses = stages.length - 1;
 
     const gameUI = document.getElementById("game-ui");
     const guessInput = document.getElementById("guess-input");
@@ -597,6 +610,14 @@ function runHangmanGame_1_1(event, mode) {
     const hintConfirmUI = document.getElementById("hint-confirm-ui");
     const hintCancelButton = document.getElementById("hint-cancel-button");
     const hintAcceptButton = document.getElementById("hint-accept-button");
+    const hangmanGithubPrompt = document.getElementById("hangman-github-prompt");
+    const hangmanGithubButton = document.getElementById("hangman-github-button");
+    const hangmanLoseMenu = document.getElementById("hangman-lose-menu");
+    const hangmanLoseMessage = document.getElementById("hangman-lose-message");
+    const hangmanLoseCancel = document.getElementById("hangman-lose-cancel");
+    const hangmanLoseAccept = document.getElementById("hangman-lose-accept");
+    const hangmanRewardModal = document.getElementById("hangman-reward-modal");
+    const hangmanRewardAccept = document.getElementById("hangman-reward-accept");
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
@@ -608,13 +629,14 @@ function runHangmanGame_1_1(event, mode) {
     let guessedWords = [];
     let letterAttemptsUsed = 0;
     let wordAttemptsUsed = 0;
-    let wordGuessUsed = false; // solo relevante en desafio
+    let wordGuessUsed = false;
     let wrongGuesses = 0;
 
     const hintsEnabled = mode === "experto";
     const hintCooldownLimit = 3;
     const hintCost = 2;
     let letterFailsSinceHint = 0;
+    let hintsUsedCount = 0;
 
     updateHint();
     updateProgress();
@@ -631,6 +653,7 @@ function runHangmanGame_1_1(event, mode) {
         hintButton.classList.add("hidden");
         hintCooldownText.classList.add("hidden");
     }
+    updateGithubPrompt();
 
     function attemptsLeft() {
         return maxWrongGuesses - wrongGuesses;
@@ -643,7 +666,7 @@ function runHangmanGame_1_1(event, mode) {
     }
 
     function updateHint() {
-        hangmanHint.textContent = `La palabra secreta tiene ${secretWord.length} letras (${attemptsLeft()} vidas restantes)`;
+        hangmanHint.textContent = `La palabra secreta tiene ${secretWord.length} letras (${attemptsLeft()} vidas)`;
     }
 
     function updateFigure() {
@@ -673,6 +696,15 @@ function runHangmanGame_1_1(event, mode) {
         }
     }
 
+    function updateGithubPrompt() {
+        if (mode !== "experto") return;
+        if (attemptsLeft() === 2) {
+            hangmanGithubPrompt.classList.remove("hidden");
+        } else {
+            hangmanGithubPrompt.classList.add("hidden");
+        }
+    }
+
     function useHint() {
         const unrevealed = getUniqueLetters(secretWord).filter(letter => !guessedLetters.includes(letter));
         if (unrevealed.length === 0) return;
@@ -681,12 +713,14 @@ function runHangmanGame_1_1(event, mode) {
         guessedLetters.push(revealedLetter);
         wrongGuesses = Math.min(wrongGuesses + hintCost, maxWrongGuesses);
         letterFailsSinceHint = 0;
+        hintsUsedCount++;
 
         updateProgress();
         updateHint();
         updateFigure();
         updateUsedList();
         updateHintButton();
+        updateGithubPrompt();
 
         dialogueContainer.style.opacity = 1;
         dialogueParagraph.textContent = `Pista usada: la letra "${revealedLetter}" ya está revelada`;
@@ -698,7 +732,7 @@ function runHangmanGame_1_1(event, mode) {
         }
         if (wrongGuesses >= maxWrongGuesses) {
             dialogueParagraph.textContent += ". El ahorcado se completó...";
-            endGame(false);
+            handleDefeat();
             return;
         }
 
@@ -715,11 +749,68 @@ function runHangmanGame_1_1(event, mode) {
         return count === 0 ? "Ninguno" : count;
     }
 
+    function applyRevive() {
+        wrongGuesses = Math.max(0, wrongGuesses - 3);
+        updateProgress();
+        updateHint();
+        updateFigure();
+        updateUsedList();
+        updateHintButton();
+        updateGithubPrompt();
+        guessInput.disabled = false;
+        guessButton.disabled = false;
+    }
+
+    function showLoseMenu() {
+        const messageData = loseMessages[Math.floor(Math.random() * loseMessages.length)];
+        hangmanLoseMessage.textContent = messageData.text;
+        hangmanLoseCancel.textContent = messageData.cancelLabel;
+        hangmanLoseAccept.textContent = messageData.acceptLabel;
+        hangmanLoseMenu.classList.remove("hidden");
+
+        hangmanLoseCancel.onclick = () => {
+            hangmanLoseMenu.classList.add("hidden");
+            endGame(false);
+        };
+
+        hangmanLoseAccept.onclick = () => {
+            hangmanLoseMenu.classList.add("hidden");
+            pendingHangmanReward = {
+                onReturn: () => {
+                    hangmanRewardModal.classList.remove("hidden");
+                }
+            };
+            window.open(messageData.url, "_blank", "noopener");
+        };
+    }
+
+    function handleDefeat() {
+        if (mode !== "experto") {
+            endGame(false);
+            return;
+        }
+        guessInput.disabled = true;
+        guessButton.disabled = true;
+        showLoseMenu();
+    }
+
     function endGame(won) {
         guessInput.disabled = true;
         guessButton.disabled = true;
         gameUI.classList.add("hidden");
         hangmanStatus.classList.add("hidden");
+
+        stats.games.hangman.plays++;
+        if (won) {
+            stats.games.hangman.wins++;
+            const margin = attemptsLeft();
+            if (stats.games.hangman.bestMargin === null || margin > stats.games.hangman.bestMargin) {
+                stats.games.hangman.bestMargin = margin;
+            }
+        } else {
+            stats.games.hangman.losses++;
+        }
+        saveStats(stats);
 
         const resultLines = [
             `Modo de juego: ${mode === "casual" ? "Casual" : mode === "desafio" ? "Desafío" : "Experto"}`,
@@ -729,6 +820,7 @@ function runHangmanGame_1_1(event, mode) {
             !won ? `Estado final de tu búsqueda: ${hangmanProgress.textContent}` : null,
             `Intentos de adivinar letra: ${letterAttemptsUsed}`,
             `Intentos de adivinar palabra: ${formatAttemptCount(wordAttemptsUsed)}`,
+            hintsEnabled ? `Pistas usadas: ${hintsUsedCount}` : null,
             `Vidas restantes: ${attemptsLeft()}`
         ].filter(line => line !== null);
 
@@ -736,6 +828,9 @@ function runHangmanGame_1_1(event, mode) {
             hangmanFigureWrapper.classList.add("hidden");
             hintButton.classList.add("hidden");
             hintCooldownText.classList.add("hidden");
+            hangmanGithubPrompt.classList.add("hidden");
+            hangmanLoseMenu.classList.add("hidden");
+            hangmanRewardModal.classList.add("hidden");
             guessInput.disabled = false;
             guessButton.disabled = false;
             finishEvent(event);
@@ -754,6 +849,25 @@ function runHangmanGame_1_1(event, mode) {
     hintAcceptButton.onclick = () => {
         hintConfirmUI.classList.add("hidden");
         useHint();
+    };
+
+    hangmanGithubButton.onclick = () => {
+        pendingHangmanReward = {
+            onReturn: () => {
+                applyRevive();
+                dialogueContainer.style.opacity = 1;
+                dialogueParagraph.textContent = "¡Gracias por el apoyo! Recibiste 3 vidas extra";
+                setTimeout(() => {
+                    dialogueContainer.style.opacity = 0;
+                }, 2500);
+            }
+        };
+        window.open("https://github.com/YonaZakkart/yoro", "_blank", "noopener");
+    };
+
+    hangmanRewardAccept.onclick = () => {
+        hangmanRewardModal.classList.add("hidden");
+        applyRevive();
     };
 
     guessButton.onclick = () => {
@@ -785,6 +899,7 @@ function runHangmanGame_1_1(event, mode) {
                 updateFigure();
                 updateUsedList();
                 updateHintButton();
+                updateGithubPrompt();
 
                 if (isWordFullyRevealed()) {
                     dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
@@ -793,7 +908,7 @@ function runHangmanGame_1_1(event, mode) {
                 }
                 if (wrongGuesses >= maxWrongGuesses) {
                     dialogueParagraph.textContent = `${message}. El ahorcado se completó...`;
-                    endGame(false);
+                    handleDefeat();
                     return;
                 }
                 dialogueParagraph.textContent = message;
@@ -801,7 +916,7 @@ function runHangmanGame_1_1(event, mode) {
         } else if (raw.length === 2) {
             dialogueParagraph.textContent = "Ingresa solo una letra o una palabra completa";
         } else if (mode === "desafio" || mode === "experto") {
-            if (wordGuessUsed) return; // no deberia poder pasar, la partida ya termino en el primer intento
+            if (wordGuessUsed) return;
             wordGuessUsed = true;
             wordAttemptsUsed++;
             guessedWords.push(raw);
@@ -813,10 +928,11 @@ function runHangmanGame_1_1(event, mode) {
                 dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
                 endGame(true);
             } else {
-                wrongGuesses = maxWrongGuesses; // se muestra la figura completa al perder asi
+                wrongGuesses = maxWrongGuesses;
                 updateFigure();
+                updateGithubPrompt();
                 dialogueParagraph.textContent = "Nope... esa no era, perdiste tu único intento de palabra";
-                endGame(false);
+                handleDefeat();
             }
             return;
         } else {
@@ -838,10 +954,11 @@ function runHangmanGame_1_1(event, mode) {
                 wrongGuesses++;
                 updateHint();
                 updateFigure();
+                updateGithubPrompt();
 
                 if (wrongGuesses >= maxWrongGuesses) {
                     dialogueParagraph.textContent = "Nope... no es esa. El ahorcado se completó...";
-                    endGame(false);
+                    handleDefeat();
                     return;
                 }
                 dialogueParagraph.textContent = "Nope... no es esa";
