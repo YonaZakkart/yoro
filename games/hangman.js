@@ -272,3 +272,114 @@ const hangmanStagesDesafio = [
      |
 =========`
 ];
+
+// Banco de palabras exclusivo para el modo Experto: todas de 6 letras o mas.
+// Igual que el banco base, en minusculas y sin tildes ni "ñ".
+const hangmanWordsExperto = [
+    "bicicleta", "elefante", "mariposa", "cocodrilo", "escalera", "ventanal",
+    "biblioteca", "calendario", "escritorio", "murcielago", "relampago",
+    "desierto", "tsunami", "iceberg", "cascada", "senderismo", "telescopio",
+    "microscopio", "algoritmo", "servidor", "software", "hardware", "bateria",
+    "cargador", "auricular", "avestruz", "iguana", "delfin", "sirena",
+    "brujula", "esfinge", "cometa", "planeta", "cristal", "diamante",
+    "esmeralda", "zafiro", "turquesa", "topacio"
+];
+
+// elige una palabra al azar del banco exclusivo de Experto
+function pickSecretWordExperto() {
+    const index = Math.floor(Math.random() * hangmanWordsExperto.length);
+    return hangmanWordsExperto[index];
+}
+
+// Estados del dibujo ASCII del Ahorcado en modo Experto: 11 elementos
+// (indice 0 = sin fallos, indice 10 = perdida) -> 10 intentos reales.
+const hangmanStagesExperto = [
+`
+ 
+ 
+ 
+ 
+ 
+ 
+=========`,
+`
+ 
+ 
+ 
+     |
+     |
+     |
+=========`,
+`
+  
+     |
+     |
+     |
+     |
+     |
+=========`,
+`
+ +---+
+     |
+     |
+     |
+     |
+     |
+=========`,
+`
+ +---+
+ |   |
+     |
+     |
+     |
+     |
+=========`,
+`
+ +---+
+ |   |
+ O   |
+     |
+     |
+     |
+=========`,
+`
+ +---+
+ |   |
+ O   |
+ |   |
+     |
+     |
+=========`,
+`
+ +---+
+ |   |
+ O   |
+/|   |
+     |
+     |
+=========`,
+`
+ +---+
+ |   |
+ O   |
+/|\\  |
+     |
+     |
+=========`,
+`
+ +---+
+ |   |
+ O   |
+/|\\  |
+/    |
+     |
+=========`,
+`
+ +---+
+ |   |
+ O   |
+/|\\  |
+/ \\  |
+     |
+=========`
+];

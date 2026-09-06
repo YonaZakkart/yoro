@@ -132,6 +132,22 @@ const events = [
         start: showModeMenu,
         isGame: true
     },
+    {   //evento 9. Ahorcado 1.2 (agrega modo Experto)
+        id: "event_9_hangman_1_2",
+        gameId: "ahorcado",
+        gameName: "Ahorcado 1.2",
+        introDialogue: buildIntroDialogue9,
+        outroDialogue: buildOutroDialogue9,
+        replayAcceptDialogue: replayAcceptDialogue9,
+        replayDeclineDialogue: replayDeclineDialogue9,
+        modes: [
+            { id: "casual", label: "Casual", description: "15 Vidas; pierdes una vida cada vez que fallas al intentar adivinar una letra o la palabra palabra completa", start: runHangmanGame_1_1 },
+            { id: "desafio", label: "Desafío", description: "12 Vidas; aqui tienes un único intento para intentar adivinar la palabra completa, si fallas pierdes", start: runHangmanGame_1_1 },
+            { id: "experto", label: "Experto", description: "10 Vidas; las palabras tienen como minimo 6 letras, puedes negociar una 'pista' a cambio de 2 vidas", start: runHangmanGame_1_1 }
+        ],
+        start: showModeMenu,
+        isGame: true
+    },
 ];
 
 // busca el siguiente evento sin completar

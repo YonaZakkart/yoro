@@ -254,3 +254,35 @@ const replayDeclineDialogue8 = [
     { text: "Ohh... está bien", pause: 1600 },
     { text: "Seguiré pensando en más mejoras", pause: 2000 }
 ];
+
+//Evento 9
+// Ahorcado 1.2: se agrega el modo Experto
+function buildIntroDialogue9() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `${name}, agregué un modo más al Ahorcado`, pause: 1800 },
+        { text: "Se llama \"Experto\"", pause: 1600 },
+        { text: "Las palabras son más largas y solo tienes 10 intentos", pause: 2400 },
+        { text: "Puedes usar Pistas pero restan intentos", pause: 2400 },
+        { text: "Elige el modo que prefieras", pause: 1800 }
+    ];
+}
+
+function buildOutroDialogue9() {
+    const name = localStorage.getItem("yoro_player_name");
+    return [
+        { text: `¿Qué tal, ${name}?`, pause: 1800 },
+        { text: "El modo Experto es bastante difícil, ¿no crees?", pause: 2200 },
+        { text: "Regresa pronto...", pause: 1800 }
+    ];
+}
+
+const replayAcceptDialogue9 = [
+    { text: "Bien, elige un modo de nuevo", pause: 1800 },
+    { text: "¡Suerte!", pause: 1200 }
+];
+
+const replayDeclineDialogue9 = [
+    { text: "Ohh... está bien", pause: 1600 },
+    { text: "Seguiré pensando en más mejoras", pause: 2000 }
+];
