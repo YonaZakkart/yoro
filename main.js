@@ -705,6 +705,21 @@ function runHangmanGame_1_1(event, mode) {
         }
     }
 
+    // Oculta los elementos de juego (input, botones, estado de letras, dibujo ASCII)
+    // para que un modal (confirmar pista, menu de revivir, modal de recompensa) ocupe su lugar
+    function hideGameplayUI() {
+        gameUI.classList.add("hidden");
+        hangmanStatus.classList.add("hidden");
+        hangmanFigureWrapper.classList.add("hidden");
+    }
+
+    // Vuelve a mostrar los elementos de juego al cerrar un modal
+    function showGameplayUI() {
+        gameUI.classList.remove("hidden");
+        hangmanStatus.classList.remove("hidden");
+        hangmanFigureWrapper.classList.remove("hidden");
+    }
+
     function useHint() {
         const unrevealed = getUniqueLetters(secretWord).filter(letter => !guessedLetters.includes(letter));
         if (unrevealed.length === 0) return;
@@ -762,6 +777,7 @@ function runHangmanGame_1_1(event, mode) {
     }
 
     function showLoseMenu() {
+        hideGameplayUI();
         const messageData = loseMessages[Math.floor(Math.random() * loseMessages.length)];
         hangmanLoseMessage.textContent = messageData.text;
         hangmanLoseCancel.textContent = messageData.cancelLabel;
@@ -770,6 +786,7 @@ function runHangmanGame_1_1(event, mode) {
 
         hangmanLoseCancel.onclick = () => {
             hangmanLoseMenu.classList.add("hidden");
+            showGameplayUI();
             endGame(false);
         };
 
@@ -839,15 +856,18 @@ function runHangmanGame_1_1(event, mode) {
 
     hintButton.onclick = () => {
         if (hintButton.disabled) return;
+        hideGameplayUI();
         hintConfirmUI.classList.remove("hidden");
     };
 
     hintCancelButton.onclick = () => {
         hintConfirmUI.classList.add("hidden");
+        showGameplayUI();
     };
 
     hintAcceptButton.onclick = () => {
         hintConfirmUI.classList.add("hidden");
+        showGameplayUI();
         useHint();
     };
 
@@ -867,6 +887,7 @@ function runHangmanGame_1_1(event, mode) {
 
     hangmanRewardAccept.onclick = () => {
         hangmanRewardModal.classList.add("hidden");
+        showGameplayUI();
         applyRevive();
     };
 
