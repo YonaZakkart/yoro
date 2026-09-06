@@ -579,8 +579,8 @@ function showHangmanResults(won, lines, onComplete) {
 }
 // Evento 8. Ahorcado 1.1: logica compartida entre modo Casual y Desafio
 function runHangmanGame_1_1(event, mode) {
-    const secretWord = pickSecretWord();
-    const stages = mode === "casual" ? hangmanStagesCasual : hangmanStagesDesafio;
+    const secretWord = mode === "experto" ? pickSecretWordExperto() : pickSecretWord();
+    const stages = mode === "casual" ? hangmanStagesCasual : mode === "desafio" ? hangmanStagesDesafio : hangmanStagesExperto;
     const maxWrongGuesses = stages.length - 1; // el ultimo indice del arreglo es la figura completa (perdida)
 
     const gameUI = document.getElementById("game-ui");
@@ -624,7 +624,7 @@ function runHangmanGame_1_1(event, mode) {
     }
 
     function updateHint() {
-        hangmanHint.textContent = `La palabra secreta tiene ${secretWord.length} letras (${attemptsLeft()} intentos)`;
+        hangmanHint.textContent = `La palabra secreta tiene ${secretWord.length} letras (${attemptsLeft()} vidas restantes)`;
     }
 
     function updateFigure() {
@@ -654,14 +654,14 @@ function runHangmanGame_1_1(event, mode) {
         hangmanStatus.classList.add("hidden");
 
         const resultLines = [
-            `Modo de juego: ${mode === "casual" ? "Casual" : "Desafío"}`,
+            `Modo de juego: ${mode === "casual" ? "Casual" : mode === "desafio" ? "Desafío" : "Experto"}`,
             won
                 ? `Palabra secreta encontrada: ${secretWord}`
                 : `Palabra secreta que buscabas: ${secretWord}`,
             !won ? `Estado final de tu búsqueda: ${hangmanProgress.textContent}` : null,
             `Intentos de adivinar letra: ${letterAttemptsUsed}`,
             `Intentos de adivinar palabra: ${formatAttemptCount(wordAttemptsUsed)}`,
-            `Intentos sobrantes: ${attemptsLeft()}`
+            `Vidas restantes: ${attemptsLeft()}`
         ].filter(line => line !== null);
 
         showHangmanResults(won, resultLines, () => {
@@ -712,7 +712,7 @@ function runHangmanGame_1_1(event, mode) {
             }
         } else if (raw.length === 2) {
             dialogueParagraph.textContent = "Ingresa solo una letra o una palabra completa";
-        } else if (mode === "desafio") {
+        } else if (mode === "desafio" || mode === "experto") {
             if (wordGuessUsed) return; // no deberia poder pasar, la partida ya termino en el primer intento
             wordGuessUsed = true;
             wordAttemptsUsed++;
