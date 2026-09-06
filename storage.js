@@ -3,18 +3,19 @@
 // Carga las estadisticas guardadas, o crea la estructura inicial si es la primera vez
 function loadStats() {
     const stored = localStorage.getItem("yoro_stats");
-    if (stored) return JSON.parse(stored);
-
-    // primera vez con este sistema: migramos el contador de visitas viejo si existia
-    const oldVisits = Number(localStorage.getItem("yoro_visits")) || 0;
-
-    return {
-        visits: oldVisits,
+    const stats = stored ? JSON.parse(stored) : {
+        visits: Number(localStorage.getItem("yoro_visits")) || 0,
         games: {
             number: { plays: 0, wins: 0, bestAttempts: null },
             countWithMe: { plays: 0, bestTen: null, bestInfinite: null, totalAnswers: 0, correctAnswers: 0 }
         }
     };
+
+    if (!stats.games.hangman) {
+        stats.games.hangman = { plays: 0, wins: 0, losses: 0, bestMargin: null };
+    }
+
+    return stats;
 }
 
 // Guarda las estadisticas actuales

@@ -383,3 +383,25 @@ const hangmanStagesExperto = [
      |
 =========`
 ];
+
+// Mensajes al perder en modo Experto: se elige uno al azar, cada uno con su propio enlace
+const loseMessages = [
+    {
+        text: "Has perdido...\nSigue al creador y quizá te de otra oportunidad",
+        cancelLabel: "No gracias",
+        acceptLabel: "Sigue a Yona en GitHub",
+        url: "https://github.com/YonaZakkart"
+    },
+    {
+        text: "Has perdido.\nUna ⭐ podría cambiar tu destino...",
+        cancelLabel: "No gracias",
+        acceptLabel: "Marca con una estrella el repositorio",
+        url: "https://github.com/YonaZakkart/yoro"
+    },
+    {
+        text: "Has perdido.\nEntra al repositorio, busca \"Star\" y dale click.\nQuizá pase algo...",
+        cancelLabel: "No quiero",
+        acceptLabel: "Intentar mi suerte",
+        url: "https://github.com/YonaZakkart/yoro"
+    }
+];

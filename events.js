@@ -225,7 +225,8 @@ const idleFillers = [". . .", "trabajando...", "hmm...", "bleh :b", "Guardando d
 function getAvailableCuriosities() {
     const n = stats.games.number;
     const c = stats.games.countWithMe;
-    const totalPlays = n.plays + c.plays;
+    const h = stats.games.hangman;
+    const totalPlays = n.plays + c.plays + h.plays;
 
     const list = [
         `Haz entrado ${stats.visits} veces`,
@@ -235,6 +236,9 @@ function getAvailableCuriosities() {
         c.bestTen !== null ? `Tu mejor puntaje en modo 10 fue ${c.bestTen}/10` : null,
         c.bestInfinite !== null ? `Tu mejor racha en modo Infinito fue de ${c.bestInfinite}` : null,
         c.totalAnswers > 0 ? `He recibido ${c.totalAnswers} respuestas en total` : null,
+        h.plays > 0 ? `Hemos jugado Ahorcado ${h.plays} veces` : null,
+        h.wins > 0 ? `Haz ganado en Ahorcado ${h.wins} veces` : null,
+        h.bestMargin !== null ? `Tu mejor partida de Ahorcado la ganaste con ${h.bestMargin} vidas de sobra` : null,
         totalPlays > 0 ? `En total hemos jugado ${totalPlays} partidas` : null
     ];
 
