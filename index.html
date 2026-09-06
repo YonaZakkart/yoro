@@ -118,7 +118,7 @@
     <!-- The Void (Container) -->
     <main class="w-full h-full flex flex-col justify-center items-center relative">
         <!-- Centerpiece: Yoro Robot -->
-        <div class="yoro-container mb-12">
+        <div id="yoro-avatar" class="yoro-container mb-12">
             <!-- Head -->
             <div class="yoro-head">
                 <div class="yoro-face-plate">
@@ -176,6 +176,8 @@
         <div id="hangman-results"
             class="hidden mt-6 flex flex-col items-center gap-1 text-center text-body-md font-body-md">
         </div>
+        <button id="hangman-results-accept"
+            class="hidden mt-4 px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Aceptar</button>
 
         <!-- Menu: elegir que juego jugar -->
         <div id="game-menu-ui" class="hidden mt-8 flex flex-col items-center gap-3">

@@ -541,18 +541,42 @@ function startHangmanGame(event) {
     };
 }
 
-// Muestra la tabla de resultados del Ahorcado durante 15 segundos y luego continua con onComplete
-function showHangmanResults(lines, onComplete) {
+// Muestra la tabla de resultados del Ahorcado en lugar de Yoro, hasta que el jugador de click en "Aceptar"
+function showHangmanResults(won, lines, onComplete) {
     const resultsUI = document.getElementById("hangman-results");
-    resultsUI.innerHTML = lines.map(line => `<p>${line}</p>`).join("");
+    const acceptButton = document.getElementById("hangman-results-accept");
+    const yoroAvatar = document.getElementById("yoro-avatar");
+
+    const title = won ? "¡Ganaste!" : "Perdiste...";
+    const titleColor = won ? "text-primary-container" : "text-error";
+    const subtitle = won
+        ? "Descifraste la palabra a tiempo"
+        : "El ahorcado se completó";
+
+    resultsUI.innerHTML = `
+        <h3 class="text-headline-md font-headline-md ${titleColor}">${title}</h3>
+        <p class="text-body-md font-body-md opacity-70 mb-2">${subtitle}</p>
+        <div class="flex flex-col gap-1">
+            ${lines.map(line => `<p>${line}</p>`).join("")}
+        </div>
+    `;
     resultsUI.classList.remove("hidden");
+    acceptButton.classList.remove("hidden");
 
-    setTimeout(() => {
+    yoroAvatar.classList.add("hidden");
+    dialogueContainer.style.opacity = 0;
+    dialogueContainer.classList.add("hidden");
+
+    acceptButton.onclick = () => {
         resultsUI.classList.add("hidden");
-        onComplete();
-    }, 10000);
-}
+        acceptButton.classList.add("hidden");
 
+        yoroAvatar.classList.remove("hidden");
+        dialogueContainer.classList.remove("hidden");
+
+        onComplete();
+    };
+}
 // Evento 8. Ahorcado 1.1: logica compartida entre modo Casual y Desafio
 function runHangmanGame_1_1(event, mode) {
     const secretWord = pickSecretWord();
@@ -626,6 +650,8 @@ function runHangmanGame_1_1(event, mode) {
     function endGame(won) {
         guessInput.disabled = true;
         guessButton.disabled = true;
+        gameUI.classList.add("hidden");
+        hangmanStatus.classList.add("hidden");
 
         const resultLines = [
             `Modo de juego: ${mode === "casual" ? "Casual" : "Desafío"}`,
@@ -638,9 +664,7 @@ function runHangmanGame_1_1(event, mode) {
             `Intentos sobrantes: ${attemptsLeft()}`
         ].filter(line => line !== null);
 
-        showHangmanResults(resultLines, () => {
-            gameUI.classList.add("hidden");
-            hangmanStatus.classList.add("hidden");
+        showHangmanResults(won, resultLines, () => {
             hangmanFigureWrapper.classList.add("hidden");
             guessInput.disabled = false;
             guessButton.disabled = false;
