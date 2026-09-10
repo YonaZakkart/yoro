@@ -166,10 +166,9 @@
                 placeholder="Tu número..." />
             <div class="flex items-center gap-2">
                 <button id="hint-button" disabled
-                    class="hidden px-3 py-2 rounded-lg bg-surface-container border border-outline text-on-background opacity-40 cursor-not-allowed">💡
+                    class="hidden px-3 py-2 btn-secondary opacity-40 cursor-not-allowed">💡
                     Pista</button>
-                <button id="guess-button"
-                    class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Adivinar</button>
+                <button id="guess-button" class="px-4 py-2 btn-primary">Adivinar</button>
             </div>
             <p id="hint-cooldown" class="hidden text-label-code font-label-code opacity-70"></p>
         </div>
@@ -189,16 +188,14 @@
             class="hidden mt-4 flex flex-col items-center gap-2 text-center max-w-xs mx-auto">
             <p class="text-label-code font-label-code opacity-80">¿Quieres más intentos?<br>Marca con una estrella el
                 repositorio de GitHub!</p>
-            <button id="hangman-github-button"
-                class="px-3 py-2 rounded-lg bg-surface-container border border-outline text-on-background">Ir a
+            <button id="hangman-github-button" class="px-3 py-2 btn-secondary">Ir a
                 GitHub</button>
         </div>
         <!-- Tabla de resultados del Ahorcado (aparece unos segundos al terminar la partida) -->
         <div id="hangman-results"
             class="hidden mt-6 flex flex-col items-center gap-1 text-center text-body-md font-body-md">
         </div>
-        <button id="hangman-results-accept"
-            class="hidden mt-4 px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Aceptar</button>
+        <button id="hangman-results-accept" class="hidden mt-4 px-4 py-2 btn-primary">Aceptar</button>
 
         <!-- Menu: elegir que juego jugar -->
         <div id="game-menu-ui" class="hidden mt-8 flex flex-col items-center gap-3">
@@ -209,18 +206,15 @@
             <input type="text" id="name-input"
                 class="px-3 py-2 rounded-lg text-on-background bg-surface-container border border-outline"
                 placeholder="Tu nombre..." />
-            <button id="name-button"
-                class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Continuar</button>
+            <button id="name-button" class="px-4 py-2 btn-primary">Continuar</button>
         </div>
         <!-- Menu: elegir modo de juego -->
         <div id="mode-menu-ui" class="hidden mt-8 flex gap-6">
         </div>
         <!-- Menu: preguntar si el jugador quiere seguir jugando (aparece al repetir un juego) -->
         <div id="continue-menu-ui" class="hidden mt-8 flex gap-4">
-            <button id="continue-yes-button"
-                class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Sí, vamos</button>
-            <button id="continue-later-button"
-                class="px-4 py-2 rounded-lg bg-surface-container border border-outline text-on-background">Quizás más
+            <button id="continue-yes-button" class="px-4 py-2 btn-primary">Sí, vamos</button>
+            <button id="continue-later-button" class="px-4 py-2 btn-secondary">Quizás más
                 tarde</button>
         </div>
         <!-- Modal: confirmar uso de pista (Ahorcado modo Experto) -->
@@ -228,27 +222,22 @@
             <p class="text-body-md font-body-md opacity-80">Se agregará una letra aleatoria a tu avance, pero el
                 ahorcado avanzará y perderás 2 vidas.</p>
             <div class="flex justify-center gap-4">
-                <button id="hint-cancel-button"
-                    class="px-4 py-2 rounded-lg bg-surface-container border border-outline text-on-background">Cancelar</button>
-                <button id="hint-accept-button"
-                    class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Aceptar</button>
+                <button id="hint-cancel-button" class="px-4 py-2 btn-secondary">Cancelar</button>
+                <button id="hint-accept-button" class="px-4 py-2 btn-primary">Aceptar</button>
             </div>
         </div>
         <!-- Modal: oferta de revivir al perder en modo Experto -->
         <div id="hangman-lose-menu" class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto">
             <p id="hangman-lose-message" class="text-body-md font-body-md opacity-90 whitespace-pre-line"></p>
             <div class="flex justify-center gap-4">
-                <button id="hangman-lose-cancel"
-                    class="px-4 py-2 rounded-lg bg-surface-container border border-outline text-on-background"></button>
-                <button id="hangman-lose-accept"
-                    class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container"></button>
+                <button id="hangman-lose-cancel" class="px-4 py-2 btn-secondary"></button>
+                <button id="hangman-lose-accept" class="px-4 py-2 btn-primary"></button>
             </div>
         </div>
         <!-- Modal: recompensa tras usar el enlace de GitHub al perder -->
         <div id="hangman-reward-modal" class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto">
             <p class="text-body-md font-body-md opacity-90">¡Ha funcionado!<br>Has recibido 3 vidas adicionales</p>
-            <button id="hangman-reward-accept"
-                class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container">Gracias</button>
+            <button id="hangman-reward-accept" class="px-4 py-2 btn-primary">Gracias</button>
         </div>
     </main>
 
