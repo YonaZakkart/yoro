@@ -311,13 +311,24 @@ function showGameMenu() {
     latestGamesList.forEach(game => {
         const button = document.createElement("button");
         button.textContent = game.gameName;
-        button.className = "px-4 py-2 rounded-lg bg-primary-container text-on-primary-container";
+        button.className = "px-4 py-2 btn-primary";
         button.dataset.gameId = game.gameId;
 
         menuUI.appendChild(button);
     });
 
     menuUI.classList.remove("hidden");
+
+    // Iguala el ancho de todos los botones al del texto más largo entre ellos
+    const gameButtons = menuUI.querySelectorAll("button[data-game-id]");
+    let maxWidth = 0;
+    gameButtons.forEach(button => {
+        maxWidth = Math.max(maxWidth, button.offsetWidth);
+    });
+    gameButtons.forEach(button => {
+        button.style.width = `${maxWidth}px`;
+    });
+
     startIdleDialogues();
 }
 
@@ -346,7 +357,7 @@ function showModeMenu(event) {
 
         const button = document.createElement("button");
         button.textContent = mode.label;
-        button.className = "px-4 py-2 rounded-lg bg-primary-container text-on-primary-container w-full";
+        button.className = "px-4 py-2 btn-primary w-full";
         button.dataset.modeId = mode.id;
 
         const description = document.createElement("p");
