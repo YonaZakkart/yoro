@@ -237,6 +237,14 @@ body {
     cursor: pointer;
 }
 
+/* Caja con contorno: usada en menus y paneles del Ahorcado */
+.panel-box {
+    border: 1px solid rgba(110, 231, 242, 0.35);
+    box-shadow: 0 0 0 1px rgba(110, 231, 242, 0.08);
+    border-radius: 20px;
+    padding: 20px 28px;
+}
+
 /* Ahorcado Experto: boton de pista */
 @keyframes hintGlow {
 
