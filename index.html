@@ -173,15 +173,24 @@
             <p id="hint-cooldown" class="hidden text-label-code font-label-code opacity-70"></p>
         </div>
 
-        <!-- Evento 7: pista de longitud y estado actual del Ahorcado (no usa fade, se mantiene visible) -->
-        <div id="hangman-status" class="hidden mt-4 flex flex-col items-center gap-1 text-center">
-            <p id="hangman-hint" class="text-label-code font-label-code opacity-70"></p>
-            <p id="hangman-progress" class="text-body-lg font-body-lg tracking-widest"></p>
-        </div>
-        <!-- Dibujo ASCII del Ahorcado y lista de letras/palabras ya intentadas -->
-        <div id="hangman-figure-wrapper" class="hidden mt-4 flex flex-col items-center gap-2">
+        <!-- Panel de juego del Ahorcado: estado, dibujo ASCII y letras/palabras usadas (no usa fade, se muestra/oculta como bloque) -->
+        <div id="hangman-status" class="hidden mt-4 flex flex-col items-center gap-3 text-center panel-box">
+            <div>
+                <p id="hangman-hint" class="text-label-code font-label-code opacity-70"></p>
+                <p id="hangman-progress" class="text-body-lg font-body-lg tracking-widest"></p>
+            </div>
             <pre id="hangman-figure" class="text-label-code font-label-code leading-tight"></pre>
-            <p id="hangman-used" class="text-label-code font-label-code opacity-70 text-center"></p>
+            <div id="hangman-used-buttons" class="flex gap-3">
+                <button id="hangman-letters-button"
+                    class="px-3 py-1.5 btn-secondary text-label-code font-label-code">Letras usadas</button>
+                <button id="hangman-words-button"
+                    class="px-3 py-1.5 btn-secondary text-label-code font-label-code">Palabras usadas</button>
+            </div>
+            <div id="hangman-used-modal" class="hidden flex-col items-center gap-2 text-center">
+                <p id="hangman-used-modal-content" class="text-body-md font-body-md"></p>
+                <button id="hangman-used-close-button"
+                    class="px-3 py-1.5 btn-secondary text-label-code font-label-code">Cerrar</button>
+            </div>
         </div>
         <!-- Aviso persistente: pedir mas vidas via GitHub (Ahorcado Experto, a 2 vidas) -->
         <div id="hangman-github-prompt"
@@ -193,12 +202,12 @@
         </div>
         <!-- Tabla de resultados del Ahorcado (aparece unos segundos al terminar la partida) -->
         <div id="hangman-results"
-            class="hidden mt-6 flex flex-col items-center gap-1 text-center text-body-md font-body-md">
+            class="hidden mt-6 flex flex-col items-center gap-1 text-center text-body-md font-body-md panel-box">
         </div>
         <button id="hangman-results-accept" class="hidden mt-4 px-4 py-2 btn-primary">Aceptar</button>
 
         <!-- Menu: elegir que juego jugar -->
-        <div id="game-menu-ui" class="hidden mt-8 flex flex-col items-center gap-3">
+        <div id="game-menu-ui" class="hidden mt-8 flex flex-col items-center gap-3 panel-box">
         </div>
 
         <!-- Evento 3: preguntar el nombre -->
@@ -209,7 +218,7 @@
             <button id="name-button" class="px-4 py-2 btn-primary">Continuar</button>
         </div>
         <!-- Menu: elegir modo de juego -->
-        <div id="mode-menu-ui" class="hidden mt-8 flex gap-6">
+        <div id="mode-menu-ui" class="hidden mt-8 flex gap-6 panel-box">
         </div>
         <!-- Menu: preguntar si el jugador quiere seguir jugando (aparece al repetir un juego) -->
         <div id="continue-menu-ui" class="hidden mt-8 flex gap-4">
@@ -218,7 +227,8 @@
                 tarde</button>
         </div>
         <!-- Modal: confirmar uso de pista (Ahorcado modo Experto) -->
-        <div id="hint-confirm-ui" class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto">
+        <div id="hint-confirm-ui"
+            class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto panel-box">
             <p class="text-body-md font-body-md opacity-80">Se agregará una letra aleatoria a tu avance, pero el
                 ahorcado avanzará y perderás 2 vidas.</p>
             <div class="flex justify-center gap-4">
@@ -227,7 +237,8 @@
             </div>
         </div>
         <!-- Modal: oferta de revivir al perder en modo Experto -->
-        <div id="hangman-lose-menu" class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto">
+        <div id="hangman-lose-menu"
+            class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto panel-box">
             <p id="hangman-lose-message" class="text-body-md font-body-md opacity-90 whitespace-pre-line"></p>
             <div class="flex justify-center gap-4">
                 <button id="hangman-lose-cancel" class="px-4 py-2 btn-secondary"></button>
@@ -235,7 +246,8 @@
             </div>
         </div>
         <!-- Modal: recompensa tras usar el enlace de GitHub al perder -->
-        <div id="hangman-reward-modal" class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto">
+        <div id="hangman-reward-modal"
+            class="hidden mt-8 flex-col items-center gap-3 text-center max-w-xs mx-auto panel-box">
             <p class="text-body-md font-body-md opacity-90">¡Ha funcionado!<br>Has recibido 3 vidas adicionales</p>
             <button id="hangman-reward-accept" class="px-4 py-2 btn-primary">Gracias</button>
         </div>
