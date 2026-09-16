@@ -13,6 +13,22 @@ function enableEnterKey(inputElement, buttonElement) {
     };
 }
 
+// Muestra un mensaje corto de Yoro sin que cuente como intento.
+// Se usa en los avisos de validacion: campo vacio, nombre muy corto, caracteres invalidos, etc.
+function showValidationMessage(text, restoreText = null) {
+    dialogueContainer.style.opacity = 1;
+    dialogueParagraph.textContent = text;
+    setTimeout(() => {
+        dialogueContainer.style.opacity = 0;
+        if (restoreText) {
+            setTimeout(() => {
+                dialogueParagraph.textContent = restoreText;
+                dialogueContainer.style.opacity = 1;
+            }, FADE_DURATION);
+        }
+    }, 2000);
+}
+
 // Evento 1. Juego: Adivina el numero (1)
 function startGuessingGame(event) {
     const secretNumber = pickSecretNumber(10);
@@ -28,6 +44,10 @@ function startGuessingGame(event) {
     let attempts = 0;
 
     guessButton.addEventListener("click", () => {
+        if (guessInput.value.trim() === "") {
+            showValidationMessage("Escribe un número primero...");
+            return;
+        }
         const guess = Number(guessInput.value);
         attempts++;
         dialogueContainer.style.opacity = 1;
@@ -75,6 +95,10 @@ function startGuessingGame_1_1(event) {
     let attempts = 0;
 
     guessButton.onclick = () => {
+        if (guessInput.value.trim() === "") {
+            showValidationMessage("Escribe un número primero...");
+            return;
+        }
         const guess = Number(guessInput.value);
         attempts++;
         dialogueContainer.style.opacity = 1;
@@ -118,7 +142,10 @@ function askForName(event) {
 
     nameButton.onclick = () => {
         const name = nameInput.value.trim();
-        if (!name) return;
+        if (name.length < 3) {
+            showValidationMessage("Necesito al menos 3 letras...");
+            return;
+        }
 
         localStorage.setItem("yoro_player_name", name);
         nameUI.classList.add("hidden");
@@ -147,6 +174,10 @@ function runGuessingGame_1_2(event, mode) {
     let attempts = 0;
 
     guessButton.onclick = () => {
+        if (guessInput.value.trim() === "") {
+            showValidationMessage("Escribe un número primero...");
+            return;
+        }
         const guess = Number(guessInput.value);
         attempts++;
         dialogueContainer.style.opacity = 1;
@@ -237,6 +268,10 @@ function startMathGame(event) {
     }
 
     guessButton.onclick = () => {
+        if (guessInput.value.trim() === "") {
+            showValidationMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
+            return;
+        }
         const answer = Number(guessInput.value);
         const correct = answer === currentProblem.answer;
         if (correct) hits++;
@@ -314,6 +349,10 @@ function runMathGameCasual(event) {
     }
 
     guessButton.onclick = () => {
+        if (guessInput.value.trim() === "") {
+            showValidationMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
+            return;
+        }
         const answer = Number(guessInput.value);
         const correct = answer === currentProblem.answer;
 
@@ -395,6 +434,10 @@ function runMathGameInfinito(event) {
     }
 
     guessButton.onclick = () => {
+        if (guessInput.value.trim() === "") {
+            showValidationMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
+            return;
+        }
         const answer = Number(guessInput.value);
         attempts++;
         dialogueContainer.style.opacity = 1;
@@ -504,7 +547,14 @@ function startHangmanGame(event) {
     guessButton.onclick = () => {
         const raw = guessInput.value.trim().toLowerCase();
         guessInput.value = "";
-        if (raw.length === 0) return;
+        if (raw.length === 0) {
+            showValidationMessage("Escribe una letra o una palabra...");
+            return;
+        }
+        if (!/^[a-z]+$/.test(raw)) {
+            showValidationMessage("Solo letras, nada de números ni símbolos...");
+            return;
+        }
 
         dialogueContainer.style.opacity = 1;
 
@@ -919,7 +969,14 @@ function runHangmanGame_1_1(event, mode) {
     guessButton.onclick = () => {
         const raw = guessInput.value.trim().toLowerCase();
         guessInput.value = "";
-        if (raw.length === 0) return;
+        if (raw.length === 0) {
+            showValidationMessage("Escribe una letra o una palabra...");
+            return;
+        }
+        if (!/^[a-z]+$/.test(raw)) {
+            showValidationMessage("Solo letras, nada de números ni símbolos...");
+            return;
+        }
 
         dialogueContainer.style.opacity = 1;
 
