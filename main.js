@@ -13,20 +13,33 @@ function enableEnterKey(inputElement, buttonElement) {
     };
 }
 
-// Muestra un mensaje corto de Yoro sin que cuente como intento.
-// Se usa en los avisos de validacion: campo vacio, nombre muy corto, caracteres invalidos, etc.
-function showValidationMessage(text, restoreText = null) {
-    dialogueContainer.style.opacity = 1;
+// Recuerda si hay un mensaje corto visible ahora mismo (y su temporizador para ocultarse).
+// null = no hay ninguno visible.
+let quickMessageTimeout = null;
+
+// Muestra un mensaje corto y transitorio de Yoro
+// Si el mensaje anterior todavia esta visible, el texto cambia al instante sin fade 
+//  Si ya se habia ocultado, aparece con el fade normal.
+function showQuickMessage(text, { duration = 2000, restoreText = null } = {}) {
+    const yaEstaVisible = quickMessageTimeout !== null;
+    clearTimeout(quickMessageTimeout);
+
     dialogueParagraph.textContent = text;
-    setTimeout(() => {
+    if (!yaEstaVisible) {
+        dialogueContainer.style.opacity = 1;
+    }
+
+    quickMessageTimeout = setTimeout(() => {
         dialogueContainer.style.opacity = 0;
+        quickMessageTimeout = null;
+
         if (restoreText) {
             setTimeout(() => {
                 dialogueParagraph.textContent = restoreText;
                 dialogueContainer.style.opacity = 1;
             }, FADE_DURATION);
         }
-    }, 2000);
+    }, duration);
 }
 
 // Evento 1. Juego: Adivina el numero (1)
@@ -45,14 +58,14 @@ function startGuessingGame(event) {
 
     guessButton.addEventListener("click", () => {
         if (guessInput.value.trim() === "") {
-            showValidationMessage("Escribe un número primero...");
+            showQuickMessage("Escribe un número primero...");
             return;
         }
         const guess = Number(guessInput.value);
         attempts++;
-        dialogueContainer.style.opacity = 1;
 
         if (guess === secretNumber) {
+            dialogueContainer.style.opacity = 1;
             dialogueParagraph.textContent = `¡Lo lograste! :D`;
             guessInput.disabled = true;
             guessButton.disabled = true;
@@ -72,10 +85,7 @@ function startGuessingGame(event) {
                 }, FADE_DURATION);
             }, 3200);
         } else {
-            dialogueParagraph.textContent = `No es ese... (intento ${attempts})`;
-            setTimeout(() => {
-                dialogueContainer.style.opacity = 0;
-            }, 2000);
+            showQuickMessage(`No es ese... (intento ${attempts})`);
         }
     });
 }
@@ -96,14 +106,14 @@ function startGuessingGame_1_1(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showValidationMessage("Escribe un número primero...");
+            showQuickMessage("Escribe un número primero...");
             return;
         }
         const guess = Number(guessInput.value);
         attempts++;
-        dialogueContainer.style.opacity = 1;
 
         if (guess === secretNumber) {
+            dialogueContainer.style.opacity = 1;
             dialogueParagraph.textContent = getResultMessage(attempts);
             guessInput.disabled = true;
             guessButton.disabled = true;
@@ -123,10 +133,7 @@ function startGuessingGame_1_1(event) {
                 }, FADE_DURATION);
             }, 3200);
         } else {
-            dialogueParagraph.textContent = guess < secretNumber ? "Más arriba..." : "Más abajo...";
-            setTimeout(() => {
-                dialogueContainer.style.opacity = 0;
-            }, 2000);
+            showQuickMessage(guess < secretNumber ? "Más arriba..." : "Más abajo...");
         }
     };
 }
@@ -143,7 +150,7 @@ function askForName(event) {
     nameButton.onclick = () => {
         const name = nameInput.value.trim();
         if (name.length < 3) {
-            showValidationMessage("Necesito al menos 3 letras...");
+            showQuickMessage("Necesito al menos 3 letras...");
             return;
         }
 
@@ -175,14 +182,15 @@ function runGuessingGame_1_2(event, mode) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showValidationMessage("Escribe un número primero...");
+            showQuickMessage("Escribe un número primero...");
             return;
         }
         const guess = Number(guessInput.value);
         attempts++;
-        dialogueContainer.style.opacity = 1;
+
 
         if (guess === secretNumber) {
+            dialogueContainer.style.opacity = 1;
             dialogueParagraph.textContent = mode === "casual"
                 ? getResultMessageCasual(attempts)
                 : getResultMessageDesafio(attempts);
@@ -204,21 +212,20 @@ function runGuessingGame_1_2(event, mode) {
                 }, FADE_DURATION);
             }, 3200);
         } else {
+            let hintText;
             if (mode === "casual") {
-                dialogueParagraph.textContent = getHintCasual(secretNumber, guess);
+                hintText = getHintCasual(secretNumber, guess);
             } else {
                 const result = handleDesafioFail(secretNumber, failStreak);
                 secretNumber = result.secretNumber;
                 failStreak = result.failStreak;
 
                 const hint = guess < secretNumber ? "Más arriba..." : "Más abajo...";
-                dialogueParagraph.textContent = result.changed
+                hintText = result.changed
                     ? `El número secreto ha cambiado... Ahora está ${hint}`
                     : hint;
             }
-            setTimeout(() => {
-                dialogueContainer.style.opacity = 0;
-            }, 2000);
+            showQuickMessage(hintText);
         }
     };
 }
@@ -269,7 +276,7 @@ function startMathGame(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showValidationMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
+            showQuickMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
             return;
         }
         const answer = Number(guessInput.value);
@@ -281,22 +288,18 @@ function startMathGame(event) {
         if (correct) stats.games.countWithMe.correctAnswers++;
         saveStats(stats);
 
-        dialogueParagraph.textContent = correct ? "¡Correcto!" : `Casi... era ${currentProblem.answer}`;
-        dialogueContainer.style.opacity = 1;
+        showQuickMessage(correct ? "¡Correcto!" : `Casi... era ${currentProblem.answer}`, { duration: 1500 });
 
         setTimeout(() => {
-            dialogueContainer.style.opacity = 0;
-            setTimeout(() => {
-                if (problemIndex >= totalProblems) {
-                    finishGame();
-                } else {
-                    showProblem();
-                }
-            }, FADE_DURATION);
-        }, 1500);
-    };
+            if (problemIndex >= totalProblems) {
+                finishGame();
+            } else {
+                showProblem();
+            }
+        }, 1500 + FADE_DURATION);;
 
-    showProblem();
+        showProblem();
+    }
 }
 
 // Evento 6. Modo Casual: 10 preguntas, rango mayor
@@ -350,19 +353,20 @@ function runMathGameCasual(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showValidationMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
+            showQuickMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
             return;
         }
         const answer = Number(guessInput.value);
         const correct = answer === currentProblem.answer;
+        let feedbackText;
 
         if (correct) {
             hits++;
             racha++;
-            dialogueParagraph.textContent = `¡Correcto! (racha: ${racha})`;
+            feedbackText = `¡Correcto! (racha: ${racha})`;
         } else {
             racha = 0;
-            dialogueParagraph.textContent = `Casi... era ${currentProblem.answer}`;
+            feedbackText = `Casi... era ${currentProblem.answer}`;
         }
 
         stats.games.countWithMe.totalAnswers++;
@@ -370,22 +374,21 @@ function runMathGameCasual(event) {
         saveStats(stats);
 
         problemIndex++;
-        dialogueContainer.style.opacity = 1;
+        showQuickMessage(feedbackText, { duration: 1500 });
 
         setTimeout(() => {
-            dialogueContainer.style.opacity = 0;
-            setTimeout(() => {
-                if (problemIndex >= totalProblems) {
-                    finishGame();
-                } else {
-                    showProblem();
-                }
-            }, FADE_DURATION);
-        }, 1500);
+            if (problemIndex >= totalProblems) {
+                finishGame();
+            } else {
+                showProblem();
+            }
+        }, 1500 + FADE_DURATION);
     };
 
     showProblem();
 }
+
+
 
 // Evento 6. Modo Infinito: sin limite de preguntas, termina al primer fallo
 function runMathGameInfinito(event) {
@@ -435,21 +438,18 @@ function runMathGameInfinito(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showValidationMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
+            showQuickMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
             return;
         }
         const answer = Number(guessInput.value);
         attempts++;
-        dialogueContainer.style.opacity = 1;
         stats.games.countWithMe.totalAnswers++;
 
         if (answer === currentProblem.answer) {
-            stats.games.countWithMe.correctAnswers++; saveStats(stats);
-            dialogueParagraph.textContent = `¡Correcto! (${attempts} seguidos)`;
-            setTimeout(() => {
-                dialogueContainer.style.opacity = 0;
-                setTimeout(showProblem, FADE_DURATION);
-            }, 1200);
+            stats.games.countWithMe.correctAnswers++;
+            saveStats(stats);
+            showQuickMessage(`¡Correcto! (${attempts} seguidos)`, { duration: 1200 });
+            setTimeout(showProblem, 1200 + FADE_DURATION);
         } else {
             saveStats(stats);
             finishGame();
@@ -547,59 +547,61 @@ function startHangmanGame(event) {
     guessButton.onclick = () => {
         const raw = guessInput.value.trim().toLowerCase();
         guessInput.value = "";
+
         if (raw.length === 0) {
-            showValidationMessage("Escribe una letra o una palabra...");
+            showQuickMessage("Escribe una letra o una palabra...");
             return;
         }
         if (!/^[a-z]+$/.test(raw)) {
-            showValidationMessage("Solo letras, nada de números ni símbolos...");
+            showQuickMessage("Solo letras, nada de números ni símbolos...");
             return;
         }
-
-        dialogueContainer.style.opacity = 1;
 
         if (raw.length === 1) {
             const letter = raw;
             if (guessedLetters.includes(letter)) {
-                dialogueParagraph.textContent = `Ya probaste la letra "${letter}"`;
-            } else {
-                guessedLetters.push(letter);
-                const count = countLetterOccurrences(secretWord, letter);
-                if (count > 0) {
-                    dialogueParagraph.textContent = `La letra "${letter}" aparece ${count} ${count === 1 ? "vez" : "veces"} en la palabra secreta`;
-                    updateProgress();
-                } else {
-                    dialogueParagraph.textContent = `La letra "${letter}" no aparece en la palabra secreta`;
-                }
+                showQuickMessage(`Ya probaste la letra "${letter}"`);
+                return;
             }
-        } else if (raw.length === 2) {
-            dialogueParagraph.textContent = "Ingresa solo una letra o una palabra completa";
-        } else {
-            if (guessedWords.includes(raw)) {
-                dialogueParagraph.textContent = `Ya intentaste la palabra "${raw}"`;
-            } else {
-                guessedWords.push(raw);
-                if (isWordMatch(secretWord, raw)) {
-                    dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
-                    guessedLetters = getUniqueLetters(secretWord);
-                    updateProgress();
-                    finishGame();
-                    return;
-                } else {
-                    dialogueParagraph.textContent = "Nope... no es esa";
-                }
-            }
-        }
 
-        if (raw.length === 1 && isWordFullyRevealed()) {
-            dialogueParagraph.textContent = "¡Completaste la palabra! :D";
-            finishGame();
+            guessedLetters.push(letter);
+            const count = countLetterOccurrences(secretWord, letter);
+            const message = count > 0
+                ? `La letra "${letter}" aparece ${count} ${count === 1 ? "vez" : "veces"} en la palabra secreta`
+                : `La letra "${letter}" no aparece en la palabra secreta`;
+
+            if (count > 0) updateProgress();
+
+            if (isWordFullyRevealed()) {
+                dialogueContainer.style.opacity = 1;
+                dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
+                finishGame();
+                return;
+            }
+            showQuickMessage(message);
             return;
         }
 
-        setTimeout(() => {
-            dialogueContainer.style.opacity = 0;
-        }, 2000);
+        if (raw.length === 2) {
+            showQuickMessage("Ingresa solo una letra o una palabra completa");
+            return;
+        }
+
+        if (guessedWords.includes(raw)) {
+            showQuickMessage(`Ya intentaste la palabra "${raw}"`);
+            return;
+        }
+
+        guessedWords.push(raw);
+        if (isWordMatch(secretWord, raw)) {
+            guessedLetters = getUniqueLetters(secretWord);
+            updateProgress();
+            dialogueContainer.style.opacity = 1;
+            dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
+            finishGame();
+            return;
+        }
+        showQuickMessage("Nope... no es esa");
     };
 }
 
@@ -812,18 +814,22 @@ function runHangmanGame_1_1(event, mode) {
         updateGithubPrompt();
 
         dialogueContainer.style.opacity = 1;
-        dialogueParagraph.textContent = `Pista usada: la letra "${revealedLetter}" ya está revelada`;
+        let message = `Pista usada: la letra "${revealedLetter}" ya está revelada`;
 
         if (isWordFullyRevealed()) {
-            dialogueParagraph.textContent += ". ¡Completaste la palabra! :D";
+            dialogueContainer.style.opacity = 1;
+            dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
             endGame(true);
             return;
         }
         if (wrongGuesses >= maxWrongGuesses) {
-            dialogueParagraph.textContent += ". El ahorcado se completó...";
+            dialogueContainer.style.opacity = 1;
+            dialogueParagraph.textContent = `${message}. El ahorcado se completó...`;
             handleDefeat();
             return;
         }
+
+        showQuickMessage(message);
 
         setTimeout(() => {
             dialogueContainer.style.opacity = 0;
@@ -969,60 +975,69 @@ function runHangmanGame_1_1(event, mode) {
     guessButton.onclick = () => {
         const raw = guessInput.value.trim().toLowerCase();
         guessInput.value = "";
+
         if (raw.length === 0) {
-            showValidationMessage("Escribe una letra o una palabra...");
+            showQuickMessage("Escribe una letra o una palabra...");
             return;
         }
         if (!/^[a-z]+$/.test(raw)) {
-            showValidationMessage("Solo letras, nada de números ni símbolos...");
+            showQuickMessage("Solo letras, nada de números ni símbolos...");
             return;
         }
-
-        dialogueContainer.style.opacity = 1;
 
         if (raw.length === 1) {
             const letter = raw;
             if (guessedLetters.includes(letter)) {
-                dialogueParagraph.textContent = `Ya probaste la letra "${letter}" antes, este intento no cuenta jeje`;
-            } else {
-                guessedLetters.push(letter);
-                letterAttemptsUsed++;
-
-                const count = countLetterOccurrences(secretWord, letter);
-                const message = count > 0
-                    ? `La letra "${letter}" aparece ${count} ${count === 1 ? "vez" : "veces"} en la palabra secreta`
-                    : `La letra "${letter}" no aparece en la palabra secreta`;
-
-                if (count === 0) {
-                    wrongGuesses++;
-                    letterFailsSinceHint++;
-                }
-                updateProgress();
-                updateHint();
-                updateFigure();
-                updateHintButton();
-                updateGithubPrompt();
-
-                if (isWordFullyRevealed()) {
-                    dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
-                    endGame(true);
-                    return;
-                }
-                if (wrongGuesses >= maxWrongGuesses) {
-                    dialogueParagraph.textContent = `${message}. El ahorcado se completó...`;
-                    handleDefeat();
-                    return;
-                }
-                dialogueParagraph.textContent = message;
+                showQuickMessage(`Ya probaste la letra "${letter}" antes, este intento no cuenta jeje`);
+                return;
             }
-        } else if (raw.length === 2) {
-            dialogueParagraph.textContent = "Ingresa solo una letra o una palabra completa";
-        } else if (mode === "desafio" || mode === "experto") {
+
+            guessedLetters.push(letter);
+            letterAttemptsUsed++;
+
+            const count = countLetterOccurrences(secretWord, letter);
+            const message = count > 0
+                ? `La letra "${letter}" aparece ${count} ${count === 1 ? "vez" : "veces"} en la palabra secreta`
+                : `La letra "${letter}" no aparece en la palabra secreta`;
+
+            if (count === 0) {
+                wrongGuesses++;
+                letterFailsSinceHint++;
+            }
+            updateProgress();
+            updateHint();
+            updateFigure();
+            updateHintButton();
+            updateGithubPrompt();
+
+            if (isWordFullyRevealed()) {
+                dialogueContainer.style.opacity = 1;
+                dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
+                endGame(true);
+                return;
+            }
+            if (wrongGuesses >= maxWrongGuesses) {
+                dialogueContainer.style.opacity = 1;
+                dialogueParagraph.textContent = `${message}. El ahorcado se completó...`;
+                handleDefeat();
+                return;
+            }
+            showQuickMessage(message);
+            return;
+        }
+
+        if (raw.length === 2) {
+            showQuickMessage("Ingresa solo una letra o una palabra completa");
+            return;
+        }
+
+        if (mode === "desafio" || mode === "experto") {
             if (wordGuessUsed) return;
             wordGuessUsed = true;
             wordAttemptsUsed++;
             guessedWords.push(raw);
 
+            dialogueContainer.style.opacity = 1;
             if (isWordMatch(secretWord, raw)) {
                 guessedLetters = getUniqueLetters(secretWord);
                 updateProgress();
@@ -1036,37 +1051,37 @@ function runHangmanGame_1_1(event, mode) {
                 handleDefeat();
             }
             return;
-        } else {
-            if (guessedWords.includes(raw)) {
-                dialogueParagraph.textContent = `Ya probaste la palabra "${raw}" antes, este intento no cuenta jeje`;
-            } else {
-                guessedWords.push(raw);
-                wordAttemptsUsed++;
-
-                if (isWordMatch(secretWord, raw)) {
-                    guessedLetters = getUniqueLetters(secretWord);
-                    updateProgress();
-                    dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
-                    endGame(true);
-                    return;
-                }
-
-                wrongGuesses++;
-                updateHint();
-                updateFigure();
-                updateGithubPrompt();
-
-                if (wrongGuesses >= maxWrongGuesses) {
-                    dialogueParagraph.textContent = "Nope... no es esa. El ahorcado se completó...";
-                    handleDefeat();
-                    return;
-                }
-                dialogueParagraph.textContent = "Nope... no es esa";
-            }
         }
 
-        setTimeout(() => {
-            dialogueContainer.style.opacity = 0;
-        }, 2000);
+        // mode === "casual": la palabra completa se puede intentar varias veces
+        if (guessedWords.includes(raw)) {
+            showQuickMessage(`Ya probaste la palabra "${raw}" antes, este intento no cuenta jeje`);
+            return;
+        }
+
+        guessedWords.push(raw);
+        wordAttemptsUsed++;
+
+        if (isWordMatch(secretWord, raw)) {
+            guessedLetters = getUniqueLetters(secretWord);
+            updateProgress();
+            dialogueContainer.style.opacity = 1;
+            dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
+            endGame(true);
+            return;
+        }
+
+        wrongGuesses++;
+        updateHint();
+        updateFigure();
+        updateGithubPrompt();
+
+        if (wrongGuesses >= maxWrongGuesses) {
+            dialogueContainer.style.opacity = 1;
+            dialogueParagraph.textContent = "Nope... no es esa. El ahorcado se completó...";
+            handleDefeat();
+            return;
+        }
+        showQuickMessage("Nope... no es esa");
     };
 }
