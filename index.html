@@ -141,12 +141,24 @@
             <span class="material-symbols-outlined">close</span>
         </button>
         <h2 class="text-headline-md font-headline-md mb-6">Opciones</h2>
-        <div class="flex flex-col items-center gap-3 w-64 panel-box">
+                <div id="settings-options" class="flex flex-col items-center gap-3 w-64 panel-box">
             <button data-option="change-name" class="px-4 py-2 btn-primary w-full">Cambiar mi nombre</button>
             <button data-option="reset-stats" class="px-4 py-2 btn-primary w-full">Reiniciar Estadísticas</button>
             <button data-option="reset-game" class="px-4 py-2 btn-primary w-full">Reiniciar Juego</button>
             <button data-option="credits" class="px-4 py-2 btn-primary w-full">Créditos</button>
         </div>
+        <div id="settings-name-form" class="hidden flex flex-col items-center gap-3 w-64 panel-box">
+            <p class="text-body-md font-body-md opacity-80">¿Cómo quieres que te llame?</p>
+            <input type="text" id="settings-name-input" maxlength="16"
+                class="px-3 py-2 rounded-lg text-on-background bg-surface-container border border-outline w-full"
+                placeholder="Tu nombre..." />
+            <div class="flex justify-center gap-3">
+                <button id="settings-name-cancel" class="px-4 py-2 btn-secondary">Cancelar</button>
+                <button id="settings-name-save" class="px-4 py-2 btn-primary">Guardar</button>
+            </div>
+        </div>
+        <p id="settings-message" class="mt-4 min-h-[16px] text-label-code font-label-code opacity-70"></p>
+    </div>
     </div>
     
     <!-- The Void (Container) -->
