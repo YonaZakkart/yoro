@@ -121,6 +121,34 @@
 </head>
 
 <body class="w-screen h-screen flex flex-col justify-center items-center">
+    <!-- Botones superiores: opciones, estadisticas y musica -->
+    <nav id="top-buttons" class="fixed top-3 left-3 flex gap-2 z-50">
+        <button id="settings-button" class="btn-secondary btn-round" aria-label="Opciones" title="Opciones">
+            <span class="material-symbols-outlined">settings</span>
+        </button>
+        <button id="stats-button" class="btn-secondary btn-round" aria-label="Estadísticas" title="Estadísticas">
+            <span class="material-symbols-outlined">bar_chart</span>
+        </button>
+        <button id="music-button" class="btn-secondary btn-round" aria-label="Música" title="Música (desactivada)">
+            <span class="material-symbols-outlined">music_off</span>
+        </button>
+    </nav>
+
+        <!-- Panel de opciones: cubre toda la pantalla mientras esta abierto -->
+    <div id="settings-panel" class="hidden fixed inset-0 flex flex-col items-center justify-center screen-overlay">
+        <button id="settings-close-button" class="btn-secondary btn-round absolute top-3 right-3"
+            aria-label="Cerrar" title="Cerrar">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <h2 class="text-headline-md font-headline-md mb-6">Opciones</h2>
+        <div class="flex flex-col items-center gap-3 w-64 panel-box">
+            <button data-option="change-name" class="px-4 py-2 btn-primary w-full">Cambiar mi nombre</button>
+            <button data-option="reset-stats" class="px-4 py-2 btn-primary w-full">Reiniciar Estadísticas</button>
+            <button data-option="reset-game" class="px-4 py-2 btn-primary w-full">Reiniciar Juego</button>
+            <button data-option="credits" class="px-4 py-2 btn-primary w-full">Créditos</button>
+        </div>
+    </div>
+    
     <!-- The Void (Container) -->
     <main class="w-full h-full flex flex-col justify-center items-center relative">
         <!-- Centerpiece: Yoro Robot -->
