@@ -1085,3 +1085,82 @@ function runHangmanGame_1_1(event, mode) {
         showQuickMessage("Nope... no es esa");
     };
 }
+
+// Panel de opciones (engranaje): cubre toda la pantalla mientras esta abierto
+const settingsButton = document.getElementById("settings-button");
+const settingsPanel = document.getElementById("settings-panel");
+const settingsCloseButton = document.getElementById("settings-close-button");
+
+function openSettingsPanel() {
+    // quita el foco del input del juego, para que Enter no dispare el boton de abajo
+    if (document.activeElement) document.activeElement.blur();
+    showSettingsOptions();
+    changeNameOption.classList.toggle("hidden", !localStorage.getItem("yoro_player_name"));
+    settingsPanel.classList.remove("hidden");
+}
+
+function closeSettingsPanel() {
+    settingsPanel.classList.add("hidden");
+}
+
+// Los clicks de aqui no deben llegar al listener global de events.js,
+// o saltarian la pausa del dialogo que haya detras.
+settingsButton.onclick = (clickEvent) => {
+    clickEvent.stopPropagation();
+    openSettingsPanel();
+};
+settingsPanel.addEventListener("click", (clickEvent) => clickEvent.stopPropagation());
+settingsCloseButton.onclick = closeSettingsPanel;
+
+// Opcion "Cambiar mi nombre" del panel de opciones
+const settingsOptions = document.getElementById("settings-options");
+const settingsNameForm = document.getElementById("settings-name-form");
+const settingsNameInput = document.getElementById("settings-name-input");
+const settingsNameSave = document.getElementById("settings-name-save");
+const settingsNameCancel = document.getElementById("settings-name-cancel");
+const settingsMessage = document.getElementById("settings-message");
+const changeNameOption = document.querySelector('[data-option="change-name"]');
+
+enableEnterKey(settingsNameInput, settingsNameSave);
+
+// vuelve a la lista de opciones y limpia el mensaje
+function showSettingsOptions() {
+    settingsNameForm.classList.add("hidden");
+    settingsOptions.classList.remove("hidden");
+    settingsMessage.textContent = "";
+}
+
+changeNameOption.onclick = () => {
+    settingsMessage.textContent = "";
+    settingsOptions.classList.add("hidden");
+    settingsNameForm.classList.remove("hidden");
+    settingsNameInput.value = localStorage.getItem("yoro_player_name") || "";
+    settingsNameInput.focus();
+};
+
+settingsNameCancel.onclick = showSettingsOptions;
+
+settingsNameSave.onclick = () => {
+    const name = settingsNameInput.value.trim();
+    if (name.length < 3) {
+        settingsMessage.textContent = "Necesito al menos 3 letras...";
+        return;
+    }
+
+    const previousName = localStorage.getItem("yoro_player_name");
+    localStorage.setItem("yoro_player_name", name);
+    showSettingsOptions();
+
+    // mismo nombre: Yoro no finge que es uno nuevo
+    if (name === previousName) {
+        settingsMessage.textContent = `Sigue siendo ${name}, jeje`;
+        return;
+    }
+
+    const reactions = [
+        `${name}... me gusta, jeje`,
+        `¿Nuevo nombre? Hola de nuevo, ${name}`,
+        `${name}. Listo, lo recordaré`
+    ];
+    settingsMessage.textContent = reactions[Math.floor(Math.random() * reactions.length)];
+};

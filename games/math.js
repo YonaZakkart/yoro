@@ -45,27 +45,3 @@ function getMathResultMessage10(hits) {
 
     return { won, text };
 }
-
-// Panel de opciones (engranaje): cubre toda la pantalla mientras esta abierto
-const settingsButton = document.getElementById("settings-button");
-const settingsPanel = document.getElementById("settings-panel");
-const settingsCloseButton = document.getElementById("settings-close-button");
-
-function openSettingsPanel() {
-    // quita el foco del input del juego, para que Enter no dispare el boton de abajo
-    if (document.activeElement) document.activeElement.blur();
-    settingsPanel.classList.remove("hidden");
-}
-
-function closeSettingsPanel() {
-    settingsPanel.classList.add("hidden");
-}
-
-// Los clicks de aqui no deben llegar al listener global de events.js,
-// o saltarian la pausa del dialogo que haya detras.
-settingsButton.onclick = (clickEvent) => {
-    clickEvent.stopPropagation();
-    openSettingsPanel();
-};
-settingsPanel.addEventListener("click", (clickEvent) => clickEvent.stopPropagation());
-settingsCloseButton.onclick = closeSettingsPanel;
