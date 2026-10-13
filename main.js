@@ -1126,8 +1126,10 @@ enableEnterKey(settingsNameInput, settingsNameSave);
 // vuelve a la lista de opciones y limpia el mensaje
 function showSettingsOptions() {
     settingsNameForm.classList.add("hidden");
+    settingsConfirm.classList.add("hidden");
     settingsOptions.classList.remove("hidden");
     settingsMessage.textContent = "";
+    pendingConfirmAction = null;
 }
 
 changeNameOption.onclick = () => {
@@ -1163,4 +1165,41 @@ settingsNameSave.onclick = () => {
         `${name}. Listo, lo recordaré`
     ];
     settingsMessage.textContent = reactions[Math.floor(Math.random() * reactions.length)];
+};
+
+// Confirmacion generica del panel de opciones (para acciones que borran datos)
+const settingsConfirm = document.getElementById("settings-confirm");
+const settingsConfirmText = document.getElementById("settings-confirm-text");
+const settingsConfirmAccept = document.getElementById("settings-confirm-accept");
+const settingsConfirmCancel = document.getElementById("settings-confirm-cancel");
+const resetStatsOption = document.querySelector('[data-option="reset-stats"]');
+
+// la accion que se ejecuta si el jugador acepta (null = no hay ninguna pendiente)
+let pendingConfirmAction = null;
+
+function showSettingsConfirm(text, onAccept) {
+    settingsMessage.textContent = "";
+    pendingConfirmAction = onAccept;
+    settingsConfirmText.textContent = text;
+    settingsOptions.classList.add("hidden");
+    settingsConfirm.classList.remove("hidden");
+}
+
+settingsConfirmCancel.onclick = showSettingsOptions;
+
+settingsConfirmAccept.onclick = () => {
+    const action = pendingConfirmAction; // se guarda antes, porque showSettingsOptions la borra
+    showSettingsOptions();
+    if (action) action();
+};
+
+resetStatsOption.onclick = () => {
+    showSettingsConfirm("Se borrarán tus estadísticas: visitas, partidas y récords. No se puede deshacer.", () => {
+        // se cambia el contenido del mismo objeto "stats" (no se crea uno nuevo),
+        // para que todo el codigo que ya lo usa vea los datos reiniciados
+        Object.assign(stats, createInitialStats());
+        stats.visits = 1;
+        saveStats(stats);
+        settingsMessage.textContent = "Listo, empezamos de cero";
+    });
 };

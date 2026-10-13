@@ -134,14 +134,14 @@
         </button>
     </nav>
 
-        <!-- Panel de opciones: cubre toda la pantalla mientras esta abierto -->
+    <!-- Panel de opciones: cubre toda la pantalla mientras esta abierto -->
     <div id="settings-panel" class="hidden fixed inset-0 flex flex-col items-center justify-center screen-overlay">
-        <button id="settings-close-button" class="btn-secondary btn-round absolute top-3 right-3"
-            aria-label="Cerrar" title="Cerrar">
+        <button id="settings-close-button" class="btn-secondary btn-round absolute top-3 right-3" aria-label="Cerrar"
+            title="Cerrar">
             <span class="material-symbols-outlined">close</span>
         </button>
         <h2 class="text-headline-md font-headline-md mb-6">Opciones</h2>
-                <div id="settings-options" class="flex flex-col items-center gap-3 w-64 panel-box">
+        <div id="settings-options" class="flex flex-col items-center gap-3 w-64 panel-box">
             <button data-option="change-name" class="px-4 py-2 btn-primary w-full">Cambiar mi nombre</button>
             <button data-option="reset-stats" class="px-4 py-2 btn-primary w-full">Reiniciar Estadísticas</button>
             <button data-option="reset-game" class="px-4 py-2 btn-primary w-full">Reiniciar Juego</button>
@@ -157,10 +157,17 @@
                 <button id="settings-name-save" class="px-4 py-2 btn-primary">Guardar</button>
             </div>
         </div>
+        <div id="settings-confirm" class="hidden flex flex-col items-center gap-3 w-64 text-center panel-box">
+            <p id="settings-confirm-text" class="text-body-md font-body-md opacity-80"></p>
+            <div class="flex justify-center gap-3">
+                <button id="settings-confirm-cancel" class="px-4 py-2 btn-secondary">Cancelar</button>
+                <button id="settings-confirm-accept" class="px-4 py-2 btn-primary">Aceptar</button>
+            </div>
+        </div>
         <p id="settings-message" class="mt-4 min-h-[16px] text-label-code font-label-code opacity-70"></p>
     </div>
     </div>
-    
+
     <!-- The Void (Container) -->
     <main class="w-full h-full flex flex-col justify-center items-center relative">
         <!-- Centerpiece: Yoro Robot -->
