@@ -1130,6 +1130,7 @@ function showSettingsOptions() {
     settingsOptions.classList.remove("hidden");
     settingsMessage.textContent = "";
     pendingConfirmAction = null;
+    pendingDeclineAction = null;
 }
 
 changeNameOption.onclick = () => {
@@ -1173,22 +1174,33 @@ const settingsConfirmText = document.getElementById("settings-confirm-text");
 const settingsConfirmAccept = document.getElementById("settings-confirm-accept");
 const settingsConfirmCancel = document.getElementById("settings-confirm-cancel");
 const resetStatsOption = document.querySelector('[data-option="reset-stats"]');
+const resetGameOption = document.querySelector('[data-option="reset-game"]');
 
-// la accion que se ejecuta si el jugador acepta (null = no hay ninguna pendiente)
+// acciones pendientes segun el boton que se pulse (null = no hay ninguna)
 let pendingConfirmAction = null;
+let pendingDeclineAction = null;
 
-function showSettingsConfirm(text, onAccept) {
+// Muestra la confirmacion. Opciones: textos de los botones y "onCancel":
+// si se pasa, el boton izquierdo ejecuta esa accion (despues de volver a la lista de opciones)
+function showSettingsConfirm(text, onAccept, { acceptLabel = "Aceptar", cancelLabel = "Cancelar", onCancel = null } = {}) {
     settingsMessage.textContent = "";
     pendingConfirmAction = onAccept;
+    pendingDeclineAction = onCancel;
     settingsConfirmText.textContent = text;
+    settingsConfirmAccept.textContent = acceptLabel;
+    settingsConfirmCancel.textContent = cancelLabel;
     settingsOptions.classList.add("hidden");
     settingsConfirm.classList.remove("hidden");
 }
 
-settingsConfirmCancel.onclick = showSettingsOptions;
+settingsConfirmCancel.onclick = () => {
+    const action = pendingDeclineAction; // se guarda antes, porque showSettingsOptions la borra
+    showSettingsOptions();
+    if (action) action();
+};
 
 settingsConfirmAccept.onclick = () => {
-    const action = pendingConfirmAction; // se guarda antes, porque showSettingsOptions la borra
+    const action = pendingConfirmAction;
     showSettingsOptions();
     if (action) action();
 };
@@ -1201,5 +1213,28 @@ resetStatsOption.onclick = () => {
         stats.visits = 1;
         saveStats(stats);
         settingsMessage.textContent = "Listo, empezamos de cero";
+    });
+};
+
+// Borra el progreso (eventos completados y nombre) y recarga la pagina para que Yoro empiece de cero.
+// Las estadisticas solo se reinician si resetStatsToo es true.
+function resetGame(resetStatsToo) {
+    localStorage.removeItem("yoro_completed_events");
+    localStorage.removeItem("yoro_player_name");
+
+    if (resetStatsToo) {
+        // visits queda en 0 porque la recarga de abajo ya suma la visita nueva
+        Object.assign(stats, createInitialStats());
+        saveStats(stats);
+    }
+
+    location.reload();
+}
+
+resetGameOption.onclick = () => {
+    showSettingsConfirm("¿Mantener estadísticas actuales?", () => resetGame(false), {
+        acceptLabel: "Sí",
+        cancelLabel: "No",
+        onCancel: () => resetGame(true)
     });
 };
