@@ -16,6 +16,7 @@ function enableEnterKey(inputElement, buttonElement) {
 // Recuerda si hay un mensaje corto visible ahora mismo (y su temporizador para ocultarse).
 // null = no hay ninguno visible.
 let quickMessageTimeout = null;
+let quickRestoreTimeout = null;
 
 // Muestra un mensaje corto y transitorio de Yoro
 // Si el mensaje anterior todavia esta visible, el texto cambia al instante sin fade 
@@ -23,6 +24,8 @@ let quickMessageTimeout = null;
 function showQuickMessage(text, { duration = 2000, restoreText = null } = {}) {
     const yaEstaVisible = quickMessageTimeout !== null;
     clearTimeout(quickMessageTimeout);
+    clearTimeout(quickRestoreTimeout); // cancela una restauracion pendiente de un aviso anterior
+    quickRestoreTimeout = null;
 
     dialogueParagraph.textContent = text;
     if (!yaEstaVisible) {
@@ -34,9 +37,10 @@ function showQuickMessage(text, { duration = 2000, restoreText = null } = {}) {
         quickMessageTimeout = null;
 
         if (restoreText) {
-            setTimeout(() => {
+            quickRestoreTimeout = setTimeout(() => {
                 dialogueParagraph.textContent = restoreText;
                 dialogueContainer.style.opacity = 1;
+                quickRestoreTimeout = null;
             }, FADE_DURATION);
         }
     }, duration);
@@ -246,13 +250,13 @@ function startMathGame(event) {
     let hits = 0;
     let currentProblem = null;
 
-    function showProblem() {
-        currentProblem = generateMathProblem();
+        function showProblem() {
+        currentProblem = generateMathProblem(); // o con maxRange / (maxRange, true), según el modo
         guessInput.value = "";
         dialogueParagraph.textContent = `${currentProblem.text} = ?`;
         dialogueContainer.style.opacity = 1;
+        guessButton.disabled = false;
     }
-
     function finishGame() {
         const result = getMathResultMessage(hits, totalProblems);
         dialogueParagraph.textContent = result.text;
@@ -276,9 +280,10 @@ function startMathGame(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
+            showQuickMessage("Escribe un número primero...", { restoreText: `${currentProblem.text} = ?` });
             return;
         }
+        guessButton.disabled = true;
         const answer = Number(guessInput.value);
         const correct = answer === currentProblem.answer;
         if (correct) hits++;
@@ -296,10 +301,9 @@ function startMathGame(event) {
             } else {
                 showProblem();
             }
-        }, 1500 + FADE_DURATION);;
-
-        showProblem();
+        }, 1500 + FADE_DURATION);
     }
+    showProblem();
 }
 
 // Evento 6. Modo Casual: 10 preguntas, rango mayor
@@ -325,6 +329,7 @@ function runMathGameCasual(event) {
         guessInput.value = "";
         dialogueParagraph.textContent = `${currentProblem.text} = ?`;
         dialogueContainer.style.opacity = 1;
+        guessButton.disabled = false;
     }
 
     function finishGame() {
@@ -353,9 +358,10 @@ function runMathGameCasual(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
+            showQuickMessage("Escribe un número primero...", { restoreText: `${currentProblem.text} = ?` });
             return;
         }
+        guessButton.disabled = true;
         const answer = Number(guessInput.value);
         const correct = answer === currentProblem.answer;
         let feedbackText;
@@ -406,10 +412,11 @@ function runMathGameInfinito(event) {
     let currentProblem = null;
 
     function showProblem() {
-        currentProblem = generateMathProblem(maxRange);
+        currentProblem = generateMathProblem(maxRange, true);
         guessInput.value = "";
         dialogueParagraph.textContent = `${currentProblem.text} = ?`;
         dialogueContainer.style.opacity = 1;
+        guessButton.disabled = false;
     }
 
     function finishGame() {
@@ -438,9 +445,10 @@ function runMathGameInfinito(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage("Escribe un número primero...", `${currentProblem.text} = ?`);
+            showQuickMessage("Escribe un número primero...", { restoreText: `${currentProblem.text} = ?` });
             return;
         }
+        guessButton.disabled = true;
         const answer = Number(guessInput.value);
         attempts++;
         stats.games.countWithMe.totalAnswers++;
@@ -452,6 +460,7 @@ function runMathGameInfinito(event) {
             setTimeout(showProblem, 1200 + FADE_DURATION);
         } else {
             saveStats(stats);
+            clearTimeout(quickRestoreTimeout);
             finishGame();
         }
     };

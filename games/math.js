@@ -1,5 +1,5 @@
 // Genera un problema aleatorio de suma o resta. "max" controla el rango de los numeros.
-function generateMathProblem(max = 20) {
+function generateMathProblem(max = 20, allowNegative = false) {
     const isSum = Math.random() < 0.5;
 
     if (isSum) {
@@ -10,7 +10,9 @@ function generateMathProblem(max = 20) {
         const minuendMin = Math.ceil(max / 2);
         const subtrahendMax = Math.round(max * 0.6);
         const a = Math.floor(Math.random() * (max - minuendMin + 1)) + minuendMin;
-        const b = Math.floor(Math.random() * subtrahendMax) + 1;
+        // sin negativos, el sustraendo nunca puede pasar del minuendo
+        const bLimit = allowNegative ? subtrahendMax : Math.min(subtrahendMax, a);
+        const b = Math.floor(Math.random() * bLimit) + 1;
         return { text: `${a} - ${b}`, answer: a - b };
     }
 }
