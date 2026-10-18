@@ -177,6 +177,7 @@ function askForName(event) {
         showDialogue(buildNameDialogue(name), () => {
             markEventCompleted(event.id);
             startIdleDialogues();
+            showSkipTimeButton();
         });
     };
 }
