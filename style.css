@@ -319,7 +319,8 @@ body {
     }
 }
 
-.music-attention {
+.music-attention,
+.skip-attention {
     animation: musicPulse 2.4s ease-in-out infinite;
 }
 
@@ -332,7 +333,8 @@ body {
 
 /* quien prefiere menos movimiento: sin latido, solo el contorno resaltado */
 @media (prefers-reduced-motion: reduce) {
-    .music-attention {
+    .music-attention,
+    .skip-attention {
         animation: none;
         border-color: #6EE7F2;
         opacity: 1;

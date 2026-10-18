@@ -33,7 +33,10 @@ function finishEvent(event) {
             showDialogue(askContinueDialogue, showContinueMenu);
         });
     } else {
-        showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
+        showDialogue(resolveDialogue(event.outroDialogue), () => {
+            startIdleDialogues();
+            showSkipTimeButton();
+        });
     }
 }
 
@@ -409,6 +412,17 @@ document.getElementById("continue-later-button").onclick = () => {
     document.getElementById("continue-menu-ui").classList.add("hidden");
     showDialogue(continueLaterDialogue, startIdleDialogues);
 };
+
+// Botón [Saltar tiempo...]: recarga la página para pasar al siguiente evento sin esperar.
+// Solo se muestra si todavía queda algún evento por delante.
+const skipTimeButton = document.getElementById("skip-time-button");
+
+function showSkipTimeButton() {
+    if (!findNextEvent()) return;
+    skipTimeButton.classList.remove("hidden");
+}
+
+skipTimeButton.onclick = () => location.reload();
 
 // Arranca el flujo: busca el siguiente evento sin completar y lo reproduce
 const nextEvent = findNextEvent();
