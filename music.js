@@ -3,6 +3,7 @@
 
 const MUSIC_VOLUME = 0.4;   // volumen normal (0 a 1)
 const MUSIC_FADE_MS = 800;  // duración de los fades al cambiar de pista
+const MUSIC_STORAGE_KEY = "yoro_music_enabled"; // "1" = el jugador la tenía activada
 
 // Listas de pistas. "menu" suena en diálogos, menús e idle.
 // "games" tiene una lista por gameId y una "default" para los juegos sin pistas propias.
@@ -53,7 +54,12 @@ function loadAndPlay() {
     musicPlayer.src = loadedTrack;
     // con una sola pista en la lista, el navegador la repite por su cuenta (loop nativo)
     musicPlayer.loop = currentTrackList.length === 1;
-    musicPlayer.play().catch(error => console.warn("No se pudo reproducir la música:", error));
+    return musicPlayer.play()
+        .then(() => true)
+        .catch(error => {
+            console.warn("No se pudo reproducir la música:", error);
+            return false;
+        });
 }
 
 // cuando termina una pista (solo pasa si la lista tiene varias), pasa a la siguiente
@@ -76,8 +82,17 @@ function switchMusic(list) {
     });
 }
 
+function saveMusicPreference(on) {
+    try {
+        localStorage.setItem(MUSIC_STORAGE_KEY, on ? "1" : "0");
+    } catch (error) {
+        console.warn("No se pudo guardar la preferencia de música:", error);
+    }
+}
+
 function setMusicEnabled(on) {
     musicEnabled = on;
+    saveMusicPreference(on);
     updateMusicButton();
 
     if (on) {
@@ -121,4 +136,43 @@ musicButton.onclick = (clickEvent) => {
     setMusicEnabled(!musicEnabled);
 };
 
+// Si el jugador la tenía activada en la visita anterior, intenta retomarla.
+// Los navegadores bloquean el audio sin un gesto del usuario, así que si falla,
+// espera al primer click o tecla y lo reintenta.
+function resumeSavedMusic() {
+    if (localStorage.getItem(MUSIC_STORAGE_KEY) !== "1") return;
+
+    musicEnabled = true;
+    updateMusicButton();
+
+    function tryStart() {
+        if (!musicEnabled) return;
+        loadAndPlay().then(started => {
+            if (!musicEnabled) {          // la apagó mientras el navegador decidía
+                musicPlayer.pause();
+                return;
+            }
+            if (started) {
+                fadeVolume(MUSIC_VOLUME, MUSIC_FADE_MS);
+            } else {
+                waitForGesture();
+            }
+        });
+    }
+
+    function waitForGesture() {
+        function handler() {
+            document.removeEventListener("click", handler, true);
+            document.removeEventListener("keydown", handler, true);
+            tryStart();
+        }
+        // el "true" (fase de captura) hace que se enteren incluso los botones con stopPropagation
+        document.addEventListener("click", handler, true);
+        document.addEventListener("keydown", handler, true);
+    }
+
+    tryStart();
+}
+
 updateMusicButton();
+resumeSavedMusic();
