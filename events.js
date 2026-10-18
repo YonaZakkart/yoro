@@ -24,6 +24,7 @@ function markEventCompleted(eventId) {
 // muestra el outro de un evento; si ya se habia completado antes (repeticion desde el menu),
 // al terminar pregunta si el jugador quiere seguir jugando en vez de pasar directo a los dialogos ociosos
 function finishEvent(event) {
+    switchMusic(musicTracks.menu);
     const alreadyCompleted = getCompletedEvents().includes(event.id);
     markEventCompleted(event.id);
 
@@ -34,6 +35,16 @@ function finishEvent(event) {
     } else {
         showDialogue(resolveDialogue(event.outroDialogue), startIdleDialogues);
     }
+}
+
+// arranca la parte jugable de un evento. En los juegos sin modos cambia la música
+// al tema del juego; en los que tienen modos, el cambio se hace al elegir el modo
+// (ver el click de #mode-menu-ui), porque start solo abre el menú de modos.
+function startEvent(event) {
+    if (event.isGame && !event.modes) {
+        switchMusic(getGameTracks(event.gameId));
+    }
+    event.start(event);
 }
 
 //lista de eventos
@@ -340,7 +351,7 @@ document.getElementById("game-menu-ui").onclick = (clickEvent) => {
     if (!game) return;
 
     document.getElementById("game-menu-ui").classList.add("hidden");
-    showDialogue(resolveDialogue(game.replayAcceptDialogue), () => game.start(game));
+    showDialogue(resolveDialogue(game.replayAcceptDialogue), () => startEvent(game));
 };
 
 // muestra el menu de seleccion de modo (generico, para cualquier evento con "modes")
@@ -380,6 +391,7 @@ document.getElementById("mode-menu-ui").onclick = (clickEvent) => {
     if (!mode) return;
 
     document.getElementById("mode-menu-ui").classList.add("hidden");
+    switchMusic(getGameTracks(currentModeMenuEvent.gameId));
     mode.start(currentModeMenuEvent, mode.id);
 };
 
@@ -402,7 +414,7 @@ document.getElementById("continue-later-button").onclick = () => {
 const nextEvent = findNextEvent();
 
 if (nextEvent) {
-    showDialogue(resolveDialogue(nextEvent.introDialogue), () => nextEvent.start(nextEvent));
+    showDialogue(resolveDialogue(nextEvent.introDialogue), () => startEvent(nextEvent));
 } else {
     showDialogue(returningDialogue, showGameMenu);
 }
