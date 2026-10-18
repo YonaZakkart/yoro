@@ -1301,3 +1301,96 @@ resetGameOption.onclick = () => {
         onCancel: () => resetGame(true)
     });
 };
+
+
+// Panel de estadisticas (boton de grafico): cubre toda la pantalla mientras esta abierto
+const statsButton = document.getElementById("stats-button");
+const statsPanel = document.getElementById("stats-panel");
+const statsCloseButton = document.getElementById("stats-close-button");
+const statsGeneralList = document.getElementById("stats-general-list");
+
+// nombres de los juegos, con las mismas claves que stats.games
+const gameNames = {
+    number: "Adivina el Número",
+    countWithMe: "Cuenta Conmigo",
+    hangman: "Ahorcado"
+};
+
+// convierte "2026-10-14" en "14/10/2026" (o un guion si todavia no hay fecha)
+function formatStatDate(dayKey) {
+    if (!dayKey) return "—";
+    const [year, month, day] = dayKey.split("-");
+    return `${day}/${month}/${year}`;
+}
+
+// el juego con mas plays; en caso de empate gana el primero de la lista; sin partidas, un guion
+function getMostPlayedGame() {
+    let bestName = null;
+    let bestPlays = 0;
+
+    Object.keys(gameNames).forEach(key => {
+        const plays = stats.games[key].plays;
+        if (plays > bestPlays) {
+            bestPlays = plays;
+            bestName = gameNames[key];
+        }
+    });
+
+    return bestName === null ? "—" : bestName;
+}
+
+// arma las filas de la vista general con los datos actuales
+function renderStatsGeneral() {
+    const games = stats.games;
+    const totalPlays = games.number.plays + games.countWithMe.plays + games.hangman.plays;
+    const winRate = games.hangman.plays > 0
+        ? `${Math.round(games.hangman.wins / games.hangman.plays * 100)}%`
+        : "—";
+    const playerName = localStorage.getItem("yoro_player_name") || "—";
+
+    const rows = [
+        ["Nombre", playerName],
+        ["Visitas", stats.visits],
+        ["Días de visita", stats.daysVisited],
+        ["Primera visita", formatStatDate(stats.firstVisitDay)],
+        ["Partidas totales", totalPlays],
+        ["Juego más jugado", getMostPlayedGame()],
+        ["Índice de victoria (Ahorcado)", winRate]
+    ];
+
+    statsGeneralList.innerHTML = "";
+    rows.forEach(([label, value]) => {
+        const row = document.createElement("div");
+        row.className = "flex justify-between gap-4";
+
+        const labelSpan = document.createElement("span");
+        labelSpan.className = "opacity-70";
+        labelSpan.textContent = label;
+
+        const valueSpan = document.createElement("span");
+        valueSpan.className = "text-right";
+        valueSpan.textContent = value;
+
+        row.append(labelSpan, valueSpan);
+        statsGeneralList.appendChild(row);
+    });
+}
+
+function openStatsPanel() {
+    // quita el foco del input del juego, para que Enter no dispare el boton de abajo
+    if (document.activeElement) document.activeElement.blur();
+    renderStatsGeneral();
+    statsPanel.classList.remove("hidden");
+}
+
+function closeStatsPanel() {
+    statsPanel.classList.add("hidden");
+}
+
+// igual que en Ajustes: los clicks de aqui no deben llegar al listener global de events.js
+statsButton.onclick = (clickEvent) => {
+    clickEvent.stopPropagation();
+    openStatsPanel();
+};
+statsPanel.addEventListener("click", (clickEvent) => clickEvent.stopPropagation());
+statsCloseButton.onclick = closeStatsPanel;
