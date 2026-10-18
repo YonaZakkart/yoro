@@ -168,19 +168,34 @@
     </div>
 
     <!-- Panel de estadisticas: cubre toda la pantalla mientras esta abierto -->
-    <div id="stats-panel" class="hidden fixed inset-0 flex flex-col items-center justify-center screen-overlay">
-        <button id="stats-close-button" class="btn-secondary btn-round absolute top-3 right-3" aria-label="Cerrar"
+    <div id="stats-panel" class="hidden fixed inset-0 flex flex-col items-center overflow-y-auto screen-overlay">
+        <button id="stats-close-button" class="btn-secondary btn-round fixed top-3 right-3" aria-label="Cerrar"
             title="Cerrar">
             <span class="material-symbols-outlined">close</span>
         </button>
-        <h2 class="text-headline-md font-headline-md mb-6">Estadísticas</h2>
-        <div id="stats-general" class="flex flex-col items-center gap-4 w-80 panel-box">
-            <div id="stats-general-list" class="flex flex-col gap-2 w-full text-body-md font-body-md"></div>
-            <p class="text-label-code font-label-code opacity-70">Más detalles sobre...</p>
-            <div id="stats-detail-buttons" class="flex flex-col gap-2 w-full">
-                <button data-game="number" class="px-4 py-2 btn-primary w-full">Adivina el Número</button>
-                <button data-game="countWithMe" class="px-4 py-2 btn-primary w-full">Cuenta Conmigo</button>
-                <button data-game="hangman" class="px-4 py-2 btn-primary w-full">Ahorcado</button>
+        <div class="flex flex-col items-center my-auto w-full max-w-5xl px-4 py-16">
+            <h2 class="text-headline-md font-headline-md mb-6">Estadísticas</h2>
+
+            <!-- Vista general -->
+            <div id="stats-general" class="flex flex-col items-center gap-4 w-80 max-w-full panel-box">
+                <div id="stats-general-list" class="flex flex-col gap-2 w-full text-body-md font-body-md"></div>
+                <p class="text-label-code font-label-code opacity-70">Más detalles sobre...</p>
+                <div id="stats-detail-buttons" class="flex flex-col gap-2 w-full">
+                    <button data-game="number" class="px-4 py-2 btn-primary w-full">Adivina el Número</button>
+                    <button data-game="countWithMe" class="px-4 py-2 btn-primary w-full">Cuenta Conmigo</button>
+                    <button data-game="hangman" class="px-4 py-2 btn-primary w-full">Ahorcado</button>
+                </div>
+            </div>
+
+            <!-- Vista de detalle de un juego -->
+            <div id="stats-detail" class="hidden flex flex-col items-center gap-4 w-full">
+                <div class="flex flex-col items-center gap-4 w-full panel-box">
+                    <h3 id="stats-detail-title" class="text-headline-md font-headline-md"></h3>
+                    <div id="stats-detail-sections" class="flex flex-wrap justify-center gap-4 w-full"></div>
+                </div>
+                <p class="text-label-code font-label-code opacity-60 text-center max-w-md">Si los datos de cada modo no
+                    coinciden con el total, intente reiniciar las estadísticas</p>
+                <button id="stats-back-button" class="px-4 py-2 btn-secondary">Volver</button>
             </div>
         </div>
     </div>
@@ -333,6 +348,7 @@
     <script src="games/math.js"></script>
     <script src="games/hangman.js"></script>
     <script src="storage.js"></script>
+    <script src="music.js"></script>
     <script src="main.js"></script>
     <script src="events.js"></script>
 </body>

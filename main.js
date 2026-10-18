@@ -1343,9 +1343,7 @@ function getMostPlayedGame() {
 function renderStatsGeneral() {
     const games = stats.games;
     const totalPlays = games.number.plays + games.countWithMe.plays + games.hangman.plays;
-    const winRate = games.hangman.plays > 0
-        ? `${Math.round(games.hangman.wins / games.hangman.plays * 100)}%`
-        : "—";
+    const winRate = formatPercent(games.hangman.wins, games.hangman.plays);
     const playerName = localStorage.getItem("yoro_player_name") || "—";
 
     const rows = [
@@ -1358,28 +1356,14 @@ function renderStatsGeneral() {
         ["Índice de victoria (Ahorcado)", winRate]
     ];
 
-    statsGeneralList.innerHTML = "";
-    rows.forEach(([label, value]) => {
-        const row = document.createElement("div");
-        row.className = "flex justify-between gap-4";
-
-        const labelSpan = document.createElement("span");
-        labelSpan.className = "opacity-70";
-        labelSpan.textContent = label;
-
-        const valueSpan = document.createElement("span");
-        valueSpan.className = "text-right";
-        valueSpan.textContent = value;
-
-        row.append(labelSpan, valueSpan);
-        statsGeneralList.appendChild(row);
-    });
+    fillStatRows(statsGeneralList, rows);
 }
 
 function openStatsPanel() {
     // quita el foco del input del juego, para que Enter no dispare el boton de abajo
     if (document.activeElement) document.activeElement.blur();
     renderStatsGeneral();
+    showStatsGeneral();
     statsPanel.classList.remove("hidden");
 }
 
@@ -1394,3 +1378,176 @@ statsButton.onclick = (clickEvent) => {
 };
 statsPanel.addEventListener("click", (clickEvent) => clickEvent.stopPropagation());
 statsCloseButton.onclick = closeStatsPanel;
+
+
+// ---- Pantallas de detalle por juego ----
+const statsGeneralView = document.getElementById("stats-general");
+const statsDetailView = document.getElementById("stats-detail");
+const statsDetailTitle = document.getElementById("stats-detail-title");
+const statsDetailSections = document.getElementById("stats-detail-sections");
+const statsDetailButtons = document.getElementById("stats-detail-buttons");
+const statsBackButton = document.getElementById("stats-back-button");
+
+// porcentaje redondeado, o un guion si todavia no hay datos
+function formatPercent(part, total) {
+    return total > 0 ? `${Math.round(part / total * 100)}%` : "—";
+}
+
+// promedio con un decimal como maximo, o un guion si no hay datos
+function formatAverage(total, count) {
+    return count > 0 ? Math.round(total / count * 10) / 10 : "—";
+}
+
+// un valor que puede ser null (todavia sin dato): lo muestra tal cual o un guion
+function formatOrDash(value) {
+    return value === null ? "—" : value;
+}
+
+// un valor con su unidad en singular o plural ("1 vida", "6 vidas"), o un guion si no hay dato
+function formatCount(value, singular, plural) {
+    if (value === null) return "—";
+    return `${value} ${value === 1 ? singular : plural}`;
+}
+
+// llena un contenedor con filas "etiqueta ... valor" (todo como texto plano)
+function fillStatRows(container, rows) {
+    container.innerHTML = "";
+    rows.forEach(([label, value]) => {
+        const row = document.createElement("div");
+        row.className = "flex justify-between gap-4";
+
+        const labelSpan = document.createElement("span");
+        labelSpan.className = "opacity-70";
+        labelSpan.textContent = label;
+
+        const valueSpan = document.createElement("span");
+        valueSpan.className = "text-right";
+        valueSpan.textContent = value;
+
+        row.append(labelSpan, valueSpan);
+        container.appendChild(row);
+    });
+}
+
+// Cada juego devuelve su lista de cajas: { title, rows: [[etiqueta, valor], ...] }
+// Las claves coinciden con stats.games y con data-game de los botones.
+const statsDetailBuilders = {
+    number: () => {
+        const n = stats.games.number;
+        const modeRows = (mode) => [
+            ["Partidas", mode.plays],
+            ["Mejor partida", formatCount(mode.bestAttempts, "intento", "intentos")],
+            ["Promedio de intentos", formatAverage(mode.totalAttempts, mode.plays)]
+        ];
+
+        return [
+            {
+                title: "General", rows: [
+                    ["Partidas", n.plays],
+                    ["Mejor partida", formatCount(n.bestAttempts, "intento", "intentos")],
+                    ["Intentos totales", n.totalAttempts],
+                    ["Promedio de intentos", formatAverage(n.totalAttempts, n.plays)]
+                ]
+            },
+            { title: "Casual", rows: modeRows(n.modes.casual) },
+            { title: "Desafío", rows: [...modeRows(n.modes.desafio), ["Escapes del número", n.modes.desafio.escapes]] }
+        ];
+    },
+
+    countWithMe: () => {
+        const c = stats.games.countWithMe;
+        const casual = c.modes.casual;
+        const infinito = c.modes.infinito;
+
+        return [
+            {
+                title: "General", rows: [
+                    ["Partidas", c.plays],
+                    ["Respuestas totales", c.totalAnswers],
+                    ["Aciertos", c.correctAnswers],
+                    ["Precisión", formatPercent(c.correctAnswers, c.totalAnswers)]
+                ]
+            },
+            {
+                title: "Casual", rows: [
+                    ["Partidas", casual.plays],
+                    ["Mejor puntaje", c.bestTen === null ? "—" : `${c.bestTen}/10`],
+                    ["Mejor racha", formatOrDash(casual.bestStreak)],
+                    ["Precisión", formatPercent(casual.correctAnswers, casual.totalAnswers)]
+                ]
+            },
+            {
+                title: "Infinito", rows: [
+                    ["Partidas", infinito.plays],
+                    ["Mejor racha", formatOrDash(c.bestInfinite)],
+                    ["Precisión", formatPercent(infinito.correctAnswers, infinito.totalAnswers)]
+                ]
+            }
+        ];
+    },
+
+    hangman: () => {
+        const h = stats.games.hangman;
+        const experto = h.modes.experto;
+        // el total (h) y cada modo tienen los mismos campos, asi que comparten esta funcion
+        const modeRows = (mode) => [
+            ["Partidas", mode.plays],
+            ["Victorias", mode.wins],
+            ["Derrotas", mode.losses],
+            ["Índice de victoria", formatPercent(mode.wins, mode.plays)],
+            ["Mejor partida", formatCount(mode.bestMargin, "vida", "vidas")]
+        ];
+
+        return [
+            { title: "General", rows: modeRows(h) },
+            { title: "Casual", rows: modeRows(h.modes.casual) },
+            { title: "Desafío", rows: modeRows(h.modes.desafio) },
+            {
+                title: "Experto", rows: [
+                    ...modeRows(experto),
+                    ["Pistas usadas", experto.hintsUsed],
+                    ["Veces que revivió", experto.revives]
+                ]
+            }
+        ];
+    }
+};
+
+// muestra la pantalla de detalle del juego indicado (arma una caja por cada seccion)
+function showStatsDetail(gameKey) {
+    statsDetailTitle.textContent = gameNames[gameKey];
+    statsDetailSections.innerHTML = "";
+
+    statsDetailBuilders[gameKey]().forEach(section => {
+        const box = document.createElement("div");
+        box.className = "panel-box-soft flex flex-col gap-2 w-full md:w-52";
+
+        const title = document.createElement("h4");
+        title.className = "text-label-technical font-label-technical uppercase text-primary-container";
+        title.textContent = section.title;
+
+        const list = document.createElement("div");
+        list.className = "flex flex-col gap-1 text-body-md font-body-md";
+        fillStatRows(list, section.rows);
+
+        box.append(title, list);
+        statsDetailSections.appendChild(box);
+    });
+
+    statsGeneralView.classList.add("hidden");
+    statsDetailView.classList.remove("hidden");
+}
+
+// vuelve a la vista general
+function showStatsGeneral() {
+    statsDetailView.classList.add("hidden");
+    statsGeneralView.classList.remove("hidden");
+}
+
+// delegacion de eventos, igual que en los menus de juego y de modo
+statsDetailButtons.onclick = (clickEvent) => {
+    const button = clickEvent.target.closest("button[data-game]");
+    if (!button) return;
+    showStatsDetail(button.dataset.game);
+};
+statsBackButton.onclick = showStatsGeneral;
