@@ -1,6 +1,17 @@
 // carga estadisticas y registra la visita actual
 const stats = loadStats();
 stats.visits++;
+
+// cuenta un dia nuevo solo si la ultima visita registrada fue en otra fecha
+const today = getTodayKey();
+if (stats.firstVisitDay === null) {
+    stats.firstVisitDay = today;
+}
+if (stats.lastVisitDay !== today) {
+    stats.daysVisited++;
+    stats.lastVisitDay = today;
+}
+
 saveStats(stats);
 console.log("Visitas:", stats.visits);
 
@@ -76,6 +87,7 @@ function startGuessingGame(event) {
 
             stats.games.number.plays++;
             stats.games.number.wins++;
+            stats.games.number.totalAttempts += attempts;
             if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
                 stats.games.number.bestAttempts = attempts;
             }
@@ -124,6 +136,7 @@ function startGuessingGame_1_1(event) {
 
             stats.games.number.plays++;
             stats.games.number.wins++;
+            stats.games.number.totalAttempts += attempts;
             if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
                 stats.games.number.bestAttempts = attempts;
             }
@@ -172,6 +185,7 @@ function askForName(event) {
 function runGuessingGame_1_2(event, mode) {
     let secretNumber = pickSecretNumber(50);
     let failStreak = 0;
+    let escapes = 0;
 
     const gameUI = document.getElementById("game-ui");
     const guessInput = document.getElementById("guess-input");
@@ -203,9 +217,19 @@ function runGuessingGame_1_2(event, mode) {
 
             stats.games.number.plays++;
             stats.games.number.wins++;
+            stats.games.number.totalAttempts += attempts;
             if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
                 stats.games.number.bestAttempts = attempts;
             }
+
+            // "mode" vale "casual" o "desafio", igual que las claves de modes
+            const modeStats = stats.games.number.modes[mode];
+            modeStats.plays++;
+            modeStats.totalAttempts += attempts;
+            if (modeStats.bestAttempts === null || attempts < modeStats.bestAttempts) {
+                modeStats.bestAttempts = attempts;
+            }
+            if (mode === "desafio") modeStats.escapes += escapes;
             saveStats(stats);
 
             setTimeout(() => {
@@ -223,6 +247,7 @@ function runGuessingGame_1_2(event, mode) {
                 const result = handleDesafioFail(secretNumber, failStreak);
                 secretNumber = result.secretNumber;
                 failStreak = result.failStreak;
+                if (result.changed) escapes++;
 
                 const hint = guess < secretNumber ? "Más arriba..." : "Más abajo...";
                 hintText = result.changed
@@ -250,7 +275,7 @@ function startMathGame(event) {
     let hits = 0;
     let currentProblem = null;
 
-        function showProblem() {
+    function showProblem() {
         currentProblem = generateMathProblem(); // o con maxRange / (maxRange, true), según el modo
         guessInput.value = "";
         dialogueParagraph.textContent = `${currentProblem.text} = ?`;
@@ -342,6 +367,7 @@ function runMathGameCasual(event) {
         stats.games.countWithMe.plays++;
         if (stats.games.countWithMe.bestTen === null || hits > stats.games.countWithMe.bestTen) {
             stats.games.countWithMe.bestTen = hits;
+            stats.games.countWithMe.modes.casual.plays++;
         }
         saveStats(stats);
 
@@ -375,8 +401,16 @@ function runMathGameCasual(event) {
             feedbackText = `Casi... era ${currentProblem.answer}`;
         }
 
+        const casualStats = stats.games.countWithMe.modes.casual;
         stats.games.countWithMe.totalAnswers++;
-        if (correct) stats.games.countWithMe.correctAnswers++;
+        casualStats.totalAnswers++;
+        if (correct) {
+            stats.games.countWithMe.correctAnswers++;
+            casualStats.correctAnswers++;
+        }
+        if (casualStats.bestStreak === null || racha > casualStats.bestStreak) {
+            casualStats.bestStreak = racha;
+        }
         saveStats(stats);
 
         problemIndex++;
@@ -427,6 +461,7 @@ function runMathGameInfinito(event) {
         guessButton.disabled = true;
 
         stats.games.countWithMe.plays++;
+        stats.games.countWithMe.modes.infinito.plays++;
         if (stats.games.countWithMe.bestInfinite === null || racha > stats.games.countWithMe.bestInfinite) {
             stats.games.countWithMe.bestInfinite = racha;
         }
@@ -452,9 +487,11 @@ function runMathGameInfinito(event) {
         const answer = Number(guessInput.value);
         attempts++;
         stats.games.countWithMe.totalAnswers++;
+        stats.games.countWithMe.modes.infinito.totalAnswers++;
 
         if (answer === currentProblem.answer) {
             stats.games.countWithMe.correctAnswers++;
+            stats.games.countWithMe.modes.infinito.correctAnswers++;
             saveStats(stats);
             showQuickMessage(`¡Correcto! (${attempts} seguidos)`, { duration: 1200 });
             setTimeout(showProblem, 1200 + FADE_DURATION);
@@ -703,6 +740,7 @@ function runHangmanGame_1_1(event, mode) {
     const hintCost = 2;
     let letterFailsSinceHint = 0;
     let hintsUsedCount = 0;
+    let revivesCount = 0;
     let hasRevivedOnce = false;
 
     updateHint();
@@ -854,6 +892,7 @@ function runHangmanGame_1_1(event, mode) {
     }
 
     function applyRevive() {
+        revivesCount++;
         wrongGuesses = Math.max(0, wrongGuesses - 3);
         updateProgress();
         updateHint();
@@ -905,15 +944,27 @@ function runHangmanGame_1_1(event, mode) {
         gameUI.classList.add("hidden");
         hangmanStatus.classList.add("hidden");
 
+        const margin = attemptsLeft();
+        const modeStats = stats.games.hangman.modes[mode];
+
         stats.games.hangman.plays++;
+        modeStats.plays++;
         if (won) {
             stats.games.hangman.wins++;
-            const margin = attemptsLeft();
+            modeStats.wins++;
             if (stats.games.hangman.bestMargin === null || margin > stats.games.hangman.bestMargin) {
                 stats.games.hangman.bestMargin = margin;
             }
+            if (modeStats.bestMargin === null || margin > modeStats.bestMargin) {
+                modeStats.bestMargin = margin;
+            }
         } else {
             stats.games.hangman.losses++;
+            modeStats.losses++;
+        }
+        if (mode === "experto") {
+            modeStats.hintsUsed += hintsUsedCount;
+            modeStats.revives += revivesCount;
         }
         saveStats(stats);
 
@@ -1220,6 +1271,9 @@ resetStatsOption.onclick = () => {
         // para que todo el codigo que ya lo usa vea los datos reiniciados
         Object.assign(stats, createInitialStats());
         stats.visits = 1;
+        stats.daysVisited = 1;
+        stats.lastVisitDay = getTodayKey();
+        stats.firstVisitDay = getTodayKey();
         saveStats(stats);
         settingsMessage.textContent = "Listo, empezamos de cero";
     });
