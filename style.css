@@ -9,6 +9,30 @@
     --text-dialogue: #E8EAED;
 }
 
+/* Escala de Yoro según la altura de la pantalla.
+   Un solo número controla todo su tamaño. Valores de partida, ajústalos a tu gusto */
+:root {
+    --yoro-scale: 1.25;
+}
+
+@media (max-height: 800px) {
+    :root {
+        --yoro-scale: 1;
+    }
+}
+
+@media (max-height: 640px) {
+    :root {
+        --yoro-scale: 0.8;
+    }
+}
+
+@media (max-height: 520px) {
+    :root {
+        --yoro-scale: 0.65;
+    }
+}
+
 body {
     background-color: var(--bg-void);
     color: var(--text-dialogue);
@@ -80,6 +104,27 @@ body {
     flex-direction: column;
     align-items: center;
     position: relative;
+    top: 45px;
+    zoom: var(--yoro-scale);
+}
+
+/* Halo cian suave detrás de Yoro. Es un pseudo-elemento: no necesita HTML.
+   z-index negativo para quedar detrás del robot y pointer-events: none
+   para que no bloquee ningún click. */
+.yoro-container::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 420px;
+    height: 420px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle closest-side,
+            rgba(110, 231, 242, 0.16) 0%,
+            rgba(110, 231, 242, 0.06) 45%,
+            transparent 100%);
+    z-index: -1;
+    pointer-events: none;
 }
 
 /* Head */
@@ -138,68 +183,97 @@ body {
     opacity: 0.5;
 }
 
-/* Body */
-.yoro-body-core {
-    width: 90px;
-    height: 80px;
-    background-color: var(--yoro-body);
-    border: 2px solid var(--yoro-border);
-    /* Trapezoidal approximation using clip-path or border-radius */
-    border-radius: 10px 10px 30px 30px;
-    margin-top: -10px;
-    /* Tuck under head */
-    z-index: 5;
+/* Body: contenedor del torso y los brazos */
+.yoro-body {
+    position: relative;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    padding-bottom: 20px;
-    position: relative;
-    box-shadow: inset 0 -6px 15px rgba(0, 0, 0, 0.6);
+    margin-top: -2px;
+    /* casi pegado a la cabeza */
 }
 
-/* Light Indicator */
+/* Torso trapezoidal: el contorno se hace con dos capas, porque clip-path recorta
+   también los bordes. La capa de atrás (color de borde) y ::before (color del cuerpo,
+   2px más chica) usan la misma forma */
+.yoro-torso {
+    position: relative;
+    z-index: 5;
+    width: 76px;
+    height: 50px;
+    background-color: var(--yoro-border);
+    clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+}
+
+.yoro-torso::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    background-color: var(--yoro-body);
+    clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+}
+
+/* Luz del pecho */
 .yoro-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 6px;
+    border-radius: 3px;
     background-color: var(--yoro-indicator);
     animation: indicatorPulse 2s ease-in-out infinite;
+    z-index: 1;
 }
 
-/* Limbs */
-.yoro-arms {
-    position: absolute;
-    top: 20px;
-    width: 130px;
-    /* Wider than body */
-    display: flex;
-    justify-content: space-between;
-    z-index: 4;
-}
-
+/* Brazos: largos y angulados hacia afuera, girando desde el hombro */
 .yoro-arm {
-    width: 16px;
-    height: 40px;
+    position: absolute;
+    top: 2px;
+    width: 12px;
+    height: 62px;
     background-color: var(--yoro-body);
     border: 2px solid var(--yoro-border);
     border-radius: 8px;
-}
-
-.yoro-legs {
-    position: absolute;
-    bottom: -20px;
-    width: 50px;
-    display: flex;
-    justify-content: space-between;
+    transform-origin: top center;
     z-index: 4;
 }
 
+.yoro-arm-left {
+    left: 8px;
+    transform: rotate(40deg);
+}
+
+.yoro-arm-right {
+    right: 8px;
+    transform: rotate(-40deg);
+}
+
+/* Base oscura bajo el torso: queda metida debajo de él (z-index menor) */
+.yoro-base {
+    width: 62px;
+    height: 12px;
+    margin-top: -4px;
+    background-color: #1b1d20;
+    border: 2px solid var(--yoro-border);
+    border-top: 0;
+    border-radius: 0 0 10px 10px;
+    z-index: 3;
+}
+
+/* Piernas flotantes: separadas de la base, sin tocarla */
+.yoro-legs {
+    display: flex;
+    gap: 12px;
+    margin-top: 5px;
+}
+
 .yoro-leg {
-    width: 14px;
-    height: 30px;
+    width: 15px;
+    height: 29px;
     background-color: var(--yoro-body);
     border: 2px solid var(--yoro-border);
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 /* Dialogue */
@@ -333,6 +407,7 @@ body {
 
 /* quien prefiere menos movimiento: sin latido, solo el contorno resaltado */
 @media (prefers-reduced-motion: reduce) {
+
     .music-attention,
     .skip-attention {
         animation: none;

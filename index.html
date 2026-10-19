@@ -134,8 +134,9 @@
         </button>
     </nav>
 
-        <!-- Botón [Saltar tiempo...]: aparece al terminar un evento si aún queda otro por delante -->
-    <button id="skip-time-button" class="hidden fixed top-3 right-3 z-50 px-4 py-2 btn-secondary skip-attention">Saltar tiempo...</button>
+    <!-- Botón [Saltar tiempo...]: aparece al terminar un evento si aún queda otro por delante -->
+    <button id="skip-time-button" class="hidden fixed top-3 right-3 z-50 px-4 py-2 btn-secondary skip-attention">Saltar
+        tiempo...</button>
 
     <!-- Panel de opciones: cubre toda la pantalla mientras esta abierto -->
     <div id="settings-panel" class="hidden fixed inset-0 flex flex-col items-center justify-center screen-overlay">
@@ -228,14 +229,19 @@
                     </div>
                 </div>
             </div>
-            <!-- Body Structure -->
-            <div class="relative flex justify-center w-full">
-                <!-- Arms -->
-                <div class="yoro-arms"
-                    style="position: absolute; top: 60px; width: 160px; display: flex; justify-content: space-between; z-index: 4;">
-                    <div class="yoro-arm" style="transform: rotate(15deg);"></div>
-                    <div class="yoro-arm" style="transform: rotate(-15deg);"></div>
+            <!-- Body -->
+            <div class="yoro-body">
+                <div class="yoro-arm yoro-arm-left"></div>
+                <div class="yoro-arm yoro-arm-right"></div>
+                <div class="yoro-torso">
+                    <div class="yoro-indicator"></div>
                 </div>
+            </div>
+            <!-- Base y piernas flotantes -->
+            <div class="yoro-base"></div>
+            <div class="yoro-legs">
+                <div class="yoro-leg"></div>
+                <div class="yoro-leg"></div>
             </div>
         </div>
         <!-- Dialogue -->
