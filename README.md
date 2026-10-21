@@ -14,7 +14,6 @@
 ![CSS3](https://img.shields.io/badge/CSS3-24272B?style=flat-square&logo=css3&logoColor=6EE7F2)
 ![JavaScript](https://img.shields.io/badge/JavaScript-24272B?style=flat-square&logo=javascript&logoColor=6EE7F2)
 ![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-24272B?style=flat-square&logo=github&logoColor=6EE7F2)
-![Sin frameworks](https://img.shields.io/badge/frameworks-ninguno-24272B?style=flat-square&labelColor=24272B&color=7AA7FF)
 
 </div>
 
@@ -24,13 +23,11 @@
 
 **Yoro** es un pequeño robot que vive dentro de una página web.
 
-Cuando entras por primera vez casi no hay nada: una pantalla oscura, un robot tímido y un par de frases torpes. Poco a poco Yoro descubre que puede hacer cosas. Primero crea un juego extremadamente simple, luego lo mejora, después inventa otro. Con el tiempo recuerda tu nombre, cuántas veces has vuelto y qué juegos te gustan.
+Cuando entras por primera vez casi no hay nada, una pantalla oscura, un robot tímido y un par de frases torpes. Poco a poco Yoro descubre que puede hacer cosas. Primero crea un juego muy simple, luego lo mejora, después inventa otro. Con el tiempo recuerda tu nombre, cuántas veces has vuelto y qué juegos te gustan.
 
-La idea es sencilla: **Yoro no empieza siendo impresionante, tiene que ganarse el derecho a serlo.** La gracia está en verlo aprender.
+La idea es sencilla: **Yoro no empieza siendo impresionante, tiene que ganarse el derecho a serlo** La gracia está en verlo aprender
 
-El tono busca ser adorable, curioso y ligeramente bromista. Nada de sustos: las sorpresas apuntan a un "aww, qué lindo" o a un "jaja, qué tonto".
-
-> Yoro es también un ejercicio de aprendizaje: todo el código es HTML, CSS y JavaScript vanilla, escrito paso a paso, sin frameworks ni herramientas de compilación.
+> Yoro es también un ejercicio de aprendizaje, todo el código es HTML, CSS y JavaScript vanilla, escrito paso a paso, sin frameworks ni herramientas de compilación.
 
 ---
 
@@ -39,7 +36,7 @@ El tono busca ser adorable, curioso y ligeramente bromista. Nada de sustos: las 
 Yoro avanza por **eventos**: cada vez que vuelves, si hay algo nuevo que contar, lo cuenta. Una vez que ha mostrado todo, se convierte en un pequeño almacén de juegos donde puedes repetir la versión más reciente de cada uno.
 
 <div align="center">
-<img src="docs/capturas/01-intro.png" alt="Yoro saludando en la pantalla casi vacía" width="70%">
+<img src="docs/capturas/Yoro-intro.png" alt="Yoro saludando en la pantalla casi vacía" width="70%">
 <br>
 <sub>La primera visita: una pantalla casi vacía y un robot que no esperaba compañía.</sub>
 </div>
@@ -53,9 +50,9 @@ Yoro avanza por **eventos**: cada vez que vuelves, si hay algo nuevo que contar,
 | **Ahorcado** | Letra por letra o la palabra completa, con dibujo ASCII que avanza con cada fallo. | Casual, Desafío y Experto (palabras largas, pistas a cambio de vidas) |
 
 <div align="center">
-<img src="docs/capturas/02-adivina-numero.png" alt="Adivina el Número" width="30%">
-<img src="docs/capturas/03-cuenta-conmigo.png" alt="Cuenta Conmigo" width="30%">
-<img src="docs/capturas/04-ahorcado.png" alt="Ahorcado" width="30%">
+<img src="docs/capturas/Yoro-adivina-numero.png" alt="Adivina el Número" width="30%">
+<img src="docs/capturas/Yoro-cuenta-conmigo.png" alt="Cuenta Conmigo" width="30%">
+<img src="docs/capturas/Yoro-ahorcado.png" alt="Ahorcado" width="30%">
 </div>
 
 ### Yoro te recuerda
@@ -63,7 +60,7 @@ Yoro avanza por **eventos**: cada vez que vuelves, si hay algo nuevo que contar,
 Yoro guarda una memoria sencilla en tu navegador (`localStorage`): tu nombre, cuántas veces has entrado, cuántos días distintos has venido y cómo te va en cada juego. Cuando la pantalla queda en silencio, comenta alguna de esas curiosidades.
 
 <div align="center">
-<img src="docs/capturas/05-estadisticas.png" alt="Panel de estadísticas" width="60%">
+<img src="docs/capturas/Yoro-estadisticas.png" alt="Panel de estadísticas" width="60%">
 </div>
 
 ### Detalles
@@ -74,24 +71,20 @@ Yoro guarda una memoria sencilla en tu navegador (`localStorage`): tu nombre, cu
 - **Botón "Saltar tiempo..."**: para pasar al siguiente evento sin esperar a volver otro día.
 - **Instalable como app** gracias al `manifest.json` y a sus íconos.
 
-<div align="center">
-<img src="docs/capturas/06-opciones.png" alt="Panel de opciones" width="45%">
-</div>
-
 ---
 
 ## Cómo jugar
 
 Entra a **[yonazakkart.github.io/yoro](https://yonazakkart.github.io/yoro/)**. No hay que instalar nada.
 
-Para correrlo en tu computadora:
+Para correrlo en tu computadora (descargar):
 
 ```bash
 git clone https://github.com/YonaZakkart/yoro.git
 cd yoro
 ```
 
-Después abre `index.html` en tu navegador. Si el navegador bloquea algo al abrirlo como archivo, puedes servir la carpeta con cualquier servidor estático, por ejemplo `python -m http.server`.
+Después abre `index.html` en tu navegador. 
 
 ---
 
@@ -158,11 +151,10 @@ flowchart LR
 
 Yoro todavía está aprendiendo. Entre las ideas guardadas:
 
-- Más juegos y mejoras a los existentes.
-- Regalos descargables (dibujos ASCII, cartas, pequeños archivos).
-- Una habitación que Yoro vaya transformando.
-- Una galería de sus propios juegos.
-- Una pequeña historia de fondo, sutil y melancólica, nunca de terror.
+- Más juegos y mejoras a los existentes (tal vez)
+- Regalos descargables (dibujos ASCII, cartas, pequeños archivos)
+- Una habitación que Yoro vaya transformando
+- Una pequeña historia de fondo, sutil y melancólica
 
 ---
 
@@ -172,12 +164,12 @@ Creado por [YonaZakkart](https://github.com/YonaZakkart)
 
 Asistido por [Claude](https://claude.com/)
 
-Música: pistas con licencia CC0 obtenidas de [OpenGameArt](https://opengameart.org/). *(Pendiente: agregar los autores y enlaces de cada pista.)*
+Música: pistas con licencia CC0 obtenidas de [OpenGameArt](https://opengameart.org/) 
 
 ---
 
 <div align="center">
 
-Si Yoro te sacó una sonrisa, una estrella en el repositorio le dará mucho ánimo.
+Si Yoro te sacó una sonrisa, una estrella en el repositorio le dará mucho ánimo
 
 </div>
