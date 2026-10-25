@@ -456,7 +456,7 @@ function runMathGameInfinito(event) {
 
     function finishGame() {
         const racha = attempts - 1;
-        dialogueParagraph.textContent = `Fallaste... realizaste ${attempts} ejercicios ¡Fueron ${attempts - 1} aciertos!`;
+        dialogueParagraph.textContent = `Fallaste... realizaste ${formatCount(attempts, "ejercicio", "ejercicios")}. ¡Tuviste ${formatCount(attempts - 1, "acierto", "aciertos")}!`;
         dialogueContainer.style.opacity = 1;
         guessInput.disabled = true;
         guessButton.disabled = true;
