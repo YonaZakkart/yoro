@@ -6,20 +6,20 @@ const introDialogue = [
     { text: "Estoy intentando hacer un juego...", pause: 2400 },
     { text: "uhm...", pause: 1200 },
     { text: "¿Quieres jugar 'Adivina el número'?", pause: 2200 },
-    { text: "Debes adivinar el numero que estoy pensado", pause: 2600 },
-    { text: "Esta entre 1 y 10", pause: 1600 }
+    { text: "Debes adivinar el número que estoy pensando", pause: 2600 },
+    { text: "Está entre 1 y 10", pause: 1600 }
 ];
 
 const outroDialogue = [
     { text: "Fue divertido jeje", pause: 2000 },
     { text: "Gracias por jugar conmigo", pause: 2400 },
-    { text: "Intentare mejorar el juego", pause: 1800 },
-    { text: "Espero regreses...", pause: 1400 }
+    { text: "Intentaré mejorar el juego", pause: 1800 },
+    { text: "Espero que regreses...", pause: 1400 }
 ];
 
 // mensaje de regreso a la pagina
 const returningDialogue = [
-    { text: "Volviste!", pause: 1600 },
+    { text: "¡Volviste!", pause: 1600 },
     { text: "¿Qué quieres jugar?", pause: 1800 },
 ];
 
@@ -40,7 +40,7 @@ const introDialogue2 = [
     { text: "He mejorado un poco...", pause: 2000 },
     { text: "Ahora te daré pistas si fallas", pause: 2200 },
     { text: "¿Jugamos \"Adivina el número 1.1\"?", pause: 2200 },
-    { text: "Ah, si. Ahora el número esta entre 1 y 20!", pause: 2400 },
+    { text: "Ah, sí. ¡Ahora el número está entre 1 y 20!", pause: 2400 },
 ];
 
 const outroDialogue2 = [
@@ -99,7 +99,7 @@ function buildIntroDialogue4() {
 function buildOutroDialogue4() {
     const name = localStorage.getItem("yoro_player_name");
     return [
-        { text: `¿Que te pareció, ${name}?`, pause: 1800 },
+        { text: `¿Qué te pareció, ${name}?`, pause: 1800 },
         { text: `Ahora intentaré crear un nuevo juego`, pause: 2800 },
         { text: "Regresa pronto...", pause: 1800 }
     ];
@@ -162,8 +162,8 @@ function buildOutroDialogue6() {
     const name = localStorage.getItem("yoro_player_name");
     return [
         { text: `¿Cómo te fue, ${name}?`, pause: 1800 },
-        { text: "Ahora intentare crear un nuevo juego", pause: 2200 },
-        { text: "Ya no será sobre numeros jeje", pause: 2200 },
+        { text: "Ahora intentaré crear un nuevo juego", pause: 2200 },
+        { text: "Ya no será sobre números jeje", pause: 2200 },
         { text: "Regresa pronto...", pause: 1800 }
     ];
 }
@@ -185,7 +185,7 @@ const askContinueDialogue = [
 ];
 
 const replayOutroDialogue = [
-    { text: "¿Como estuvo?", pause: 1500 }
+    { text: "¿Cómo estuvo?", pause: 1500 }
 ];
 
 const continueLaterDialogue = [

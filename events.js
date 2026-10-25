@@ -243,17 +243,17 @@ function getAvailableCuriosities() {
     const totalPlays = n.plays + c.plays + h.plays;
 
     const list = [
-        `Haz entrado ${stats.visits} veces`,
-        n.plays > 0 ? `Jugamos "Adivina el Número" ${n.plays} veces` : null,
-        n.bestAttempts !== null ? `Tu mejor partida de "Adivina el Número" fue en ${n.bestAttempts} intentos` : null,
-        c.plays > 0 ? `Jugamos "Cuenta Conmigo" ${c.plays} veces` : null,
+        `Has entrado ${formatCount(stats.visits, "vez", "veces")}`,
+        n.plays > 0 ? `Jugamos "Adivina el Número" ${formatCount(n.plays, "vez", "veces")}` : null,
+        n.bestAttempts !== null ? `Tu mejor partida de "Adivina el Número" fue en ${formatCount(n.bestAttempts, "intento", "intentos")}` : null,
+        c.plays > 0 ? `Jugamos "Cuenta Conmigo" ${formatCount(c.plays, "vez", "veces")}` : null,
         c.bestTen !== null ? `Tu mejor puntaje en modo 10 fue ${c.bestTen}/10` : null,
         c.bestInfinite !== null ? `Tu mejor racha en modo Infinito fue de ${c.bestInfinite}` : null,
-        c.totalAnswers > 0 ? `He recibido ${c.totalAnswers} respuestas en total` : null,
-        h.plays > 0 ? `Hemos jugado Ahorcado ${h.plays} veces` : null,
-        h.wins > 0 ? `Haz ganado en Ahorcado ${h.wins} veces` : null,
-        h.bestMargin !== null ? `Tu mejor partida de Ahorcado la ganaste con ${h.bestMargin} vidas de sobra` : null,
-        totalPlays > 0 ? `En total hemos jugado ${totalPlays} partidas` : null
+        c.totalAnswers > 0 ? `He recibido ${formatCount(c.totalAnswers, "respuesta", "respuestas")} en total` : null,
+        h.plays > 0 ? `Hemos jugado Ahorcado ${formatCount(h.plays, "vez", "veces")}` : null,
+        h.wins > 0 ? `Has ganado en Ahorcado ${formatCount(h.wins, "vez", "veces")}` : null,
+        h.bestMargin !== null ? `Tu mejor partida de Ahorcado la ganaste con ${formatCount(h.bestMargin, "vida", "vidas")} de sobra` : null,
+        totalPlays > 0 ? `En total hemos jugado ${formatCount(totalPlays, "partida", "partidas")}` : null
     ];
 
     return list.filter(text => text !== null);
