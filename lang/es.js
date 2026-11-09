@@ -86,6 +86,47 @@ const lang_es = {
     e6_decline_1: "Ohh... está bien",
     e6_decline_2: "Seguiré practicando por mi cuenta",
 
+    //Evento 7
+        e7_intro_1: "{name}, tengo un juego nuevo",
+    e7_intro_2: "Se llama \"Ahorcado\"",
+    e7_intro_3: "Pensé en una palabra secreta...",
+    e7_intro_4: "Debes adivinarla letra por letra",
+    e7_intro_5: "O intentar la palabra completa si crees saberla",
+    e7_outro_1: "¿Qué te pareció, {name}?",
+    e7_outro_2: "Ya no era solo sobre números jeje",
+    e7_outro_3: "Regresa pronto...",
+    e7_accept_1: "Bien, pensaré en otra palabra",
+    e7_accept_2: "¡Suerte!",
+    e7_decline_1: "Ohh... está bien",
+    e7_decline_2: "Seguiré pensando en algo nuevo",
+
+    //Evento 8
+    e8_intro_1: "{name}, mejoré el Ahorcado",
+    e8_intro_2: "Ahora hay dos modos distintos",
+    e8_intro_3: "Y ya no tienes intentos infinitos jeje",
+    e8_intro_4: "Elige el que prefieras",
+    e8_outro_1: "¿Cómo te fue, {name}?",
+    e8_outro_2: "Los intentos limitados le dan más emoción, ¿no crees?",
+    e8_outro_3: "Regresa pronto :p",
+    e8_accept_1: "Bien, elige un modo de nuevo",
+    e8_accept_2: "¡Suerte!",
+    e8_decline_1: "Ohh... está bien",
+    e8_decline_2: "Seguiré pensando en más mejoras",
+
+    //Evento 9
+    e9_intro_1: "{name}, agregué un modo más al Ahorcado",
+    e9_intro_2: "Se llama \"Experto\"",
+    e9_intro_3: "Las palabras son más largas y solo tienes 10 intentos",
+    e9_intro_4: "Puedes usar Pistas pero restan intentos",
+    e9_intro_5: "Elige el modo que prefieras",
+    e9_outro_1: "¿Qué tal, {name}?",
+    e9_outro_2: "El modo Experto es bastante difícil, ¿no crees?",
+    e9_outro_3: "Regresa pronto...",
+    e9_accept_1: "Bien, elige un modo de nuevo",
+    e9_accept_2: "¡Suerte!",
+    e9_decline_1: "Ohh... está bien",
+    e9_decline_2: "Seguiré pensando en más mejoras",
+
     //Sistema
     sys_continue_1: "¿Te diviertes?",
     sys_continue_2: "¿Quieres seguir jugando?",
