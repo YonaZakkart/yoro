@@ -222,7 +222,7 @@ function showDialogue(lines, onComplete) {
             return;
         }
         const line = lines[i];
-        dialogueParagraph.textContent = line.text;
+        dialogueParagraph.textContent = line.key ? t(line.key, line.params) : line.text;
         dialogueContainer.style.opacity = 1;
         i++;
         advanceDialogue = advance;
