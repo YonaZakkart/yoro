@@ -59,6 +59,33 @@ const lang_es = {
     e4_decline_1: "Ohh... está bien",
     e4_decline_2: "Seguiré mejorando el juego",
 
+    //Evento 5
+        e5_intro_1: "Oye {name}...",
+    e5_intro_2: "Hice algo nuevo esta vez",
+    e5_intro_3: "Se llama \"Cuenta Conmigo\"",
+    e5_intro_4: "Son sumas y restas, nada complicado",
+    e5_intro_5: "Vamos a resolver solo 5 ejercicios",
+    e5_outro_1: "¿Qué tal estuvo, {name}?",
+    e5_outro_2: "Creo que las matemáticas no son tan difíciles",
+    e5_outro_3: "Seguiré practicando...",
+    e5_accept_1: "Bien, vamos de nuevo",
+    e5_accept_2: "¡Suerte!",
+    e5_decline_1: "Ohh... está bien",
+    e5_decline_2: "Seguiré practicando por mi cuenta",
+
+    //Evento 6
+    e6_intro_1: "{name}, mejoré \"Cuenta Conmigo\" jeje",
+    e6_intro_2: "Ahora tiene dos modos distintos",
+    e6_intro_3: "Elige el que prefieras",
+    e6_outro_1: "¿Cómo te fue, {name}?",
+    e6_outro_2: "Ahora intentaré crear un nuevo juego",
+    e6_outro_3: "Ya no será sobre números jeje",
+    e6_outro_4: "Regresa pronto...",
+    e6_accept_1: "Bien, elige un modo de nuevo",
+    e6_accept_2: "¡Suerte!",
+    e6_decline_1: "Ohh... está bien",
+    e6_decline_2: "Seguiré practicando por mi cuenta",
+
     //Sistema
     sys_continue_1: "¿Te diviertes?",
     sys_continue_2: "¿Quieres seguir jugando?",

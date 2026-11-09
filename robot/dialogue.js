@@ -101,66 +101,55 @@ const replayDeclineDialogue4 = [
 
 //Evento 5
 // Juego: Cuenta Conmigo (suma y resta)
-function buildIntroDialogue5() {
-    const name = localStorage.getItem("yoro_player_name");
-    return [
-        { text: `Oye ${name}...`, pause: 1600 },
-        { text: "Hice algo nuevo esta vez", pause: 2000 },
-        { text: "Se llama \"Cuenta Conmigo\"", pause: 1800 },
-        { text: "Son sumas y restas, nada complicado", pause: 2200 },
-        { text: "Vamos a resolver solo 5 ejercicios", pause: 2400 }
-    ];
-}
+const introDialogue5 = [
+    { key: "e5_intro_1", pause: 1600 },
+    { key: "e5_intro_2", pause: 2000 },
+    { key: "e5_intro_3", pause: 1800 },
+    { key: "e5_intro_4", pause: 2200 },
+    { key: "e5_intro_5", pause: 2400 }
+];
 
-function buildOutroDialogue5() {
-    const name = localStorage.getItem("yoro_player_name");
-    return [
-        { text: `¿Qué tal estuvo, ${name}?`, pause: 1800 },
-        { text: "Creo que las matemáticas no son tan difíciles", pause: 2200 },
-        { text: "Seguiré practicando...", pause: 1800 }
-    ];
-}
+const outroDialogue5 = [
+    { key: "e5_outro_1", pause: 1800 },
+    { key: "e5_outro_2", pause: 2200 },
+    { key: "e5_outro_3", pause: 1800 }
+];
 
 const replayAcceptDialogue5 = [
-    { text: "Bien, vamos de nuevo", pause: 1600 },
-    { text: "¡Suerte!", pause: 1200 }
+    { key: "e5_accept_1", pause: 1600 },
+    { key: "e5_accept_2", pause: 1200 }
 ];
 
 const replayDeclineDialogue5 = [
-    { text: "Ohh... está bien", pause: 1600 },
-    { text: "Seguiré practicando por mi cuenta", pause: 2000 }
+    { key: "e5_decline_1", pause: 1600 },
+    { key: "e5_decline_2", pause: 2000 }
 ];
 
 //Evento 6
 // Cuenta Conmigo 1.1: modos Casual e Infinito
-function buildIntroDialogue6() {
-    const name = localStorage.getItem("yoro_player_name");
-    return [
-        { text: `${name}, mejoré "Cuenta Conmigo" jeje`, pause: 2000 },
-        { text: "Ahora tiene dos modos distintos", pause: 2000 },
-        { text: "Elige el que prefieras", pause: 1800 }
-    ];
-}
+const introDialogue6 = [
+    { key: "e6_intro_1", pause: 2000 },
+    { key: "e6_intro_2", pause: 2000 },
+    { key: "e6_intro_3", pause: 1800 }
+];
 
-function buildOutroDialogue6() {
-    const name = localStorage.getItem("yoro_player_name");
-    return [
-        { text: `¿Cómo te fue, ${name}?`, pause: 1800 },
-        { text: "Ahora intentaré crear un nuevo juego", pause: 2200 },
-        { text: "Ya no será sobre números jeje", pause: 2200 },
-        { text: "Regresa pronto...", pause: 1800 }
-    ];
-}
+const outroDialogue6 = [
+    { key: "e6_outro_1", pause: 1800 },
+    { key: "e6_outro_2", pause: 2200 },
+    { key: "e6_outro_3", pause: 2200 },
+    { key: "e6_outro_4", pause: 1800 }
+];
 
 const replayAcceptDialogue6 = [
-    { text: "Bien, elige un modo de nuevo", pause: 1800 },
-    { text: "¡Suerte!", pause: 1200 }
+    { key: "e6_accept_1", pause: 1800 },
+    { key: "e6_accept_2", pause: 1200 }
 ];
 
 const replayDeclineDialogue6 = [
-    { text: "Ohh... está bien", pause: 1600 },
-    { text: "Seguiré practicando por mi cuenta", pause: 2000 }
+    { key: "e6_decline_1", pause: 1600 },
+    { key: "e6_decline_2", pause: 2000 }
 ];
+
 
 //Sistema: preguntar si el jugador quiere seguir jugando (tras repetir un juego desde el menu)
 const askContinueDialogue = [
