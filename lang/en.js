@@ -11,6 +11,29 @@ const lang_en = {
     e1_intro_6: "Do you want to play 'Guess the Number'?",
     e1_intro_7: "You have to guess the number I'm thinking of",
     e1_intro_8: "It's between 1 and 10",
+    e1_outro_1: "That was fun hehe",
+    e1_outro_2: "Thanks for playing with me",
+    e1_outro_3: "I'll try to make the game better",
+    e1_outro_4: "I hope you come back...",
+    returning_1: "You're back!",
+    returning_2: "What do you want to play?",
+    e1_yes_1: "Okay, you know how it goes, right?",
+    e1_yes_2: "Good luck!",
+    e1_no_1: "Oh... that's okay",
+    e1_no_2: "I'll keep working",
+
+    e2_intro_1: "You came back...",
+    e2_intro_2: "I've improved a little...",
+    e2_intro_3: "Now I'll give you hints if you miss",
+    e2_intro_4: "Shall we play \"Guess the Number 1.1\"?",
+    e2_intro_5: "Oh, right. Now the number is between 1 and 20!",
+    e2_outro_1: "I'll keep improving the game",
+    e2_outro_2: "Come back soon...",
+    e2_accept_1: "Okay, you know how it goes, right?",
+    e2_accept_2: "Let's go!",
+    e2_decline_1: "Ohh... that's okay",
+    e2_decline_2: "I'll keep improving the game",
+    e2_decline_3: "I hope you can play next time",
 
     e3_intro_1: "Hi, welcome back...",
     e3_intro_2: "Ah... right, I still don't know your name",
@@ -20,7 +43,7 @@ const lang_en = {
     e3_name_3: "Thanks for keeping me company, {name}...",
     e3_name_4: "I'm still working on the game, nothing new for now",
     e3_name_5: "I'll try to make a better game for you",
-    
+
     e4_intro_1: "Welcome back, {name}",
     e4_intro_2: "I improved the game",
     e4_intro_3: "Now there are 2 game modes and the number is between 1 and 50",
@@ -30,5 +53,10 @@ const lang_en = {
     e4_accept_1: "Okay, you know how it goes, right?",
     e4_accept_2: "Let's go!",
     e4_decline_1: "Ohh... that's okay",
-    e4_decline_2: "I'll keep improving the game"
+    e4_decline_2: "I'll keep improving the game",
+
+    sys_continue_1: "Are you having fun?",
+    sys_continue_2: "Do you want to keep playing?",
+    sys_replay_outro_1: "How was it?",
+    sys_continue_later_1: "Oh... that's okay"
 };

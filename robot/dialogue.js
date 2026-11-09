@@ -11,52 +11,52 @@ const introDialogue = [
 ];
 
 const outroDialogue = [
-    { text: "Fue divertido jeje", pause: 2000 },
-    { text: "Gracias por jugar conmigo", pause: 2400 },
-    { text: "Intentaré mejorar el juego", pause: 1800 },
-    { text: "Espero que regreses...", pause: 1400 }
+    { key: "e1_outro_1", pause: 2000 },
+    { key: "e1_outro_2", pause: 2400 },
+    { key: "e1_outro_3", pause: 1800 },
+    { key: "e1_outro_4", pause: 1400 }
 ];
 
 // mensaje de regreso a la pagina
 const returningDialogue = [
-    { text: "¡Volviste!", pause: 1600 },
-    { text: "¿Qué quieres jugar?", pause: 1800 },
+    { key: "returning_1", pause: 1600 },
+    { key: "returning_2", pause: 1800 }
 ];
 
 const confirmYesDialogue = [
-    { text: "Bien, ya sabes cómo va, ¿no?", pause: 1800 },
-    { text: "¡Buena suerte!", pause: 1200 }
+    { key: "e1_yes_1", pause: 1800 },
+    { key: "e1_yes_2", pause: 1200 }
 ];
 
 const confirmNoDialogue = [
-    { text: "Oh... está bien", pause: 1600 },
-    { text: "Seguiré trabajando", pause: 1800 }
+    { key: "e1_no_1", pause: 1600 },
+    { key: "e1_no_2", pause: 1800 }
 ];
 
 //Evento 2
 // Juego 1.1: Adivina el número con pistas
 const introDialogue2 = [
-    { text: "Si volviste...", pause: 800 },
-    { text: "He mejorado un poco...", pause: 2000 },
-    { text: "Ahora te daré pistas si fallas", pause: 2200 },
-    { text: "¿Jugamos \"Adivina el número 1.1\"?", pause: 2200 },
-    { text: "Ah, sí. ¡Ahora el número está entre 1 y 20!", pause: 2400 },
+    { key: "e2_intro_1", pause: 800 },
+    { key: "e2_intro_2", pause: 2000 },
+    { key: "e2_intro_3", pause: 2200 },
+    { key: "e2_intro_4", pause: 2200 },
+    { key: "e2_intro_5", pause: 2400 }
 ];
 
 const outroDialogue2 = [
-    { text: "Seguiré mejorando el juego", pause: 2000 },
-    { text: "Regresa pronto...", pause: 1800 }
+    { key: "e2_outro_1", pause: 2000 },
+    { key: "e2_outro_2", pause: 1800 }
 ];
 
 const replayAcceptDialogue2 = [
-    { text: "Bien, ya sabes cómo va, ¿no?", pause: 1800 },
-    { text: "¡Vamos!", pause: 1200 }
+    { key: "e2_accept_1", pause: 1800 },
+    { key: "e2_accept_2", pause: 1200 }
 ];
 
 const replayDeclineDialogue2 = [
-    { text: "Ohh... está bien", pause: 1600 },
-    { text: "Seguiré mejorando el juego", pause: 2000 },
-    { text: "Espero puedas jugar la próxima vez", pause: 2000 }
+    { key: "e2_decline_1", pause: 1600 },
+    { key: "e2_decline_2", pause: 2000 },
+    { key: "e2_decline_3", pause: 2000 }
 ];
 
 //Evento 3
@@ -164,16 +164,16 @@ const replayDeclineDialogue6 = [
 
 //Sistema: preguntar si el jugador quiere seguir jugando (tras repetir un juego desde el menu)
 const askContinueDialogue = [
-    { text: "¿Te diviertes?", pause: 1800 },
-    { text: "¿Quieres seguir jugando?", pause: 1800 }
+    { key: "sys_continue_1", pause: 1800 },
+    { key: "sys_continue_2", pause: 1800 }
 ];
 
 const replayOutroDialogue = [
-    { text: "¿Cómo estuvo?", pause: 1500 }
+    { key: "sys_replay_outro_1", pause: 1500 }
 ];
 
 const continueLaterDialogue = [
-    { text: "Oh... está bien", pause: 1800 }
+    { key: "sys_continue_later_1", pause: 1800 }
 ];
 
 //Evento 7
