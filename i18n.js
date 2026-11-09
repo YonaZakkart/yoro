@@ -30,14 +30,22 @@ function setLang(lang) {
     }
 }
 
-// devuelve el texto de una clave en el idioma activo.
-// params rellena los marcadores: t("test_greeting", { name: "Yona" }) cambia {name} por Yona
+// el nombre del jugador, para rellenar {name} automáticamente en cualquier texto
+function getPlayerName() {
+    try {
+        return localStorage.getItem("yoro_player_name") || "";
+    } catch (error) {
+        return "";
+    }
+}
+
 function t(key, params = {}) {
-    // si falta en el idioma activo, cae al español; si falta en ambos, muestra la clave misma
     const text = dictionaries[currentLang][key] ?? dictionaries.es[key] ?? key;
+    // {name} siempre está disponible; si se pasa otro valor en params, ese tiene prioridad
+    const values = { name: getPlayerName(), ...params };
 
     return text.replace(/\{(\w+)\}/g, (marker, name) =>
-        params[name] !== undefined ? params[name] : marker
+        values[name] !== undefined ? values[name] : marker
     );
 }
 

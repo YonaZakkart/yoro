@@ -62,57 +62,41 @@ const replayDeclineDialogue2 = [
 //Evento 3
 // Agregar nombre de usuario
 const introDialogue3 = [
-    { text: "Hola, bienvenido de vuelta...", pause: 1800 },
-    { text: "Ah... cierto, aún no sé tu nombre", pause: 2000 },
-    { text: "¿Puedo saber tu nombre?", pause: 1800 }
+    { key: "e3_intro_1", pause: 1800 },
+    { key: "e3_intro_2", pause: 2000 },
+    { key: "e3_intro_3", pause: 1800 }
 ];
 
-function buildNameDialogue(name) {
-    return [
-        { text: `${name}...`, pause: 1600 },
-        { text: "Me gusta tu nombre", pause: 1800 },
-        { text: `Gracias por acompañarme, ${name}...`, pause: 2200 },
-        { text: `Aún sigo mejorando el juego, no hay nada nuevo por ahora`, pause: 2800 },
-        { text: "Trataré de hacer un mejor juego para ti", pause: 2400 }
-    ];
-}
+const nameDialogue3 = [
+    { key: "e3_name_1", pause: 1600 },
+    { key: "e3_name_2", pause: 1800 },
+    { key: "e3_name_3", pause: 2200 },
+    { key: "e3_name_4", pause: 2800 },
+    { key: "e3_name_5", pause: 2400 }
+];
+
 //Evento 4
 // Juego 1.2: Adivina el número con modos Casual y Desafío
-// function buildIntroDialogue4() {
-//     const name = localStorage.getItem("yoro_player_name");
-//     return [
-//         { text: `Hola ${name}!`, pause: 2400 },
-//         { text: "He mejorado un poco el juego...", pause: 2000 },
-//         { text: "Ahora el número está entre 1 y 50", pause: 2000 }
-//     ];
-// };
+const introDialogue4 = [
+    { key: "e4_intro_1", pause: 1800 },
+    { key: "e4_intro_2", pause: 1400 },
+    { key: "e4_intro_3", pause: 2800 }
+];
 
-function buildIntroDialogue4() {
-    const name = localStorage.getItem("yoro_player_name");
-    return [
-        { text: `Bienvenido de vuelta, ${name}`, pause: 1800 },
-        { text: `He mejorado el juego`, pause: 1400 },
-        { text: "Ahora hay 2 modos de juego y el número está entre 1 y 50", pause: 2800 }
-    ];
-}
-
-function buildOutroDialogue4() {
-    const name = localStorage.getItem("yoro_player_name");
-    return [
-        { text: `¿Qué te pareció, ${name}?`, pause: 1800 },
-        { text: `Ahora intentaré crear un nuevo juego`, pause: 2800 },
-        { text: "Regresa pronto...", pause: 1800 }
-    ];
-}
+const outroDialogue4 = [
+    { key: "e4_outro_1", pause: 1800 },
+    { key: "e4_outro_2", pause: 2800 },
+    { key: "e4_outro_3", pause: 1800 }
+];
 
 const replayAcceptDialogue4 = [
-    { text: "Bien, ya sabes cómo va, ¿no?", pause: 1800 },
-    { text: "¡Vamos!", pause: 1200 }
+    { key: "e4_accept_1", pause: 1800 },
+    { key: "e4_accept_2", pause: 1200 }
 ];
 
 const replayDeclineDialogue4 = [
-    { text: "Ohh... está bien", pause: 1600 },
-    { text: "Seguiré mejorando el juego", pause: 2000 }
+    { key: "e4_decline_1", pause: 1600 },
+    { key: "e4_decline_2", pause: 2000 }
 ];
 
 //Evento 5

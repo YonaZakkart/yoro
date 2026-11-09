@@ -174,7 +174,7 @@ function askForName(event) {
         localStorage.setItem("yoro_player_name", name);
         nameUI.classList.add("hidden");
 
-        showDialogue(buildNameDialogue(name), () => {
+        showDialogue(nameDialogue3, () => {
             markEventCompleted(event.id);
             startIdleDialogues();
             showSkipTimeButton();

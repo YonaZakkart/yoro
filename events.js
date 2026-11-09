@@ -83,8 +83,8 @@ const events = [
         id: "event_4_number_game_1_2",
         gameId: "guess_number",
         gameName: "Adivina el Número 1.2",
-        introDialogue: buildIntroDialogue4,
-        outroDialogue: buildOutroDialogue4,
+        introDialogue: introDialogue4,
+        outroDialogue: outroDialogue4,
         replayAcceptDialogue: replayAcceptDialogue4,
         replayDeclineDialogue: replayDeclineDialogue4,
         modes: [
