@@ -66,14 +66,14 @@ function startGuessingGame(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = "Adivinar";
+    guessButton.textContent = t("btn_guess");
     guessInput.type = "number";
 
     let attempts = 0;
 
     guessButton.addEventListener("click", () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage("Escribe un número primero...");
+            showQuickMessage(t("msg_write_number"));
             return;
         }
         const guess = Number(guessInput.value);
@@ -81,7 +81,7 @@ function startGuessingGame(event) {
 
         if (guess === secretNumber) {
             dialogueContainer.style.opacity = 1;
-            dialogueParagraph.textContent = `¡Lo lograste! :D`;
+            dialogueParagraph.textContent = t("number_win_v1");
             guessInput.disabled = true;
             guessButton.disabled = true;
 
@@ -101,7 +101,7 @@ function startGuessingGame(event) {
                 }, FADE_DURATION);
             }, 3200);
         } else {
-            showQuickMessage(`No es ese... (intento ${attempts})`);
+            showQuickMessage(t("number_miss_v1", { attempts }));
         }
     });
 }
@@ -115,14 +115,14 @@ function startGuessingGame_1_1(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = "Adivinar";
+    guessButton.textContent = t("btn_guess");
     guessInput.type = "number";
 
     let attempts = 0;
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage("Escribe un número primero...");
+            showQuickMessage(t("msg_write_number"));
             return;
         }
         const guess = Number(guessInput.value);
@@ -150,7 +150,7 @@ function startGuessingGame_1_1(event) {
                 }, FADE_DURATION);
             }, 3200);
         } else {
-            showQuickMessage(guess < secretNumber ? "Más arriba..." : "Más abajo...");
+            showQuickMessage(guess < secretNumber ? t("hint_up_normal") : t("hint_down_normal"));
         }
     };
 }
@@ -174,7 +174,7 @@ function askForName(event) {
         localStorage.setItem("yoro_player_name", name);
         nameUI.classList.add("hidden");
 
-        showDialogue(buildNameDialogue(name), () => {
+        showDialogue(nameDialogue3, () => {
             markEventCompleted(event.id);
             startIdleDialogues();
             showSkipTimeButton();
@@ -194,14 +194,14 @@ function runGuessingGame_1_2(event, mode) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = "Adivinar";
+    guessButton.textContent = t("btn_guess");
     guessInput.type = "number";
 
     let attempts = 0;
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage("Escribe un número primero...");
+            showQuickMessage(t("msg_write_number"));
             return;
         }
         const guess = Number(guessInput.value);
@@ -250,10 +250,10 @@ function runGuessingGame_1_2(event, mode) {
                 failStreak = result.failStreak;
                 if (result.changed) escapes++;
 
-                const hint = guess < secretNumber ? "Más arriba..." : "Más abajo...";
+                const direction = guess < secretNumber ? "up" : "down";
                 hintText = result.changed
-                    ? `El número secreto ha cambiado... Ahora está ${hint}`
-                    : hint;
+                    ? t(`hint_changed_${direction}`)
+                    : t(`hint_${direction}_normal`);
             }
             showQuickMessage(hintText);
         }
@@ -554,7 +554,7 @@ function startHangmanGame(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = "Adivinar";
+    guessButton.textContent = t("btn_guess");
     guessInput.type = "text";
     guessInput.placeholder = "Una letra o la palabra...";
 
@@ -725,7 +725,7 @@ function runHangmanGame_1_1(event, mode) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = "Adivinar";
+    guessButton.textContent = t("btn_guess");
     guessInput.type = "text";
     guessInput.placeholder = "Una letra o la palabra...";
 
