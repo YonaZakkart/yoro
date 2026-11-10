@@ -92,7 +92,7 @@ const lang_en = {
     e7_accept_2: "Good luck!",
     e7_decline_1: "Ohh... that's okay",
     e7_decline_2: "I'll keep thinking of something new",
-    
+
     e8_intro_1: "{name}, I improved Hangman",
     e8_intro_2: "Now there are two different modes",
     e8_intro_3: "And you don't have unlimited attempts anymore hehe",
@@ -121,5 +121,22 @@ const lang_en = {
     sys_continue_1: "Are you having fun?",
     sys_continue_2: "Do you want to keep playing?",
     sys_replay_outro_1: "How was it?",
-    sys_continue_later_1: "Oh... that's okay"
+    sys_continue_later_1: "Oh... that's okay",
+
+    game_guess_number: "Guess the Number",
+    game_cuenta_conmigo: "Count With Me",
+    game_ahorcado: "Hangman",
+    mode_casual: "Casual",
+    mode_desafio: "Challenge",
+    mode_infinito: "Infinite",
+    mode_experto: "Expert",
+    e4_mode_casual: "More detailed hints depending on how close you are",
+    e4_mode_desafio: "Simple hints, but the number runs away if you miss too much",
+    e6_mode_casual: "10 questions, bigger numbers",
+    e6_mode_infinito: "Keeps going while you get them right, ends when you miss",
+    e8_mode_casual: "15 attempts; letters and full-word guesses only cost attempts when you miss, and you can try the full word as many times as you like",
+    e8_mode_desafio: "12 attempts; only missed letters cost attempts, you get a single try at the full word, and if you miss it you lose",
+    e9_mode_casual: "15 Lives; you lose a life every time you miss a letter or the full word",
+    e9_mode_desafio: "12 Lives; here you get a single try at the full word, and if you miss it you lose",
+    e9_mode_experto: "10 Lives; words have at least 6 letters, and you can trade 2 lives for a 'hint'"
 };

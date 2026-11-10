@@ -55,7 +55,6 @@ const events = [
     {   //evento 1. Inicio number_game 1
         id: "event_1_number_game",
         gameId: "guess_number",
-        gameName: "Adivina el Número",
         introDialogue: introDialogue,
         outroDialogue: outroDialogue,
         replayAcceptDialogue: confirmYesDialogue,
@@ -66,7 +65,7 @@ const events = [
     {   //evento 2. number_game 1.1
         id: "event_2_number_game_1_1",
         gameId: "guess_number",
-        gameName: "Adivina el Número 1.1",
+        gameVersion: "1.1",
         introDialogue: introDialogue2,
         outroDialogue: outroDialogue2,
         replayAcceptDialogue: replayAcceptDialogue2,
@@ -82,14 +81,14 @@ const events = [
     {   //evento 4. number_game 1.2
         id: "event_4_number_game_1_2",
         gameId: "guess_number",
-        gameName: "Adivina el Número 1.2",
+        gameVersion: "1.2",
         introDialogue: introDialogue4,
         outroDialogue: outroDialogue4,
         replayAcceptDialogue: replayAcceptDialogue4,
         replayDeclineDialogue: replayDeclineDialogue4,
         modes: [
-            { id: "casual", label: "Casual", description: "Pistas más detalladas según qué tan cerca estés", start: runGuessingGame_1_2 },
-            { id: "desafio", label: "Desafío", description: "Pistas simples, pero el número escapa si fallas demasiado", start: runGuessingGame_1_2 }
+            { id: "casual", descriptionKey: "e4_mode_casual", start: runGuessingGame_1_2 },
+            { id: "desafio", descriptionKey: "e4_mode_desafio", start: runGuessingGame_1_2 }
         ],
         start: showModeMenu,
         isGame: true
@@ -97,7 +96,6 @@ const events = [
     {   //evento 5. Cuenta Conmigo
         id: "event_5_math_game",
         gameId: "cuenta_conmigo",
-        gameName: "Cuenta Conmigo",
         introDialogue: introDialogue5,
         outroDialogue: outroDialogue5,
         replayAcceptDialogue: replayAcceptDialogue5,
@@ -108,14 +106,14 @@ const events = [
     {   //evento 6. Cuenta Conmigo 1.1
         id: "event_6_math_game_1_1",
         gameId: "cuenta_conmigo",
-        gameName: "Cuenta Conmigo 1.1",
+        gameVersion: "1.1",
         introDialogue: introDialogue6,
         outroDialogue: outroDialogue6,
         replayAcceptDialogue: replayAcceptDialogue6,
         replayDeclineDialogue: replayDeclineDialogue6,
         modes: [
-            { id: "casual", label: "Casual", description: "10 preguntas, números más grandes", start: runMathGameCasual },
-            { id: "infinito", label: "Infinito", description: "Sigue mientras aciertes, termina hasta que falles", start: runMathGameInfinito }
+            { id: "casual", descriptionKey: "e6_mode_casual", start: runMathGameCasual },
+            { id: "infinito", descriptionKey: "e6_mode_infinito", start: runMathGameInfinito }
         ],
         start: showModeMenu,
         isGame: true
@@ -123,7 +121,6 @@ const events = [
     {   //evento 7. Ahorcado (version base)
         id: "event_7_hangman",
         gameId: "ahorcado",
-        gameName: "Ahorcado",
         introDialogue: introDialogue7,
         outroDialogue: outroDialogue7,
         replayAcceptDialogue: replayAcceptDialogue7,
@@ -134,14 +131,14 @@ const events = [
     {   //evento 8. Ahorcado 1.1 (modos Casual y Desafio)
         id: "event_8_hangman_1_1",
         gameId: "ahorcado",
-        gameName: "Ahorcado 1.1",
+        gameVersion: "1.1",
         introDialogue: introDialogue8,
         outroDialogue: outroDialogue8,
         replayAcceptDialogue: replayAcceptDialogue8,
         replayDeclineDialogue: replayDeclineDialogue8,
         modes: [
-            { id: "casual", label: "Casual", description: "15 intentos; letras y palabra completa restan intentos solo cuando fallas, puedes intentar adivinar la palabra cuanto quieras", start: runHangmanGame_1_1 },
-            { id: "desafio", label: "Desafío", description: "12 intentos; solo resta intentos si fallas letras, un único intento para adivinar la palabra completa, si fallas pierdes", start: runHangmanGame_1_1 }
+            { id: "casual", descriptionKey: "e8_mode_casual", start: runHangmanGame_1_1 },
+            { id: "desafio", descriptionKey: "e8_mode_desafio", start: runHangmanGame_1_1 }
         ],
         start: showModeMenu,
         isGame: true
@@ -149,15 +146,15 @@ const events = [
     {   //evento 9. Ahorcado 1.2 (agrega modo Experto)
         id: "event_9_hangman_1_2",
         gameId: "ahorcado",
-        gameName: "Ahorcado 1.2",
+        gameVersion: "1.2",
         introDialogue: introDialogue9,
         outroDialogue: outroDialogue9,
         replayAcceptDialogue: replayAcceptDialogue9,
         replayDeclineDialogue: replayDeclineDialogue9,
         modes: [
-            { id: "casual", label: "Casual", description: "15 Vidas; pierdes una vida cada vez que fallas al intentar adivinar una letra o la palabra palabra completa", start: runHangmanGame_1_1 },
-            { id: "desafio", label: "Desafío", description: "12 Vidas; aqui tienes un único intento para intentar adivinar la palabra completa, si fallas pierdes", start: runHangmanGame_1_1 },
-            { id: "experto", label: "Experto", description: "10 Vidas; las palabras tienen como minimo 6 letras, puedes negociar una 'pista' a cambio de 2 vidas", start: runHangmanGame_1_1 }
+            { id: "casual", descriptionKey: "e9_mode_casual", start: runHangmanGame_1_1 },
+            { id: "desafio", descriptionKey: "e9_mode_desafio", start: runHangmanGame_1_1 },
+            { id: "experto", descriptionKey: "e9_mode_experto", start: runHangmanGame_1_1 }
         ],
         start: showModeMenu,
         isGame: true
@@ -324,7 +321,8 @@ function showGameMenu() {
 
     latestGamesList.forEach(game => {
         const button = document.createElement("button");
-        button.textContent = game.gameName;
+        const baseName = t("game_" + game.gameId);
+        button.textContent = game.gameVersion ? `${baseName} ${game.gameVersion}` : baseName;
         button.className = "px-4 py-2 btn-primary";
         button.dataset.gameId = game.gameId;
 
@@ -370,12 +368,12 @@ function showModeMenu(event) {
         wrapper.className = "flex flex-col items-center gap-2 max-w-[160px] text-center";
 
         const button = document.createElement("button");
-        button.textContent = mode.label;
+        button.textContent = t("mode_" + mode.id);
         button.className = "px-4 py-2 btn-primary w-full";
         button.dataset.modeId = mode.id;
 
         const description = document.createElement("p");
-        description.textContent = mode.description;
+        description.textContent = t(mode.descriptionKey);
         description.className = "text-label-code font-label-code opacity-70";
 
         wrapper.appendChild(button);

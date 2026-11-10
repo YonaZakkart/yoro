@@ -60,7 +60,7 @@ const lang_es = {
     e4_decline_2: "Seguiré mejorando el juego",
 
     //Evento 5
-        e5_intro_1: "Oye {name}...",
+    e5_intro_1: "Oye {name}...",
     e5_intro_2: "Hice algo nuevo esta vez",
     e5_intro_3: "Se llama \"Cuenta Conmigo\"",
     e5_intro_4: "Son sumas y restas, nada complicado",
@@ -87,7 +87,7 @@ const lang_es = {
     e6_decline_2: "Seguiré practicando por mi cuenta",
 
     //Evento 7
-        e7_intro_1: "{name}, tengo un juego nuevo",
+    e7_intro_1: "{name}, tengo un juego nuevo",
     e7_intro_2: "Se llama \"Ahorcado\"",
     e7_intro_3: "Pensé en una palabra secreta...",
     e7_intro_4: "Debes adivinarla letra por letra",
@@ -131,5 +131,22 @@ const lang_es = {
     sys_continue_1: "¿Te diviertes?",
     sys_continue_2: "¿Quieres seguir jugando?",
     sys_replay_outro_1: "¿Cómo estuvo?",
-    sys_continue_later_1: "Oh... está bien"
+    sys_continue_later_1: "Oh... está bien",
+
+    game_guess_number: "Adivina el Número",
+    game_cuenta_conmigo: "Cuenta Conmigo",
+    game_ahorcado: "Ahorcado",
+    mode_casual: "Casual",
+    mode_desafio: "Desafío",
+    mode_infinito: "Infinito",
+    mode_experto: "Experto",
+    e4_mode_casual: "Pistas más detalladas según qué tan cerca estés",
+    e4_mode_desafio: "Pistas simples, pero el número escapa si fallas demasiado",
+    e6_mode_casual: "10 preguntas, números más grandes",
+    e6_mode_infinito: "Sigue mientras aciertes, termina cuando falles",
+    e8_mode_casual: "15 intentos; letras y palabra completa restan intentos solo cuando fallas, puedes intentar adivinar la palabra cuanto quieras",
+    e8_mode_desafio: "12 intentos; solo resta intentos si fallas letras, un único intento para adivinar la palabra completa, si fallas pierdes",
+    e9_mode_casual: "15 Vidas; pierdes una vida cada vez que fallas al intentar adivinar una letra o la palabra completa",
+    e9_mode_desafio: "12 Vidas; aquí tienes un único intento para intentar adivinar la palabra completa, si fallas pierdes",
+    e9_mode_experto: "10 Vidas; las palabras tienen como mínimo 6 letras, puedes negociar una 'pista' a cambio de 2 vidas"
 };
