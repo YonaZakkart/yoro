@@ -49,4 +49,10 @@ function t(key, params = {}) {
     );
 }
 
+// texto con singular y plural: busca clave_one cuando count vale 1, y clave_other en cualquier otro caso.
+// {count} queda disponible en el texto: tp("res_top", 3) rellena {count} con 3
+function tp(key, count, params = {}) {
+    return t(`${key}_${count === 1 ? "one" : "other"}`, { count, ...params });
+}
+
 document.documentElement.lang = currentLang;

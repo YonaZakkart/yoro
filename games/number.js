@@ -4,40 +4,36 @@ function pickSecretNumber(max = 50) {
 
 // Mensajes de resultado v1.1
 function getResultMessage(attempts) {
-    if (attempts <= 5) return `¡Excelente! Lo lograste en ${attempts} intento(s)`;
-    if (attempts <= 10) return `¡Bien! Te tomó ${attempts} intentos`;
-    if (attempts <= 15) return `Regular... te tomó ${attempts} intentos.`;
-    return `Pudo ser mejor. Te tomó ${attempts} intentos.`;
+    if (attempts <= 5) return tp("res11_top", attempts);
+    if (attempts <= 10) return t("res11_good", { attempts });
+    if (attempts <= 15) return t("res11_ok", { attempts });
+    return t("res11_poor", { attempts });
 }
 // Mensajes de resultado v1.2 modo Casual 
 function getResultMessageCasual(attempts) {
-    if (attempts < 6) return `¡Excelente! Lo lograste en ${attempts} intento(s)`;
-    if (attempts < 12) return `¡Muy bien! Te tomó ${attempts} intentos`;
-    if (attempts < 18) return `Estuvo bien, te tomó ${attempts} intentos`;
-    if (attempts < 24) return `No estuvo tan mal, te tomó ${attempts} intentos`;
-    return `Fue difícil, ¿eh? Te tomó ${attempts} intentos`;
+    if (attempts < 6) return tp("resC_top", attempts);
+    if (attempts < 12) return t("resC_good", { attempts });
+    if (attempts < 18) return t("resC_ok", { attempts });
+    if (attempts < 24) return t("resC_meh", { attempts });
+    return t("resC_hard", { attempts });
 }
 // Mensajes de resultado v1.2 modo Desafio 
 function getResultMessageDesafio(attempts) {
-    if (attempts < 5) return `¡Increíble! Lo lograste en solo ${attempts} intento(s)`;
-    if (attempts < 10) return `¡Excelente! Te tomó ${attempts} intentos`;
-    if (attempts < 15) return `Estuviste muy bien, te tomó ${attempts} intentos`;
-    if (attempts < 25) return `No estuvo tan mal, te tomó ${attempts} intentos`;
-    if (attempts < 40) return `Fue difícil, ¿eh? Te tomó ${attempts} intentos`;
-    return `Creo que fue demasiado... te tomó ${attempts} intentos`;
+    if (attempts < 5) return tp("resD_top", attempts);
+    if (attempts < 10) return t("resD_great", { attempts });
+    if (attempts < 15) return t("resD_good", { attempts });
+    if (attempts < 25) return t("resD_meh", { attempts });
+    if (attempts < 40) return t("resD_hard", { attempts });
+    return t("resD_toomuch", { attempts });
 }
 
-// Pistas del modo Casual (Evento 4) 
+// Pistas del modo Casual (Evento 4): dirección (arriba/abajo) y cercanía (lejos/normal/cerca)
 function getHintCasual(secretNumber, guess) {
     const distance = Math.abs(secretNumber - guess);
-    const isLower = guess < secretNumber;
+    const direction = guess < secretNumber ? "up" : "down";
+    const closeness = distance > 10 ? "far" : distance < 3 ? "close" : "normal";
 
-    let hint = isLower ? "Más arriba" : "Más abajo";
-    if (distance > 10) {
-        hint = isLower ? "Mucho más arriba" : "Mucho más abajo";
-    }
-
-    return distance < 3 ? `${hint}, muy cerca...` : `${hint}...`;
+    return t(`hint_${direction}_${closeness}`);
 }
 
 // Modo Desafio (Evento 4) - reasigna el numero tras 5 fallos 
