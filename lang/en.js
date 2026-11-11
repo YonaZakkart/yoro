@@ -169,5 +169,28 @@ const lang_en = {
     resD_good: "You did really well, it took you {attempts} attempts",
     resD_meh: "Not too bad, it took you {attempts} attempts",
     resD_hard: "That was tough, huh? It took you {attempts} attempts",
-    resD_toomuch: "I think that was too much... it took you {attempts} attempts"
+        resD_toomuch: "I think that was too much... it took you {attempts} attempts",
+
+    // Count With Me
+    btn_answer: "Answer",
+    math_correct: "Correct!",
+    math_wrong: "Close... it was {answer}",
+    math_correct_streak: "Correct! (streak: {streak})",
+    math_correct_chain: "Correct! ({count} in a row)",
+    math_exercises_one: "{count} exercise",
+    math_exercises_other: "{count} exercises",
+    math_hits_one: "{count} correct answer",
+    math_hits_other: "{count} correct answers",
+    math_infinite_end: "You missed... you did {exercises}. You got {hits}!",
+    resM_5: "Excellent!",
+    resM_4: "You did well",
+    resM_3: "Not bad",
+    resM_2: "You need more practice...",
+    resM_1: "Far from the goal...",
+    resM_0: "Don't you like math?",
+    resM10_perfect: "Excellent!",
+    resM10_good: "You did well",
+    resM10_ok: "Not bad",
+    resM10_practice: "You need more practice...",
+    resM10_dislike: "Don't you like math?"
 };

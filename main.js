@@ -268,7 +268,7 @@ function startMathGame(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = "Responder";
+    guessButton.textContent = t("btn_answer");
     guessInput.type = "number";
 
     const totalProblems = 5;
@@ -306,7 +306,7 @@ function startMathGame(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage("Escribe un número primero...", { restoreText: `${currentProblem.text} = ?` });
+            showQuickMessage(t("msg_write_number"), { restoreText: `${currentProblem.text} = ?` });
             return;
         }
         guessButton.disabled = true;
@@ -319,7 +319,7 @@ function startMathGame(event) {
         if (correct) stats.games.countWithMe.correctAnswers++;
         saveStats(stats);
 
-        showQuickMessage(correct ? "¡Correcto!" : `Casi... era ${currentProblem.answer}`, { duration: 1500 });
+        showQuickMessage(correct ? t("math_correct") : t("math_wrong", { answer: currentProblem.answer }), { duration: 1500 });
 
         setTimeout(() => {
             if (problemIndex >= totalProblems) {
@@ -340,7 +340,7 @@ function runMathGameCasual(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = "Responder";
+    guessButton.textContent = t("btn_answer");
     guessInput.type = "number";
 
     const totalProblems = 10;
@@ -385,7 +385,7 @@ function runMathGameCasual(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage("Escribe un número primero...", { restoreText: `${currentProblem.text} = ?` });
+            showQuickMessage(t("msg_write_number"), { restoreText: `${currentProblem.text} = ?` });
             return;
         }
         guessButton.disabled = true;
@@ -396,10 +396,10 @@ function runMathGameCasual(event) {
         if (correct) {
             hits++;
             racha++;
-            feedbackText = `¡Correcto! (racha: ${racha})`;
+            feedbackText = t("math_correct_streak", { streak: racha });
         } else {
             racha = 0;
-            feedbackText = `Casi... era ${currentProblem.answer}`;
+            feedbackText = t("math_wrong", { answer: currentProblem.answer });
         }
 
         const casualStats = stats.games.countWithMe.modes.casual;
@@ -439,7 +439,7 @@ function runMathGameInfinito(event) {
 
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = "Responder";
+    guessButton.textContent = t("btn_answer");
     guessInput.type = "number";
 
     const maxRange = 50;
@@ -456,7 +456,10 @@ function runMathGameInfinito(event) {
 
     function finishGame() {
         const racha = attempts - 1;
-        dialogueParagraph.textContent = `Fallaste... realizaste ${formatCount(attempts, "ejercicio", "ejercicios")}. ¡Tuviste ${formatCount(attempts - 1, "acierto", "aciertos")}!`;
+        dialogueParagraph.textContent = t("math_infinite_end", {
+            exercises: tp("math_exercises", attempts),
+            hits: tp("math_hits", attempts - 1)
+        });
         dialogueContainer.style.opacity = 1;
         guessInput.disabled = true;
         guessButton.disabled = true;
@@ -481,7 +484,7 @@ function runMathGameInfinito(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage("Escribe un número primero...", { restoreText: `${currentProblem.text} = ?` });
+            showQuickMessage(t("msg_write_number"), { restoreText: `${currentProblem.text} = ?` });
             return;
         }
         guessButton.disabled = true;
@@ -494,7 +497,7 @@ function runMathGameInfinito(event) {
             stats.games.countWithMe.correctAnswers++;
             stats.games.countWithMe.modes.infinito.correctAnswers++;
             saveStats(stats);
-            showQuickMessage(`¡Correcto! (${attempts} seguidos)`, { duration: 1200 });
+            showQuickMessage(t("math_correct_chain", { count: attempts }), { duration: 1200 });
             setTimeout(showProblem, 1200 + FADE_DURATION);
         } else {
             saveStats(stats);

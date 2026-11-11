@@ -179,5 +179,28 @@ const lang_es = {
     resD_good: "Estuviste muy bien, te tomó {attempts} intentos",
     resD_meh: "No estuvo tan mal, te tomó {attempts} intentos",
     resD_hard: "Fue difícil, ¿eh? Te tomó {attempts} intentos",
-    resD_toomuch: "Creo que fue demasiado... te tomó {attempts} intentos"
+        resD_toomuch: "Creo que fue demasiado... te tomó {attempts} intentos",
+
+    // Cuenta Conmigo
+    btn_answer: "Responder",
+    math_correct: "¡Correcto!",
+    math_wrong: "Casi... era {answer}",
+    math_correct_streak: "¡Correcto! (racha: {streak})",
+    math_correct_chain: "¡Correcto! ({count} seguidos)",
+    math_exercises_one: "{count} ejercicio",
+    math_exercises_other: "{count} ejercicios",
+    math_hits_one: "{count} acierto",
+    math_hits_other: "{count} aciertos",
+    math_infinite_end: "Fallaste... realizaste {exercises}. ¡Tuviste {hits}!",
+    resM_5: "¡Excelente!",
+    resM_4: "Estuviste bien",
+    resM_3: "No estuvo mal",
+    resM_2: "Necesitas practicar más...",
+    resM_1: "Lejos de la meta...",
+    resM_0: "¿No te gustan las matemáticas?",
+    resM10_perfect: "¡Excelente!",
+    resM10_good: "Estuviste bien",
+    resM10_ok: "No estuvo mal",
+    resM10_practice: "Necesitas practicar más...",
+    resM10_dislike: "¿No te gustan las matemáticas?"
 };
