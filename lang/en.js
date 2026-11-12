@@ -263,5 +263,26 @@ const lang_en = {
     hangman_github_prompt: "Want more attempts?\nStar the GitHub repository!",
     hangman_github_button: "Go to GitHub",
     hint_confirm_text: "A random letter will be added to your progress, but the hangman will advance and you will lose 2 lives.",
-    reward_text: "It worked!\nYou received 3 extra lives"
+    reward_text: "It worked!\nYou received 3 extra lives",
+
+        // Fixed interface (HTML)
+    top_settings: "Options",
+    top_stats: "Statistics",
+    skip_time: "Skip time...",
+    settings_title: "Options",
+    opt_change_name: "Change my name",
+    opt_reset_stats: "Reset Statistics",
+    opt_reset_game: "Reset Game",
+    opt_credits: "Credits",
+    settings_name_prompt: "What should I call you?",
+    name_placeholder: "Your name...",
+    number_placeholder: "Your number...",
+    btn_save: "Save",
+    btn_continue: "Continue",
+    btn_back: "Back",
+    stats_title: "Statistics",
+    stats_more: "More details about...",
+    stats_mismatch_note: "If the data for each mode doesn't match the total, try resetting the statistics",
+    continue_yes: "Yes, let's go",
+    continue_later: "Maybe later",
 };

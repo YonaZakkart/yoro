@@ -273,5 +273,26 @@ const lang_es = {
     hangman_github_prompt: "¿Quieres más intentos?\nMarca con una estrella el repositorio de GitHub!",
     hangman_github_button: "Ir a GitHub",
     hint_confirm_text: "Se agregará una letra aleatoria a tu avance, pero el ahorcado avanzará y perderás 2 vidas.",
-    reward_text: "¡Ha funcionado!\nHas recibido 3 vidas adicionales"
+    reward_text: "¡Ha funcionado!\nHas recibido 3 vidas adicionales",
+
+        // Interfaz fija (HTML)
+    top_settings: "Opciones",
+    top_stats: "Estadísticas",
+    skip_time: "Saltar tiempo...",
+    settings_title: "Opciones",
+    opt_change_name: "Cambiar mi nombre",
+    opt_reset_stats: "Reiniciar Estadísticas",
+    opt_reset_game: "Reiniciar Juego",
+    opt_credits: "Créditos",
+    settings_name_prompt: "¿Cómo quieres que te llame?",
+    name_placeholder: "Tu nombre...",
+    number_placeholder: "Tu número...",
+    btn_save: "Guardar",
+    btn_continue: "Continuar",
+    btn_back: "Volver",
+    stats_title: "Estadísticas",
+    stats_more: "Más detalles sobre...",
+    stats_mismatch_note: "Si los datos de cada modo no coinciden con el total, intente reiniciar las estadísticas",
+    continue_yes: "Sí, vamos",
+    continue_later: "Quizás más tarde",
 };

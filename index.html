@@ -123,10 +123,12 @@
 <body class="w-screen h-screen flex flex-col justify-center items-center">
     <!-- Botones superiores: opciones, estadisticas y musica -->
     <nav id="top-buttons" class="fixed top-3 left-3 flex gap-2 z-50">
-        <button id="settings-button" class="btn-secondary btn-round" aria-label="Opciones" title="Opciones">
+        <button id="settings-button" class="btn-secondary btn-round" data-i18n-title="top_settings"
+            aria-label="Opciones" title="Opciones">
             <span class="material-symbols-outlined">settings</span>
         </button>
-        <button id="stats-button" class="btn-secondary btn-round" aria-label="Estadísticas" title="Estadísticas">
+        <button id="stats-button" class="btn-secondary btn-round" data-i18n-title="top_stats" aria-label="Estadísticas"
+            title="Estadísticas">
             <span class="material-symbols-outlined">bar_chart</span>
         </button>
         <button id="music-button" class="btn-secondary btn-round" aria-label="Música" title="Música (desactivada)">
@@ -135,30 +137,36 @@
     </nav>
 
     <!-- Botón [Saltar tiempo...]: aparece al terminar un evento si aún queda otro por delante -->
-    <button id="skip-time-button" class="hidden fixed top-3 right-3 z-50 px-4 py-2 btn-secondary skip-attention">Saltar
-        tiempo...</button>
+    <button id="skip-time-button" class="hidden fixed top-3 right-3 z-50 px-4 py-2 btn-secondary skip-attention"
+        data-i18n="skip_time"></button>
 
     <!-- Panel de opciones: cubre toda la pantalla mientras esta abierto -->
-    <div id="settings-panel" class="hidden fixed inset-0 flex flex-col items-center justify-center screen-overlay">
+    <div id="settings-panel" class="hidden fixed inset-0 flex flex-col items-center justify-center screen-overlay"
+        data-i18n-title="btn_close">
         <button id="settings-close-button" class="btn-secondary btn-round absolute top-3 right-3" aria-label="Cerrar"
             title="Cerrar">
             <span class="material-symbols-outlined">close</span>
         </button>
-        <h2 class="text-headline-md font-headline-md mb-6">Opciones</h2>
+        <h2 class="text-headline-md font-headline-md mb-6" data-i18n="settings_title">Opciones</h2>
         <div id="settings-options" class="flex flex-col items-center gap-3 w-64 panel-box">
-            <button data-option="change-name" class="px-4 py-2 btn-primary w-full">Cambiar mi nombre</button>
-            <button data-option="reset-stats" class="px-4 py-2 btn-primary w-full">Reiniciar Estadísticas</button>
-            <button data-option="reset-game" class="px-4 py-2 btn-primary w-full">Reiniciar Juego</button>
-            <button data-option="credits" class="px-4 py-2 btn-primary w-full">Créditos</button>
+            <button data-option="change-name" class="px-4 py-2 btn-primary w-full" data-i18n="opt_change_name">Cambiar
+                mi nombre</button>
+            <button data-option="reset-stats" class="px-4 py-2 btn-primary w-full" data-i18n="opt_reset_stats">Reiniciar
+                Estadísticas</button>
+            <button data-option="reset-game" class="px-4 py-2 btn-primary w-full" data-i18n="opt_reset_game">Reiniciar
+                Juego</button>
+            <button data-option="credits" class="px-4 py-2 btn-primary w-full" data-i18n="opt_credits">Créditos</button>
         </div>
         <div id="settings-name-form" class="hidden flex flex-col items-center gap-3 w-64 panel-box">
-            <p class="text-body-md font-body-md opacity-80">¿Cómo quieres que te llame?</p>
-            <input type="text" id="settings-name-input" maxlength="16"
+            <p class="text-body-md font-body-md opacity-80" data-i18n="settings_name_prompt">¿Cómo quieres que te llame?
+            </p>
+            <input type="text" id="settings-name-input" maxlength="16" data-i18n-placeholder="name_placeholder"
                 class="px-3 py-2 rounded-lg text-on-background bg-surface-container border border-outline w-full"
                 placeholder="Tu nombre..." />
             <div class="flex justify-center gap-3">
-                <button id="settings-name-cancel" class="px-4 py-2 btn-secondary">Cancelar</button>
-                <button id="settings-name-save" class="px-4 py-2 btn-primary">Guardar</button>
+                <button id="settings-name-cancel" class="px-4 py-2 btn-secondary"
+                    data-i18n="btn_cancel">Cancelar</button>
+                <button id="settings-name-save" class="px-4 py-2 btn-primary" data-i18n="btn_save">Guardar</button>
             </div>
         </div>
         <div id="settings-confirm" class="hidden flex flex-col items-center gap-3 w-64 text-center panel-box">
@@ -172,20 +180,22 @@
     </div>
 
     <!-- Panel de estadisticas: cubre toda la pantalla mientras esta abierto -->
-    <div id="stats-panel" class="hidden fixed inset-0 flex flex-col items-center overflow-y-auto screen-overlay">
+    <div id="stats-panel" class="hidden fixed inset-0 flex flex-col items-center overflow-y-auto screen-overlay"
+        data-i18n-title="btn_close">
         <button id="stats-close-button" class="btn-secondary btn-round fixed top-3 right-3" aria-label="Cerrar"
             title="Cerrar">
             <span class="material-symbols-outlined">close</span>
         </button>
         <div class="flex flex-col items-center my-auto w-full max-w-5xl px-4 py-16">
-            <h2 class="text-headline-md font-headline-md mb-6">Estadísticas</h2>
+            <h2 class="text-headline-md font-headline-md mb-6" data-i18n="stats_title">Estadísticas</h2>
 
             <!-- Vista general -->
             <div id="stats-general" class="flex flex-col items-center gap-4 w-80 max-w-full panel-box">
                 <div id="stats-general-list" class="flex flex-col gap-2 w-full text-body-md font-body-md"></div>
-                <p class="text-label-code font-label-code opacity-70">Más detalles sobre...</p>
+                <p class="text-label-code font-label-code opacity-70" data-i18n="stats_more">Más detalles sobre...</p>
                 <div id="stats-detail-buttons" class="flex flex-col gap-2 w-full">
-                    <button data-game="number" class="px-4 py-2 btn-primary w-full">Adivina el Número</button>
+                    <button data-game="number" class="px-4 py-2 btn-primary w-full"
+                        data-i18n="game_guess_number">Adivina el Número</button>
                     <button data-game="countWithMe" class="px-4 py-2 btn-primary w-full">Cuenta Conmigo</button>
                     <button data-game="hangman" class="px-4 py-2 btn-primary w-full">Ahorcado</button>
                 </div>
@@ -197,9 +207,11 @@
                     <h3 id="stats-detail-title" class="text-headline-md font-headline-md"></h3>
                     <div id="stats-detail-sections" class="flex flex-wrap justify-center gap-4 w-full"></div>
                 </div>
-                <p class="text-label-code font-label-code opacity-60 text-center max-w-md">Si los datos de cada modo no
-                    coinciden con el total, intente reiniciar las estadísticas</p>
-                <button id="stats-back-button" class="px-4 py-2 btn-secondary">Volver</button>
+                <p class="text-label-code font-label-code opacity-60 text-center max-w-md"
+                    data-i18n="stats_mismatch_note">
+                    Si los datos de cada modo no coinciden con el total, intente reiniciar las estadísticas
+                </p>
+                <button id="stats-back-button" class="px-4 py-2 btn-secondary" data-i18n="btn_back">Volver</button>
             </div>
         </div>
     </div>
@@ -250,7 +262,7 @@
         </div>
         <!-- Primer juego de Yoro: Adivina el número -->
         <div id="game-ui" class="hidden mt-8 flex flex-col items-center gap-3">
-            <input type="number" id="guess-input"
+            <input type="number" id="guess-input" data-i18n-placeholder="number_placeholder"
                 class="px-3 py-2 rounded-lg text-on-background bg-surface-container border border-outline"
                 placeholder="Tu número..." />
             <div class="flex items-center gap-2">
@@ -301,18 +313,18 @@
 
         <!-- Evento 3: preguntar el nombre -->
         <div id="name-ui" class="hidden mt-8 flex flex-col items-center gap-3">
-            <input type="text" id="name-input" maxlength="16"
+            <input type="text" id="name-input" maxlength="16" data-i18n-placeholder="name_placeholder"
                 class="px-3 py-2 rounded-lg text-on-background bg-surface-container border border-outline"
                 placeholder="Tu nombre..." />
-            <button id="name-button" class="px-4 py-2 btn-primary">Continuar</button>
+            <button id="name-button" class="px-4 py-2 btn-primary" data-i18n="btn_continue">Continuar</button>
         </div>
         <!-- Menu: elegir modo de juego -->
         <div id="mode-menu-ui" class="hidden mt-8 flex gap-6 panel-box">
         </div>
         <!-- Menu: preguntar si el jugador quiere seguir jugando (aparece al repetir un juego) -->
         <div id="continue-menu-ui" class="hidden mt-8 flex gap-4">
-            <button id="continue-yes-button" class="px-4 py-2 btn-primary">Sí, vamos</button>
-            <button id="continue-later-button" class="px-4 py-2 btn-secondary">Quizás más
+            <button id="continue-yes-button" class="px-4 py-2 btn-primary" data-i18n="continue_yes">Sí, vamos</button>
+            <button id="continue-later-button" class="px-4 py-2 btn-secondary" data-i18n="continue_later">Quizás más
                 tarde</button>
         </div>
         <!-- Modal: confirmar uso de pista (Ahorcado modo Experto) -->
