@@ -167,7 +167,7 @@ function askForName(event) {
     nameButton.onclick = () => {
         const name = nameInput.value.trim();
         if (name.length < 3) {
-            showQuickMessage("Necesito al menos 3 letras...");
+            showQuickMessage(t("name_too_short"));
             return;
         }
 
@@ -1213,7 +1213,7 @@ settingsNameCancel.onclick = showSettingsOptions;
 settingsNameSave.onclick = () => {
     const name = settingsNameInput.value.trim();
     if (name.length < 3) {
-        settingsMessage.textContent = "Necesito al menos 3 letras...";
+        settingsMessage.textContent = t("name_too_short");
         return;
     }
 
@@ -1223,16 +1223,13 @@ settingsNameSave.onclick = () => {
 
     // mismo nombre: Yoro no finge que es uno nuevo
     if (name === previousName) {
-        settingsMessage.textContent = `Sigue siendo ${name}, jeje`;
+        settingsMessage.textContent = t("settings_same_name", { name });
         return;
     }
 
-    const reactions = [
-        `${name}... me gusta, jeje`,
-        `¿Nuevo nombre? Hola de nuevo, ${name}`,
-        `${name}. Listo, lo recordaré`
-    ];
-    settingsMessage.textContent = reactions[Math.floor(Math.random() * reactions.length)];
+    const reactionKeys = ["settings_react_1", "settings_react_2", "settings_react_3"];
+    const randomKey = reactionKeys[Math.floor(Math.random() * reactionKeys.length)];
+    settingsMessage.textContent = t(randomKey, { name });
 };
 
 // Confirmacion generica del panel de opciones (para acciones que borran datos)
@@ -1249,7 +1246,7 @@ let pendingDeclineAction = null;
 
 // Muestra la confirmacion. Opciones: textos de los botones y "onCancel":
 // si se pasa, el boton izquierdo ejecuta esa accion (despues de volver a la lista de opciones)
-function showSettingsConfirm(text, onAccept, { acceptLabel = "Aceptar", cancelLabel = "Cancelar", onCancel = null } = {}) {
+function showSettingsConfirm(text, onAccept, { acceptLabel = t("btn_accept"), cancelLabel = t("btn_cancel"), onCancel = null } = {}) {
     settingsMessage.textContent = "";
     pendingConfirmAction = onAccept;
     pendingDeclineAction = onCancel;
@@ -1273,7 +1270,7 @@ settingsConfirmAccept.onclick = () => {
 };
 
 resetStatsOption.onclick = () => {
-    showSettingsConfirm("Se borrarán tus estadísticas: visitas, partidas y récords. No se puede deshacer.", () => {
+    showSettingsConfirm(t("settings_reset_stats_confirm"), () => {
         // se cambia el contenido del mismo objeto "stats" (no se crea uno nuevo),
         // para que todo el codigo que ya lo usa vea los datos reiniciados
         Object.assign(stats, createInitialStats());
@@ -1282,7 +1279,7 @@ resetStatsOption.onclick = () => {
         stats.lastVisitDay = getTodayKey();
         stats.firstVisitDay = getTodayKey();
         saveStats(stats);
-        settingsMessage.textContent = "Listo, empezamos de cero";
+        settingsMessage.textContent = t("settings_reset_stats_done");
     });
 };
 
@@ -1302,9 +1299,9 @@ function resetGame(resetStatsToo) {
 }
 
 resetGameOption.onclick = () => {
-    showSettingsConfirm("¿Mantener estadísticas actuales?", () => resetGame(false), {
-        acceptLabel: "Sí",
-        cancelLabel: "No",
+    showSettingsConfirm(t("settings_reset_game_confirm"), () => resetGame(false), {
+        acceptLabel: t("btn_yes"),
+        cancelLabel: t("btn_no"),
         onCancel: () => resetGame(true)
     });
 };

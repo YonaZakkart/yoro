@@ -295,4 +295,16 @@ const lang_es = {
     stats_mismatch_note: "Si los datos de cada modo no coinciden con el total, intente reiniciar las estadísticas",
     continue_yes: "Sí, vamos",
     continue_later: "Quizás más tarde",
+
+        // Panel de Opciones (JS)
+    name_too_short: "Necesito al menos 3 letras...",
+    settings_same_name: "Sigue siendo {name}, jeje",
+    settings_react_1: "{name}... me gusta, jeje",
+    settings_react_2: "¿Nuevo nombre? Hola de nuevo, {name}",
+    settings_react_3: "{name}. Listo, lo recordaré",
+    settings_reset_stats_confirm: "Se borrarán tus estadísticas: visitas, partidas y récords. No se puede deshacer.",
+    settings_reset_stats_done: "Listo, empezamos de cero",
+    settings_reset_game_confirm: "¿Mantener estadísticas actuales?",
+    btn_yes: "Sí",
+    btn_no: "No",
 };

@@ -265,7 +265,7 @@ const lang_en = {
     hint_confirm_text: "A random letter will be added to your progress, but the hangman will advance and you will lose 2 lives.",
     reward_text: "It worked!\nYou received 3 extra lives",
 
-        // Fixed interface (HTML)
+    // Fixed interface (HTML)
     top_settings: "Options",
     top_stats: "Statistics",
     skip_time: "Skip time...",
@@ -285,4 +285,16 @@ const lang_en = {
     stats_mismatch_note: "If the data for each mode doesn't match the total, try resetting the statistics",
     continue_yes: "Yes, let's go",
     continue_later: "Maybe later",
+
+    // Options panel (JS)
+    name_too_short: "I need at least 3 letters...",
+    settings_same_name: "Still {name}, hehe",
+    settings_react_1: "{name}... I like it, hehe",
+    settings_react_2: "New name? Hi again, {name}",
+    settings_react_3: "{name}. Done, I'll remember it",
+    settings_reset_stats_confirm: "Your statistics will be deleted: visits, games and records. This can't be undone.",
+    settings_reset_stats_done: "Done, we start from scratch",
+    settings_reset_game_confirm: "Keep current statistics?",
+    btn_yes: "Yes",
+    btn_no: "No",
 };
