@@ -219,5 +219,48 @@ const lang_es = {
 
     // Ahorcado (Evento 7, versión base)
     hangman_letter_repeat_v1: "Ya probaste la letra \"{letter}\"",
-    hangman_word_repeat_v1: "Ya intentaste la palabra \"{word}\""
+    hangman_word_repeat_v1: "Ya intentaste la palabra \"{word}\"",
+
+    // Ahorcado (modos)
+    hangman_hint_lives_one: "La palabra secreta tiene {letters} letras ({count} vida)",
+    hangman_hint_lives_other: "La palabra secreta tiene {letters} letras ({count} vidas)",
+    hint_available: "Pista disponible",
+    hint_cooldown: "Enfriamiento: {remaining}",
+    hangman_used_letters: "Letras usadas",
+    hangman_used_words: "Palabras usadas",
+    hangman_used_list: "{label}: {items}",
+    hangman_used_empty: "{label}: ninguna todavía",
+    hangman_hint_used: "Pista usada: la letra \"{letter}\" ya está revelada",
+    hangman_hangman_done: "{message}. El ahorcado se completó...",
+    hangman_none: "Ninguno",
+    hangman_thanks_lives: "¡Gracias por el apoyo! Recibiste 3 vidas extra",
+    hangman_letter_repeat: "Ya probaste la letra \"{letter}\" antes, este intento no cuenta jeje",
+    hangman_word_repeat: "Ya probaste la palabra \"{word}\" antes, este intento no cuenta jeje",
+    hangman_word_wrong_single: "Nope... esa no era, perdiste tu único intento de palabra",
+    hangman_word_wrong_final: "Nope... no es esa. El ahorcado se completó...",
+
+    // Ahorcado (tabla de resultados)
+    hangman_win_title: "¡Ganaste!",
+    hangman_lose_title: "Perdiste...",
+    hangman_win_subtitle: "Descifraste la palabra a tiempo",
+    hangman_lose_subtitle: "El ahorcado se completó",
+    hangman_res_mode: "Modo de juego: {mode}",
+    hangman_res_found: "Palabra secreta encontrada: {word}",
+    hangman_res_missed: "Palabra secreta que buscabas: {word}",
+    hangman_res_progress: "Estado final de tu búsqueda: {progress}",
+    hangman_res_letter_attempts: "Intentos de adivinar letra: {count}",
+    hangman_res_word_attempts: "Intentos de adivinar palabra: {count}",
+    hangman_res_hints: "Pistas usadas: {count}",
+    hangman_res_lives: "Vidas restantes: {count}",
+
+    // Ahorcado (mensajes de derrota del modo Experto)
+    lose1_text: "Has perdido...\nSigue al creador y quizá te de otra oportunidad",
+    lose1_cancel: "No gracias",
+    lose1_accept: "Sigue a Yona en GitHub",
+    lose2_text: "Has perdido.\nUna ⭐ podría cambiar tu destino...",
+    lose2_cancel: "No gracias",
+    lose2_accept: "Marca con una estrella el repositorio",
+    lose3_text: "Has perdido.\nEntra al repositorio, busca \"Star\" y dale click.\nQuizá pase algo...",
+    lose3_cancel: "No quiero",
+    lose3_accept: "Intentar mi suerte"
 };

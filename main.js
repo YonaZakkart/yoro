@@ -571,7 +571,7 @@ function startHangmanGame(event) {
     let guessedLetters = [];
     let guessedWords = [];
 
-    hangmanHint.textContent = t("hangman_hint_base", { letters: secretWord.length });
+    hangmanHint.textContent = tp("hangman_hint_lives", attemptsLeft(), { letters: secretWord.length });
     updateProgress();
     hangmanStatus.classList.remove("hidden");
 
@@ -666,11 +666,9 @@ function showHangmanResults(won, figureText, lines, onComplete) {
     const acceptButton = document.getElementById("hangman-results-accept");
     const yoroAvatar = document.getElementById("yoro-avatar");
 
-    const title = won ? "¡Ganaste!" : "Perdiste...";
+    const title = won ? t("hangman_win_title") : t("hangman_lose_title");
     const titleColor = won ? "text-primary-container" : "text-error";
-    const subtitle = won
-        ? "Descifraste la palabra a tiempo"
-        : "El ahorcado se completó";
+    const subtitle = won ? t("hangman_win_subtitle") : t("hangman_lose_subtitle");
 
     resultsUI.innerHTML = `
         <pre class="text-label-code font-label-code leading-tight">${figureText}</pre>
@@ -735,7 +733,7 @@ function runHangmanGame_1_1(event, mode) {
     enableEnterKey(guessInput, guessButton);
     guessButton.textContent = t("btn_guess");
     guessInput.type = "text";
-    guessInput.placeholder = "Una letra o la palabra...";
+    guessInput.placeholder = t("hangman_placeholder");
 
     let guessedLetters = [];
     let guessedWords = [];
@@ -780,9 +778,7 @@ function runHangmanGame_1_1(event, mode) {
         ).join(" ");
     }
 
-    function updateHint() {
-        hangmanHint.textContent = `La palabra secreta tiene ${secretWord.length} letras (${attemptsLeft()} vidas)`;
-    }
+    hangmanHint.textContent = tp("hangman_hint_lives", attemptsLeft(), { letters: secretWord.length });
 
     function updateFigure() {
         const stageIndex = Math.min(wrongGuesses, stages.length - 1);
@@ -796,11 +792,11 @@ function runHangmanGame_1_1(event, mode) {
         if (remaining <= 0) {
             hintButton.disabled = false;
             hintButton.classList.add("hint-ready");
-            hintCooldownText.textContent = "Pista disponible";
+            hintCooldownText.textContent = t("hint_available");
         } else {
             hintButton.disabled = true;
             hintButton.classList.remove("hint-ready");
-            hintCooldownText.textContent = `Enfriamiento: ${remaining}`;
+            hintCooldownText.textContent = t("hint_cooldown", { remaining });
         }
     }
 
@@ -833,11 +829,11 @@ function runHangmanGame_1_1(event, mode) {
 
         const isLetters = kind === "letters";
         const items = isLetters ? guessedLetters : guessedWords;
-        const label = isLetters ? "Letras usadas" : "Palabras usadas";
+        const label = isLetters ? t("hangman_used_letters") : t("hangman_used_words");
 
         hangmanUsedModalContent.textContent = items.length > 0
-            ? `${label}: ${items.join(", ")}`
-            : `${label}: ninguna todavía`;
+            ? t("hangman_used_list", { label, items: items.join(", ") })
+            : t("hangman_used_empty", { label });
 
         hangmanUsedModal.classList.remove("hidden");
     }
@@ -870,17 +866,17 @@ function runHangmanGame_1_1(event, mode) {
         updateGithubPrompt();
 
         dialogueContainer.style.opacity = 1;
-        let message = `Pista usada: la letra "${revealedLetter}" ya está revelada`;
+        let message = t("hangman_hint_used", { letter: revealedLetter });
 
         if (isWordFullyRevealed()) {
             dialogueContainer.style.opacity = 1;
-            dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
+            dialogueParagraph.textContent = t("hangman_completed", { message });
             endGame(true);
             return;
         }
         if (wrongGuesses >= maxWrongGuesses) {
             dialogueContainer.style.opacity = 1;
-            dialogueParagraph.textContent = `${message}. El ahorcado se completó...`;
+            dialogueParagraph.textContent = t("hangman_hangman_done", { message });
             handleDefeat();
             return;
         }
@@ -897,7 +893,7 @@ function runHangmanGame_1_1(event, mode) {
     }
 
     function formatAttemptCount(count) {
-        return count === 0 ? "Ninguno" : count;
+        return count === 0 ? t("hangman_none") : count;
     }
 
     function applyRevive() {
@@ -915,9 +911,9 @@ function runHangmanGame_1_1(event, mode) {
     function showLoseMenu() {
         hideGameplayUI();
         const messageData = loseMessages[Math.floor(Math.random() * loseMessages.length)];
-        hangmanLoseMessage.textContent = messageData.text;
-        hangmanLoseCancel.textContent = messageData.cancelLabel;
-        hangmanLoseAccept.textContent = messageData.acceptLabel;
+        hangmanLoseMessage.textContent = t(messageData.textKey);
+        hangmanLoseCancel.textContent = t(messageData.cancelKey);
+        hangmanLoseAccept.textContent = t(messageData.acceptKey);
         hangmanLoseMenu.classList.remove("hidden");
 
         hangmanLoseCancel.onclick = () => {
@@ -980,15 +976,15 @@ function runHangmanGame_1_1(event, mode) {
         const finalFigureText = hangmanFigure.textContent;
 
         const resultLines = [
-            `Modo de juego: ${mode === "casual" ? "Casual" : mode === "desafio" ? "Desafío" : "Experto"}`,
+            t("hangman_res_mode", { mode: t("mode_" + mode) }),
             won
-                ? `Palabra secreta encontrada: ${secretWord}`
-                : `Palabra secreta que buscabas: ${secretWord}`,
-            !won ? `Estado final de tu búsqueda: ${hangmanProgress.textContent}` : null,
-            `Intentos de adivinar letra: ${letterAttemptsUsed}`,
-            `Intentos de adivinar palabra: ${formatAttemptCount(wordAttemptsUsed)}`,
-            hintsEnabled ? `Pistas usadas: ${hintsUsedCount}` : null,
-            `Vidas restantes: ${attemptsLeft()}`
+                ? t("hangman_res_found", { word: secretWord })
+                : t("hangman_res_missed", { word: secretWord }),
+            !won ? t("hangman_res_progress", { progress: hangmanProgress.textContent }) : null,
+            t("hangman_res_letter_attempts", { count: letterAttemptsUsed }),
+            t("hangman_res_word_attempts", { count: formatAttemptCount(wordAttemptsUsed) }),
+            hintsEnabled ? t("hangman_res_hints", { count: hintsUsedCount }) : null,
+            t("hangman_res_lives", { count: attemptsLeft() })
         ].filter(line => line !== null);
 
         showHangmanResults(won, finalFigureText, resultLines, () => {
@@ -1025,7 +1021,7 @@ function runHangmanGame_1_1(event, mode) {
             onReturn: () => {
                 applyRevive();
                 dialogueContainer.style.opacity = 1;
-                dialogueParagraph.textContent = "¡Gracias por el apoyo! Recibiste 3 vidas extra";
+                dialogueParagraph.textContent = t("hangman_thanks_lives");
                 setTimeout(() => {
                     dialogueContainer.style.opacity = 0;
                 }, 2500);
@@ -1046,18 +1042,18 @@ function runHangmanGame_1_1(event, mode) {
         guessInput.value = "";
 
         if (raw.length === 0) {
-            showQuickMessage("Escribe una letra o una palabra...");
+            showQuickMessage(t("msg_write_letter_or_word"));
             return;
         }
         if (!/^[a-z]+$/.test(raw)) {
-            showQuickMessage("Solo letras, nada de números ni símbolos...");
+            showQuickMessage(t("msg_letters_only"));
             return;
         }
 
         if (raw.length === 1) {
             const letter = raw;
             if (guessedLetters.includes(letter)) {
-                showQuickMessage(`Ya probaste la letra "${letter}" antes, este intento no cuenta jeje`);
+                showQuickMessage(t("hangman_letter_repeat", { letter }));
                 return;
             }
 
@@ -1065,9 +1061,7 @@ function runHangmanGame_1_1(event, mode) {
             letterAttemptsUsed++;
 
             const count = countLetterOccurrences(secretWord, letter);
-            const message = count > 0
-                ? `La letra "${letter}" aparece ${count} ${count === 1 ? "vez" : "veces"} en la palabra secreta`
-                : `La letra "${letter}" no aparece en la palabra secreta`;
+            const message = getLetterMessage(letter, count);
 
             if (count === 0) {
                 wrongGuesses++;
@@ -1081,13 +1075,13 @@ function runHangmanGame_1_1(event, mode) {
 
             if (isWordFullyRevealed()) {
                 dialogueContainer.style.opacity = 1;
-                dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
+                dialogueParagraph.textContent = t("hangman_completed", { message });
                 endGame(true);
                 return;
             }
             if (wrongGuesses >= maxWrongGuesses) {
                 dialogueContainer.style.opacity = 1;
-                dialogueParagraph.textContent = `${message}. El ahorcado se completó...`;
+                dialogueParagraph.textContent = t("hangman_hangman_done", { message });
                 handleDefeat();
                 return;
             }
@@ -1096,7 +1090,7 @@ function runHangmanGame_1_1(event, mode) {
         }
 
         if (raw.length === 2) {
-            showQuickMessage("Ingresa solo una letra o una palabra completa");
+            showQuickMessage(t("msg_one_letter_or_word"));
             return;
         }
 
@@ -1110,13 +1104,13 @@ function runHangmanGame_1_1(event, mode) {
             if (isWordMatch(secretWord, raw)) {
                 guessedLetters = getUniqueLetters(secretWord);
                 updateProgress();
-                dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
+                dialogueParagraph.textContent = t("hangman_word_right");
                 endGame(true);
             } else {
                 wrongGuesses = maxWrongGuesses;
                 updateFigure();
                 updateGithubPrompt();
-                dialogueParagraph.textContent = "Nope... esa no era, perdiste tu único intento de palabra";
+                dialogueParagraph.textContent = t("hangman_word_wrong_single");
                 handleDefeat();
             }
             return;
@@ -1124,7 +1118,7 @@ function runHangmanGame_1_1(event, mode) {
 
         // mode === "casual": la palabra completa se puede intentar varias veces
         if (guessedWords.includes(raw)) {
-            showQuickMessage(`Ya probaste la palabra "${raw}" antes, este intento no cuenta jeje`);
+            showQuickMessage(t("hangman_word_repeat", { word: raw }));
             return;
         }
 
@@ -1135,7 +1129,7 @@ function runHangmanGame_1_1(event, mode) {
             guessedLetters = getUniqueLetters(secretWord);
             updateProgress();
             dialogueContainer.style.opacity = 1;
-            dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
+            dialogueParagraph.textContent = t("hangman_word_right");
             endGame(true);
             return;
         }
@@ -1147,11 +1141,11 @@ function runHangmanGame_1_1(event, mode) {
 
         if (wrongGuesses >= maxWrongGuesses) {
             dialogueContainer.style.opacity = 1;
-            dialogueParagraph.textContent = "Nope... no es esa. El ahorcado se completó...";
+            dialogueParagraph.textContent = t("hangman_word_wrong_final");
             handleDefeat();
             return;
         }
-        showQuickMessage("Nope... no es esa");
+        showQuickMessage(t("hangman_word_wrong"));
     };
 }
 

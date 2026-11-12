@@ -209,5 +209,48 @@ const lang_en = {
 
     // Hangman (Event 7, base version)
     hangman_letter_repeat_v1: "You already tried the letter \"{letter}\"",
-    hangman_word_repeat_v1: "You already tried the word \"{word}\""
+    hangman_word_repeat_v1: "You already tried the word \"{word}\"",
+
+    // Hangman (modes)
+    hangman_hint_lives_one: "The secret word has {letters} letters ({count} life)",
+    hangman_hint_lives_other: "The secret word has {letters} letters ({count} lives)",
+    hint_available: "Hint available",
+    hint_cooldown: "Cooldown: {remaining}",
+    hangman_used_letters: "Used letters",
+    hangman_used_words: "Used words",
+    hangman_used_list: "{label}: {items}",
+    hangman_used_empty: "{label}: none yet",
+    hangman_hint_used: "Hint used: the letter \"{letter}\" is now revealed",
+    hangman_hangman_done: "{message}. The hangman is complete...",
+    hangman_none: "None",
+    hangman_thanks_lives: "Thanks for the support! You got 3 extra lives",
+    hangman_letter_repeat: "You already tried the letter \"{letter}\" before, this attempt doesn't count hehe",
+    hangman_word_repeat: "You already tried the word \"{word}\" before, this attempt doesn't count hehe",
+    hangman_word_wrong_single: "Nope... that wasn't it, you lost your only word attempt",
+    hangman_word_wrong_final: "Nope... that's not it. The hangman is complete...",
+
+    // Hangman (results table)
+    hangman_win_title: "You won!",
+    hangman_lose_title: "You lost...",
+    hangman_win_subtitle: "You cracked the word in time",
+    hangman_lose_subtitle: "The hangman was completed",
+    hangman_res_mode: "Game mode: {mode}",
+    hangman_res_found: "Secret word found: {word}",
+    hangman_res_missed: "The secret word you were looking for: {word}",
+    hangman_res_progress: "Final state of your search: {progress}",
+    hangman_res_letter_attempts: "Letter guesses: {count}",
+    hangman_res_word_attempts: "Word guesses: {count}",
+    hangman_res_hints: "Hints used: {count}",
+    hangman_res_lives: "Lives left: {count}",
+
+    // Hangman (Expert mode defeat messages)
+    lose1_text: "You lost...\nFollow the creator and maybe you'll get another chance",
+    lose1_cancel: "No thanks",
+    lose1_accept: "Follow Yona on GitHub",
+    lose2_text: "You lost.\nA ⭐ could change your fate...",
+    lose2_cancel: "No thanks",
+    lose2_accept: "Star the repository",
+    lose3_text: "You lost.\nGo to the repository, find \"Star\" and click it.\nMaybe something will happen...",
+    lose3_cancel: "I don't want to",
+    lose3_accept: "Try my luck"
 };
