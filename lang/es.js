@@ -179,7 +179,7 @@ const lang_es = {
     resD_good: "Estuviste muy bien, te tomó {attempts} intentos",
     resD_meh: "No estuvo tan mal, te tomó {attempts} intentos",
     resD_hard: "Fue difícil, ¿eh? Te tomó {attempts} intentos",
-        resD_toomuch: "Creo que fue demasiado... te tomó {attempts} intentos",
+    resD_toomuch: "Creo que fue demasiado... te tomó {attempts} intentos",
 
     // Cuenta Conmigo
     btn_answer: "Responder",
@@ -202,5 +202,22 @@ const lang_es = {
     resM10_good: "Estuviste bien",
     resM10_ok: "No estuvo mal",
     resM10_practice: "Necesitas practicar más...",
-    resM10_dislike: "¿No te gustan las matemáticas?"
+    resM10_dislike: "¿No te gustan las matemáticas?",
+
+    // Ahorcado (compartido)
+    hangman_placeholder: "Una letra o la palabra...",
+    hangman_hint_base: "La palabra secreta tiene {letters} letras",
+    msg_write_letter_or_word: "Escribe una letra o una palabra...",
+    msg_letters_only: "Solo letras, nada de números ni símbolos...",
+    msg_one_letter_or_word: "Ingresa solo una letra o una palabra completa",
+    hangman_letter_found_one: "La letra \"{letter}\" aparece {count} vez en la palabra secreta",
+    hangman_letter_found_other: "La letra \"{letter}\" aparece {count} veces en la palabra secreta",
+    hangman_letter_missing: "La letra \"{letter}\" no aparece en la palabra secreta",
+    hangman_completed: "{message}. ¡Completaste la palabra! :D",
+    hangman_word_right: "¡Esa es! La adivinaste :D",
+    hangman_word_wrong: "Nope... no es esa",
+
+    // Ahorcado (Evento 7, versión base)
+    hangman_letter_repeat_v1: "Ya probaste la letra \"{letter}\"",
+    hangman_word_repeat_v1: "Ya intentaste la palabra \"{word}\""
 };

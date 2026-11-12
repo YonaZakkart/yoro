@@ -544,6 +544,13 @@ document.addEventListener("visibilitychange", () => {
     }
 });
 
+// Mensaje de "la letra aparece N veces" o "no aparece", compartido por todas las versiones del Ahorcado
+function getLetterMessage(letter, count) {
+    return count > 0
+        ? tp("hangman_letter_found", count, { letter })
+        : t("hangman_letter_missing", { letter });
+}
+
 // Evento 7. Juego: Ahorcado (version base) - letra por letra o palabra completa, sin limite de intentos
 function startHangmanGame(event) {
     const secretWord = pickSecretWord();
@@ -559,12 +566,12 @@ function startHangmanGame(event) {
     enableEnterKey(guessInput, guessButton);
     guessButton.textContent = t("btn_guess");
     guessInput.type = "text";
-    guessInput.placeholder = "Una letra o la palabra...";
+    guessInput.placeholder = t("hangman_placeholder");
 
     let guessedLetters = [];
     let guessedWords = [];
 
-    hangmanHint.textContent = `La palabra secreta tiene ${secretWord.length} letras`;
+    hangmanHint.textContent = t("hangman_hint_base", { letters: secretWord.length });
     updateProgress();
     hangmanStatus.classList.remove("hidden");
 
@@ -599,32 +606,30 @@ function startHangmanGame(event) {
         guessInput.value = "";
 
         if (raw.length === 0) {
-            showQuickMessage("Escribe una letra o una palabra...");
+            showQuickMessage(t("msg_write_letter_or_word"));
             return;
         }
         if (!/^[a-z]+$/.test(raw)) {
-            showQuickMessage("Solo letras, nada de números ni símbolos...");
+            showQuickMessage(t("msg_letters_only"));
             return;
         }
 
         if (raw.length === 1) {
             const letter = raw;
             if (guessedLetters.includes(letter)) {
-                showQuickMessage(`Ya probaste la letra "${letter}"`);
+                showQuickMessage(t("hangman_letter_repeat_v1", { letter }));
                 return;
             }
 
             guessedLetters.push(letter);
             const count = countLetterOccurrences(secretWord, letter);
-            const message = count > 0
-                ? `La letra "${letter}" aparece ${count} ${count === 1 ? "vez" : "veces"} en la palabra secreta`
-                : `La letra "${letter}" no aparece en la palabra secreta`;
+            const message = getLetterMessage(letter, count);
 
             if (count > 0) updateProgress();
 
             if (isWordFullyRevealed()) {
                 dialogueContainer.style.opacity = 1;
-                dialogueParagraph.textContent = `${message}. ¡Completaste la palabra! :D`;
+                dialogueParagraph.textContent = t("hangman_completed", { message });
                 finishGame();
                 return;
             }
@@ -633,12 +638,12 @@ function startHangmanGame(event) {
         }
 
         if (raw.length === 2) {
-            showQuickMessage("Ingresa solo una letra o una palabra completa");
+            showQuickMessage(t("msg_one_letter_or_word"));
             return;
         }
 
         if (guessedWords.includes(raw)) {
-            showQuickMessage(`Ya intentaste la palabra "${raw}"`);
+            showQuickMessage(t("hangman_word_repeat_v1", { word: raw }));
             return;
         }
 
@@ -647,11 +652,11 @@ function startHangmanGame(event) {
             guessedLetters = getUniqueLetters(secretWord);
             updateProgress();
             dialogueContainer.style.opacity = 1;
-            dialogueParagraph.textContent = "¡Esa es! La adivinaste :D";
+            dialogueParagraph.textContent = t("hangman_word_right");
             finishGame();
             return;
         }
-        showQuickMessage("Nope... no es esa");
+        showQuickMessage(t("hangman_word_wrong"));
     };
 }
 

@@ -169,7 +169,7 @@ const lang_en = {
     resD_good: "You did really well, it took you {attempts} attempts",
     resD_meh: "Not too bad, it took you {attempts} attempts",
     resD_hard: "That was tough, huh? It took you {attempts} attempts",
-        resD_toomuch: "I think that was too much... it took you {attempts} attempts",
+    resD_toomuch: "I think that was too much... it took you {attempts} attempts",
 
     // Count With Me
     btn_answer: "Answer",
@@ -192,5 +192,22 @@ const lang_en = {
     resM10_good: "You did well",
     resM10_ok: "Not bad",
     resM10_practice: "You need more practice...",
-    resM10_dislike: "Don't you like math?"
+    resM10_dislike: "Don't you like math?",
+
+    // Hangman (shared)
+    hangman_placeholder: "A letter or the word...",
+    hangman_hint_base: "The secret word has {letters} letters",
+    msg_write_letter_or_word: "Type a letter or a word...",
+    msg_letters_only: "Letters only, no numbers or symbols...",
+    msg_one_letter_or_word: "Enter just one letter or a whole word",
+    hangman_letter_found_one: "The letter \"{letter}\" appears {count} time in the secret word",
+    hangman_letter_found_other: "The letter \"{letter}\" appears {count} times in the secret word",
+    hangman_letter_missing: "The letter \"{letter}\" is not in the secret word",
+    hangman_completed: "{message}. You completed the word! :D",
+    hangman_word_right: "That's it! You guessed it :D",
+    hangman_word_wrong: "Nope... that's not it",
+
+    // Hangman (Event 7, base version)
+    hangman_letter_repeat_v1: "You already tried the letter \"{letter}\"",
+    hangman_word_repeat_v1: "You already tried the word \"{word}\""
 };
