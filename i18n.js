@@ -23,6 +23,7 @@ function setLang(lang) {
     if (!supportedLangs.includes(lang)) return;
     currentLang = lang;
     document.documentElement.lang = lang;
+    applyTranslations();
     try {
         localStorage.setItem(LANG_STORAGE_KEY, lang);
     } catch (error) {
@@ -56,3 +57,12 @@ function tp(key, count, params = {}) {
 }
 
 document.documentElement.lang = currentLang;
+
+// Traduce el texto fijo del HTML: cada elemento con data-i18n="clave" recibe su texto en el idioma activo
+function applyTranslations() {
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+        element.textContent = t(element.dataset.i18n);
+    });
+}
+
+applyTranslations();

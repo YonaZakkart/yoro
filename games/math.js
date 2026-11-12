@@ -17,33 +17,23 @@ function generateMathProblem(max = 20, allowNegative = false) {
     }
 }
 
-// Evalua el resultado de una ronda 
+// Evalua el resultado de una ronda de 5 ejercicios
 function getMathResultMessage(hits, total) {
     const won = hits >= Math.ceil(total / 2);
-
-    const messages = {
-        5: "¡Excelente!",
-        4: "Estuviste bien",
-        3: "No estuvo mal",
-        2: "Necesitas practicar más...",
-        1: "Lejos de la meta...",
-        0: "¿No te gustan las matemáticas?"
-    };
-
-    return { won, text: messages[hits] };
+    return { won, text: t(`resM_${hits}`) };
 }
 
-// Mensajes de resultado para el modo Casual de Cuenta Conmigo 1.1 
+// Mensajes de resultado para el modo Casual de Cuenta Conmigo 1.1
 function getMathResultMessage10(hits) {
     const total = 10;
     const won = hits >= Math.ceil(total / 2);
 
-    let text;
-    if (hits === 10) text = "¡Excelente!";
-    else if (hits >= 8) text = "Estuviste bien";
-    else if (hits >= 5) text = "No estuvo mal";
-    else if (hits >= 2) text = "Necesitas practicar más...";
-    else text = "¿No te gustan las matemáticas?";
+    let key;
+    if (hits === 10) key = "resM10_perfect";
+    else if (hits >= 8) key = "resM10_good";
+    else if (hits >= 5) key = "resM10_ok";
+    else if (hits >= 2) key = "resM10_practice";
+    else key = "resM10_dislike";
 
-    return { won, text };
+    return { won, text: t(key) };
 }
