@@ -571,7 +571,9 @@ function startHangmanGame(event) {
     let guessedLetters = [];
     let guessedWords = [];
 
-    hangmanHint.textContent = tp("hangman_hint_lives", attemptsLeft(), { letters: secretWord.length });
+    function updateHint() {
+        hangmanHint.textContent = tp("hangman_hint_lives", attemptsLeft(), { letters: secretWord.length });
+    }
     updateProgress();
     hangmanStatus.classList.remove("hidden");
 
@@ -778,7 +780,9 @@ function runHangmanGame_1_1(event, mode) {
         ).join(" ");
     }
 
-    hangmanHint.textContent = tp("hangman_hint_lives", attemptsLeft(), { letters: secretWord.length });
+    function updateHint() {
+        hangmanHint.textContent = tp("hangman_hint_lives", attemptsLeft(), { letters: secretWord.length });
+    }
 
     function updateFigure() {
         const stageIndex = Math.min(wrongGuesses, stages.length - 1);

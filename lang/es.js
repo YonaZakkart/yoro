@@ -262,5 +262,16 @@ const lang_es = {
     lose2_accept: "Marca con una estrella el repositorio",
     lose3_text: "Has perdido.\nEntra al repositorio, busca \"Star\" y dale click.\nQuizá pase algo...",
     lose3_cancel: "No quiero",
-    lose3_accept: "Intentar mi suerte"
+    lose3_accept: "Intentar mi suerte",
+
+    // Texto fijo del HTML del Ahorcado (data-i18n)
+    btn_hint: "💡 Pista",
+    btn_close: "Cerrar",
+    btn_accept: "Aceptar",
+    btn_cancel: "Cancelar",
+    btn_thanks: "Gracias",
+    hangman_github_prompt: "¿Quieres más intentos?\nMarca con una estrella el repositorio de GitHub!",
+    hangman_github_button: "Ir a GitHub",
+    hint_confirm_text: "Se agregará una letra aleatoria a tu avance, pero el ahorcado avanzará y perderás 2 vidas.",
+    reward_text: "¡Ha funcionado!\nHas recibido 3 vidas adicionales"
 };

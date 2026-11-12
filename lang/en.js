@@ -252,5 +252,16 @@ const lang_en = {
     lose2_accept: "Star the repository",
     lose3_text: "You lost.\nGo to the repository, find \"Star\" and click it.\nMaybe something will happen...",
     lose3_cancel: "I don't want to",
-    lose3_accept: "Try my luck"
+    lose3_accept: "Try my luck",
+
+    // Fixed HTML text of Hangman (data-i18n)
+    btn_hint: "💡 Hint",
+    btn_close: "Close",
+    btn_accept: "OK",
+    btn_cancel: "Cancel",
+    btn_thanks: "Thanks",
+    hangman_github_prompt: "Want more attempts?\nStar the GitHub repository!",
+    hangman_github_button: "Go to GitHub",
+    hint_confirm_text: "A random letter will be added to your progress, but the hangman will advance and you will lose 2 lives.",
+    reward_text: "It worked!\nYou received 3 extra lives"
 };
