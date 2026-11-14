@@ -1163,6 +1163,7 @@ function openSettingsPanel() {
     if (document.activeElement) document.activeElement.blur();
     showSettingsOptions();
     changeNameOption.classList.toggle("hidden", !localStorage.getItem("yoro_player_name"));
+    updateLanguageButtonText();
     settingsPanel.classList.remove("hidden");
 }
 
@@ -1178,6 +1179,61 @@ settingsButton.onclick = (clickEvent) => {
 };
 settingsPanel.addEventListener("click", (clickEvent) => clickEvent.stopPropagation());
 settingsCloseButton.onclick = closeSettingsPanel;
+
+// Selector de idioma en panel de opciones
+const languageButton = document.getElementById("language-button");
+const languageDropdown = document.getElementById("language-dropdown");
+const languageButtonText = document.getElementById("language-button-text");
+
+let languageDropdownOpen = false;
+
+function updateLanguageButtonText() {
+    const current = getCurrentLang();
+    languageButtonText.textContent = t(current === "es" ? "lang_spanish" : "lang_english");
+}
+
+function toggleLanguageDropdown() {
+    languageDropdownOpen = !languageDropdownOpen;
+    languageDropdown.classList.toggle("hidden", !languageDropdownOpen);
+    languageButton.setAttribute("aria-expanded", languageDropdownOpen);
+
+    if (languageDropdownOpen) {
+        setTimeout(() => {
+            document.addEventListener("click", closeLanguageDropdownOutside, { once: true });
+        }, 0);
+    }
+}
+
+function closeLanguageDropdownOutside(clickEvent) {
+    if (!languageButton.contains(clickEvent.target) && !languageDropdown.contains(clickEvent.target)) {
+        languageDropdownOpen = false;
+        languageDropdown.classList.add("hidden");
+        languageButton.setAttribute("aria-expanded", "false");
+    } else {
+        document.addEventListener("click", closeLanguageDropdownOutside, { once: true });
+    }
+}
+
+languageButton.onclick = (e) => {
+    e.stopPropagation();
+    toggleLanguageDropdown();
+};
+
+languageDropdown.querySelectorAll("[data-lang]").forEach(btn => {
+    btn.onclick = (e) => {
+        e.stopPropagation();
+        const lang = btn.dataset.lang;
+        if (lang !== getCurrentLang()) {
+            setLang(lang);
+            updateLanguageButtonText();
+            updateMusicButton();
+            settingsMessage.textContent = "";
+        }
+        languageDropdownOpen = false;
+        languageDropdown.classList.add("hidden");
+        languageButton.setAttribute("aria-expanded", "false");
+    };
+});
 
 // Opcion "Cambiar mi nombre" del panel de opciones
 const settingsOptions = document.getElementById("settings-options");
