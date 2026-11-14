@@ -63,6 +63,15 @@ function applyTranslations() {
     document.querySelectorAll("[data-i18n]").forEach(element => {
         element.textContent = t(element.dataset.i18n);
     });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+        element.placeholder = t(element.dataset.i18nPlaceholder);
+    });
+    // título (tooltip) y aria-label juntos, para los botones que solo tienen un ícono
+    document.querySelectorAll("[data-i18n-title]").forEach(element => {
+        const text = t(element.dataset.i18nTitle);
+        element.title = text;
+        element.setAttribute("aria-label", text);
+    });
 }
 
 applyTranslations();
