@@ -426,6 +426,7 @@ body {
     border-radius: 12px;
     overflow: hidden;
     border: 1px solid rgba(110, 231, 242, 0.35);
+    background-color: var(--bg-void); /* fondo sólido negro */
 }
 
 #language-dropdown button {
@@ -443,4 +444,13 @@ body {
 
 #language-dropdown button:hover {
     background-color: rgba(110, 231, 242, 0.15);
+}
+
+/* Centrar texto del botón principal, icono a la derecha */
+#language-button {
+    justify-content: center;
+}
+#language-button .material-symbols-outlined {
+    position: absolute;
+    right: 12px;
 }
