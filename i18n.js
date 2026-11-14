@@ -6,17 +6,23 @@ const supportedLangs = ["es", "en"];
 // un diccionario por idioma (vienen de lang/es.js y lang/en.js, que se cargan antes que este archivo)
 const dictionaries = { es: lang_es, en: lang_en };
 
-// lee el idioma guardado; si no hay (o no es válido), usa español
+// lee el idioma guardado; si no hay (o no es válido), detecta del navegador; si no es es/en, usa inglés
 function loadLang() {
     try {
         const saved = localStorage.getItem(LANG_STORAGE_KEY);
-        return supportedLangs.includes(saved) ? saved : "es";
+        if (supportedLangs.includes(saved)) return saved;
+        const browserLang = navigator.language?.split('-')[0].toLowerCase();
+        if (supportedLangs.includes(browserLang)) return browserLang;
+        return "en";
     } catch (error) {
-        return "es";
+        return "en";
     }
 }
 
 let currentLang = loadLang();
+
+// expone el idioma actual para que main.js pueda leerlo
+function getCurrentLang() { return currentLang; }
 
 // cambia el idioma activo y lo guarda para la próxima visita
 function setLang(lang) {
