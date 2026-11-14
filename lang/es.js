@@ -275,7 +275,7 @@ const lang_es = {
     hint_confirm_text: "Se agregará una letra aleatoria a tu avance, pero el ahorcado avanzará y perderás 2 vidas.",
     reward_text: "¡Ha funcionado!\nHas recibido 3 vidas adicionales",
 
-        // Interfaz fija (HTML)
+    // Interfaz fija (HTML)
     top_settings: "Opciones",
     top_stats: "Estadísticas",
     skip_time: "Saltar tiempo...",
@@ -296,7 +296,7 @@ const lang_es = {
     continue_yes: "Sí, vamos",
     continue_later: "Quizás más tarde",
 
-        // Panel de Opciones (JS)
+    // Panel de Opciones (JS)
     name_too_short: "Necesito al menos 3 letras...",
     settings_same_name: "Sigue siendo {name}, jeje",
     settings_react_1: "{name}... me gusta, jeje",
@@ -308,7 +308,7 @@ const lang_es = {
     btn_yes: "Sí",
     btn_no: "No",
 
-        // Estadísticas (JS)
+    // Estadísticas (JS)
     stat_name: "Nombre",
     stat_visits: "Visitas",
     stat_days_visited: "Días de visita",
@@ -336,4 +336,32 @@ const lang_es = {
     unit_attempts_other: "{count} intentos",
     unit_lives_one: "{count} vida",
     unit_lives_other: "{count} vidas",
+
+    // Curiosidades de Yoro (idle)
+    cur_visits_one: "Has entrado {count} vez",
+    cur_visits_other: "Has entrado {count} veces",
+    cur_game_plays_one: "Jugamos \"{game}\" {count} vez",
+    cur_game_plays_other: "Jugamos \"{game}\" {count} veces",
+    cur_number_best: "Tu mejor partida de \"{game}\" fue en {attempts}",
+    cur_count_best_ten: "Tu mejor puntaje en modo 10 fue {score}/10",
+    cur_count_best_infinite: "Tu mejor racha en modo Infinito fue de {streak}",
+    cur_count_answers_one: "He recibido {count} respuesta en total",
+    cur_count_answers_other: "He recibido {count} respuestas en total",
+    cur_hangman_wins_one: "Has ganado en {game} {count} vez",
+    cur_hangman_wins_other: "Has ganado en {game} {count} veces",
+    cur_hangman_margin: "Tu mejor partida de {game} la ganaste con {lives} de sobra",
+    cur_total_games_one: "En total hemos jugado {count} partida",
+    cur_total_games_other: "En total hemos jugado {count} partidas",
+    idle_filler_1: ". . .",
+    idle_filler_2: "trabajando...",
+    idle_filler_3: "hmm...",
+    idle_filler_4: "bleh :b",
+    idle_filler_5: "Guardando datos...",
+    idle_filler_6: "Revisando detalles...",
+
+    // Título de la pestaña y música
+    tab_away_1: "¿Te vas...?",
+    tab_away_2: "¿Sigues ahí...?",
+    music_on: "Música (activada)",
+    music_off: "Música (desactivada)"
 };

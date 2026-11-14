@@ -298,7 +298,7 @@ const lang_en = {
     btn_yes: "Yes",
     btn_no: "No",
 
-        // Statistics (JS)
+    // Statistics (JS)
     stat_name: "Name",
     stat_visits: "Visits",
     stat_days_visited: "Days visited",
@@ -326,4 +326,32 @@ const lang_en = {
     unit_attempts_other: "{count} attempts",
     unit_lives_one: "{count} life",
     unit_lives_other: "{count} lives",
+
+    // Yoro's curiosities (idle)
+    cur_visits_one: "You've visited {count} time",
+    cur_visits_other: "You've visited {count} times",
+    cur_game_plays_one: "We played \"{game}\" {count} time",
+    cur_game_plays_other: "We played \"{game}\" {count} times",
+    cur_number_best: "Your best \"{game}\" game took {attempts}",
+    cur_count_best_ten: "Your best score in 10 mode was {score}/10",
+    cur_count_best_infinite: "Your best streak in Infinite mode was {streak}",
+    cur_count_answers_one: "I've received {count} answer in total",
+    cur_count_answers_other: "I've received {count} answers in total",
+    cur_hangman_wins_one: "You've won at {game} {count} time",
+    cur_hangman_wins_other: "You've won at {game} {count} times",
+    cur_hangman_margin: "You won your best {game} game with {lives} to spare",
+    cur_total_games_one: "We've played {count} game in total",
+    cur_total_games_other: "We've played {count} games in total",
+    idle_filler_1: ". . .",
+    idle_filler_2: "working...",
+    idle_filler_3: "hmm...",
+    idle_filler_4: "bleh :b",
+    idle_filler_5: "Saving data...",
+    idle_filler_6: "Checking details...",
+
+    // Tab title and music
+    tab_away_1: "Are you leaving...?",
+    tab_away_2: "Are you still there...?",
+    music_on: "Music (on)",
+    music_off: "Music (off)"
 };

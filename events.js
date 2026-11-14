@@ -230,7 +230,7 @@ function showDialogue(lines, onComplete) {
 }
 
 // Frases de relleno para cuando Yoro "piensa" entre una curiosidad y otra
-const idleFillers = [". . .", "trabajando...", "hmm...", "bleh :b", "Guardando datos...", "Revisando detalles..."];
+const idleFillerKeys = ["idle_filler_1", "idle_filler_2", "idle_filler_3", "idle_filler_4", "idle_filler_5", "idle_filler_6"];
 
 // Arma la lista de curiosidades disponibles ahora mismo, a partir de las estadisticas actuales
 function getAvailableCuriosities() {
@@ -238,19 +238,22 @@ function getAvailableCuriosities() {
     const c = stats.games.countWithMe;
     const h = stats.games.hangman;
     const totalPlays = n.plays + c.plays + h.plays;
+    const numberName = t("game_guess_number");
+    const countName = t("game_cuenta_conmigo");
+    const hangmanName = t("game_ahorcado");
 
     const list = [
-        `Has entrado ${formatCount(stats.visits, "vez", "veces")}`,
-        n.plays > 0 ? `Jugamos "Adivina el Número" ${formatCount(n.plays, "vez", "veces")}` : null,
-        n.bestAttempts !== null ? `Tu mejor partida de "Adivina el Número" fue en ${formatCount(n.bestAttempts, "intento", "intentos")}` : null,
-        c.plays > 0 ? `Jugamos "Cuenta Conmigo" ${formatCount(c.plays, "vez", "veces")}` : null,
-        c.bestTen !== null ? `Tu mejor puntaje en modo 10 fue ${c.bestTen}/10` : null,
-        c.bestInfinite !== null ? `Tu mejor racha en modo Infinito fue de ${c.bestInfinite}` : null,
-        c.totalAnswers > 0 ? `He recibido ${formatCount(c.totalAnswers, "respuesta", "respuestas")} en total` : null,
-        h.plays > 0 ? `Hemos jugado Ahorcado ${formatCount(h.plays, "vez", "veces")}` : null,
-        h.wins > 0 ? `Has ganado en Ahorcado ${formatCount(h.wins, "vez", "veces")}` : null,
-        h.bestMargin !== null ? `Tu mejor partida de Ahorcado la ganaste con ${formatCount(h.bestMargin, "vida", "vidas")} de sobra` : null,
-        totalPlays > 0 ? `En total hemos jugado ${formatCount(totalPlays, "partida", "partidas")}` : null
+        tp("cur_visits", stats.visits),
+        n.plays > 0 ? tp("cur_game_plays", n.plays, { game: numberName }) : null,
+        n.bestAttempts !== null ? t("cur_number_best", { game: numberName, attempts: formatUnits(n.bestAttempts, "unit_attempts") }) : null,
+        c.plays > 0 ? tp("cur_game_plays", c.plays, { game: countName }) : null,
+        c.bestTen !== null ? t("cur_count_best_ten", { score: c.bestTen }) : null,
+        c.bestInfinite !== null ? t("cur_count_best_infinite", { streak: c.bestInfinite }) : null,
+        c.totalAnswers > 0 ? tp("cur_count_answers", c.totalAnswers) : null,
+        h.plays > 0 ? tp("cur_game_plays", h.plays, { game: hangmanName }) : null,
+        h.wins > 0 ? tp("cur_hangman_wins", h.wins, { game: hangmanName }) : null,
+        h.bestMargin !== null ? t("cur_hangman_margin", { game: hangmanName, lives: formatUnits(h.bestMargin, "unit_lives") }) : null,
+        totalPlays > 0 ? tp("cur_total_games", totalPlays) : null
     ];
 
     return list.filter(text => text !== null);
@@ -287,7 +290,7 @@ function startIdleDialogues() {
     const queue = [];
     curiosities.forEach(stat => {
         queue.push(stat);
-        queue.push(idleFillers[Math.floor(Math.random() * idleFillers.length)]);
+        queue.push(t(idleFillerKeys[Math.floor(Math.random() * idleFillerKeys.length)]));
     });
 
     let elapsed = 0;

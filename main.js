@@ -521,11 +521,11 @@ document.addEventListener("visibilitychange", () => {
 
     if (document.hidden) {
         awayTimeout1 = setTimeout(() => {
-            document.title = "¿Te vas...?";
+            document.title = t("tab_away_1");
         }, 2000);
 
         awayTimeout2 = setTimeout(() => {
-            document.title = "¿Sigues ahí...?";
+            document.title = t("tab_away_2");
         }, 12000);
     } else {
         document.title = originalTitle;

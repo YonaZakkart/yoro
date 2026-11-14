@@ -124,7 +124,9 @@ const musicButton = document.getElementById("music-button");
 function updateMusicButton() {
     const icon = musicButton.querySelector(".material-symbols-outlined");
     icon.textContent = musicEnabled ? "music_note" : "music_off";
-    musicButton.title = musicEnabled ? "Música (activada)" : "Música (desactivada)";
+    const label = t(musicEnabled ? "music_on" : "music_off");
+    musicButton.title = label;
+    musicButton.setAttribute("aria-label", label);
     musicButton.classList.toggle("music-on", musicEnabled);
     musicButton.classList.toggle("music-attention", !musicEnabled);
 }
