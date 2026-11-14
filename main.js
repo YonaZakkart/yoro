@@ -611,7 +611,7 @@ function startHangmanGame(event) {
             showQuickMessage(t("msg_write_letter_or_word"));
             return;
         }
-        if (!getLetterRegex().test(raw)) {
+        if (!/^[a-z]+$/.test(raw)) {
             showQuickMessage(t("msg_letters_only"));
             return;
         }
@@ -1049,7 +1049,7 @@ function runHangmanGame_1_1(event, mode) {
             showQuickMessage(t("msg_write_letter_or_word"));
             return;
         }
-        if (!getLetterRegex().test(raw)) {
+        if (!/^[a-z]+$/.test(raw)) {
             showQuickMessage(t("msg_letters_only"));
             return;
         }

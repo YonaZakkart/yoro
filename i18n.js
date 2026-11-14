@@ -81,6 +81,3 @@ function applyTranslations() {
 }
 
 applyTranslations();
-
-// expone getCurrentLang globalmente para que games/hangman.js pueda usarlo
-window.getCurrentLang = getCurrentLang;
