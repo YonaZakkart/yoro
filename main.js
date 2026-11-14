@@ -1183,11 +1183,12 @@ settingsCloseButton.onclick = closeSettingsPanel;
 // Selector de idioma en panel de opciones
 const languageButton = document.getElementById("language-button");
 const languageDropdown = document.getElementById("language-dropdown");
-const languageButtonText = document.getElementById("language-button-text");
 
 let languageDropdownOpen = false;
 
 function updateLanguageButtonText() {
+    const languageButtonText = document.getElementById("language-button-text");
+    if (!languageButtonText) return;
     const current = getCurrentLang();
     languageButtonText.textContent = t(current === "es" ? "lang_spanish" : "lang_english");
 }
