@@ -1313,11 +1313,11 @@ const statsPanel = document.getElementById("stats-panel");
 const statsCloseButton = document.getElementById("stats-close-button");
 const statsGeneralList = document.getElementById("stats-general-list");
 
-// nombres de los juegos, con las mismas claves que stats.games
-const gameNames = {
-    number: "Adivina el Número",
-    countWithMe: "Cuenta Conmigo",
-    hangman: "Ahorcado"
+// claves de los nombres de los juegos, con las mismas claves que stats.games
+const gameNameKeys = {
+    number: "game_guess_number",
+    countWithMe: "game_cuenta_conmigo",
+    hangman: "game_ahorcado"
 };
 
 // convierte "2026-10-14" en "14/10/2026" (o un guion si todavia no hay fecha)
@@ -1329,18 +1329,18 @@ function formatStatDate(dayKey) {
 
 // el juego con mas plays; en caso de empate gana el primero de la lista; sin partidas, un guion
 function getMostPlayedGame() {
-    let bestName = null;
+    let bestKey = null;
     let bestPlays = 0;
 
-    Object.keys(gameNames).forEach(key => {
+    Object.keys(gameNameKeys).forEach(key => {
         const plays = stats.games[key].plays;
         if (plays > bestPlays) {
             bestPlays = plays;
-            bestName = gameNames[key];
+            bestKey = key;
         }
     });
 
-    return bestName === null ? "—" : bestName;
+    return bestKey === null ? "—" : t(gameNameKeys[bestKey]);
 }
 
 // arma las filas de la vista general con los datos actuales
@@ -1351,13 +1351,13 @@ function renderStatsGeneral() {
     const playerName = localStorage.getItem("yoro_player_name") || "—";
 
     const rows = [
-        ["Nombre", playerName],
-        ["Visitas", stats.visits],
-        ["Días de visita", stats.daysVisited],
-        ["Primera visita", formatStatDate(stats.firstVisitDay)],
-        ["Partidas totales", totalPlays],
-        ["Juego más jugado", getMostPlayedGame()],
-        ["Índice de victoria (Ahorcado)", winRate]
+        [t("stat_name"), playerName],
+        [t("stat_visits"), stats.visits],
+        [t("stat_days_visited"), stats.daysVisited],
+        [t("stat_first_visit"), formatStatDate(stats.firstVisitDay)],
+        [t("stat_total_games"), totalPlays],
+        [t("stat_most_played"), getMostPlayedGame()],
+        [t("stat_win_rate_hangman"), winRate]
     ];
 
     fillStatRows(statsGeneralList, rows);
@@ -1413,6 +1413,13 @@ function formatCount(value, singular, plural) {
     return `${value} ${value === 1 ? singular : plural}`;
 }
 
+// un valor con su unidad en singular o plural según el idioma ("1 vida", "6 lives"), o un guion si no hay dato.
+// "key" es la base de las claves _one/_other, igual que en tp()
+function formatUnits(value, key) {
+    if (value === null) return "—";
+    return tp(key, value);
+}
+
 // llena un contenedor con filas "etiqueta ... valor" (todo como texto plano)
 function fillStatRows(container, rows) {
     container.innerHTML = "";
@@ -1439,22 +1446,22 @@ const statsDetailBuilders = {
     number: () => {
         const n = stats.games.number;
         const modeRows = (mode) => [
-            ["Partidas", mode.plays],
-            ["Mejor partida", formatCount(mode.bestAttempts, "intento", "intentos")],
-            ["Promedio de intentos", formatAverage(mode.totalAttempts, mode.plays)]
+            [t("stat_games"), mode.plays],
+            [t("stat_best_game"), formatUnits(mode.bestAttempts, "unit_attempts")],
+            [t("stat_avg_attempts"), formatAverage(mode.totalAttempts, mode.plays)]
         ];
 
         return [
             {
-                title: "General", rows: [
-                    ["Partidas", n.plays],
-                    ["Mejor partida", formatCount(n.bestAttempts, "intento", "intentos")],
-                    ["Intentos totales", n.totalAttempts],
-                    ["Promedio de intentos", formatAverage(n.totalAttempts, n.plays)]
+                title: t("stat_general"), rows: [
+                    [t("stat_games"), n.plays],
+                    [t("stat_best_game"), formatUnits(n.bestAttempts, "unit_attempts")],
+                    [t("stat_total_attempts"), n.totalAttempts],
+                    [t("stat_avg_attempts"), formatAverage(n.totalAttempts, n.plays)]
                 ]
             },
-            { title: "Casual", rows: modeRows(n.modes.casual) },
-            { title: "Desafío", rows: [...modeRows(n.modes.desafio), ["Escapes del número", n.modes.desafio.escapes]] }
+            { title: t("mode_casual"), rows: modeRows(n.modes.casual) },
+            { title: t("mode_desafio"), rows: [...modeRows(n.modes.desafio), [t("stat_escapes"), n.modes.desafio.escapes]] }
         ];
     },
 
@@ -1465,26 +1472,26 @@ const statsDetailBuilders = {
 
         return [
             {
-                title: "General", rows: [
-                    ["Partidas", c.plays],
-                    ["Respuestas totales", c.totalAnswers],
-                    ["Aciertos", c.correctAnswers],
-                    ["Precisión", formatPercent(c.correctAnswers, c.totalAnswers)]
+                title: t("stat_general"), rows: [
+                    [t("stat_games"), c.plays],
+                    [t("stat_total_answers"), c.totalAnswers],
+                    [t("stat_correct"), c.correctAnswers],
+                    [t("stat_accuracy"), formatPercent(c.correctAnswers, c.totalAnswers)]
                 ]
             },
             {
-                title: "Casual", rows: [
-                    ["Partidas", casual.plays],
-                    ["Mejor puntaje", c.bestTen === null ? "—" : `${c.bestTen}/10`],
-                    ["Mejor racha", formatOrDash(casual.bestStreak)],
-                    ["Precisión", formatPercent(casual.correctAnswers, casual.totalAnswers)]
+                title: t("mode_casual"), rows: [
+                    [t("stat_games"), casual.plays],
+                    [t("stat_best_score"), c.bestTen === null ? "—" : `${c.bestTen}/10`],
+                    [t("stat_best_streak"), formatOrDash(casual.bestStreak)],
+                    [t("stat_accuracy"), formatPercent(casual.correctAnswers, casual.totalAnswers)]
                 ]
             },
             {
-                title: "Infinito", rows: [
-                    ["Partidas", infinito.plays],
-                    ["Mejor racha", formatOrDash(c.bestInfinite)],
-                    ["Precisión", formatPercent(infinito.correctAnswers, infinito.totalAnswers)]
+                title: t("mode_infinito"), rows: [
+                    [t("stat_games"), infinito.plays],
+                    [t("stat_best_streak"), formatOrDash(c.bestInfinite)],
+                    [t("stat_accuracy"), formatPercent(infinito.correctAnswers, infinito.totalAnswers)]
                 ]
             }
         ];
@@ -1495,22 +1502,22 @@ const statsDetailBuilders = {
         const experto = h.modes.experto;
         // el total (h) y cada modo tienen los mismos campos, asi que comparten esta funcion
         const modeRows = (mode) => [
-            ["Partidas", mode.plays],
-            ["Victorias", mode.wins],
-            ["Derrotas", mode.losses],
-            ["Índice de victoria", formatPercent(mode.wins, mode.plays)],
-            ["Mejor partida", formatCount(mode.bestMargin, "vida", "vidas")]
+            [t("stat_games"), mode.plays],
+            [t("stat_wins"), mode.wins],
+            [t("stat_losses"), mode.losses],
+            [t("stat_win_rate"), formatPercent(mode.wins, mode.plays)],
+            [t("stat_best_game"), formatUnits(mode.bestMargin, "unit_lives")]
         ];
 
         return [
-            { title: "General", rows: modeRows(h) },
-            { title: "Casual", rows: modeRows(h.modes.casual) },
-            { title: "Desafío", rows: modeRows(h.modes.desafio) },
+            { title: t("stat_general"), rows: modeRows(h) },
+            { title: t("mode_casual"), rows: modeRows(h.modes.casual) },
+            { title: t("mode_desafio"), rows: modeRows(h.modes.desafio) },
             {
-                title: "Experto", rows: [
+                title: t("mode_experto"), rows: [
                     ...modeRows(experto),
-                    ["Pistas usadas", experto.hintsUsed],
-                    ["Veces que revivió", experto.revives]
+                    [t("stat_hints_used"), experto.hintsUsed],
+                    [t("stat_revives"), experto.revives]
                 ]
             }
         ];
@@ -1519,7 +1526,7 @@ const statsDetailBuilders = {
 
 // muestra la pantalla de detalle del juego indicado (arma una caja por cada seccion)
 function showStatsDetail(gameKey) {
-    statsDetailTitle.textContent = gameNames[gameKey];
+    statsDetailTitle.textContent = t(gameNameKeys[gameKey]);
     statsDetailSections.innerHTML = "";
 
     statsDetailBuilders[gameKey]().forEach(section => {
