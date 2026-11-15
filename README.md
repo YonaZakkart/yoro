@@ -49,4 +49,6 @@ Then open `index.html` in your browser.
 
 <img src="docs/svg/yoro-footer.svg" alt="By YonaZakkart, assisted by Claude, redesign by YamiNeco" width="100%">
 
+<sub><a href="docs/guide/README.md">Docs</a> · <a href="CREDITS.md">Credits</a></sub>
+
 </div>
