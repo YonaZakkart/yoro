@@ -265,6 +265,8 @@ const lang_en = {
     // Fixed interface (HTML)
     top_settings: "Options",
     top_stats: "Statistics",
+    yoro_touch_head: "Touch Yoro's head",
+    yoro_touch_core: "Touch Yoro's core",
     skip_time: "Skip time...",
     settings_title: "Options",
     opt_change_name: "Change my name",
