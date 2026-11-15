@@ -382,6 +382,13 @@ body {
     /* Generous spacing */
 }
 
+/* Murmullos de Yoro dormido */
+.dialogue-murmur {
+    font-style: italic;
+    opacity: 0.55;
+    letter-spacing: 0.04em;
+}
+
 /* Utilities */
 .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;

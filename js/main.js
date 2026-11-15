@@ -47,6 +47,8 @@ function setupGameInput({ type, placeholderKey, buttonKey }) {
     guessButton.disabled = false;
     gameUI.classList.remove("hidden");
     enableEnterKey(guessInput, guessButton);
+    setYoroBusy();
+    yoroCheers();
 
     return { gameUI, guessInput, guessButton };
 }
@@ -66,6 +68,7 @@ function showQuickMessage(text, { duration = 2000, restoreText = null } = {}) {
     quickRestoreTimeout = null;
 
     dialogueParagraph.textContent = text;
+    dialogueParagraph.classList.remove("dialogue-murmur");
     if (!yaEstaVisible) {
         dialogueContainer.style.opacity = 1;
     }
@@ -84,6 +87,12 @@ function showQuickMessage(text, { duration = 2000, restoreText = null } = {}) {
     }, duration);
 }
 
+// aviso de un dato mal escrito (campo vacío, números donde van letras...): Yoro lleva la cuenta
+function showInputError(text, options) {
+    noteYoroInputError();
+    showQuickMessage(text, options);
+}
+
 //Evento 3. preguntaa el nombre al usuario
 function askForName(event) {
     const nameUI = document.getElementById("name-ui");
@@ -92,11 +101,12 @@ function askForName(event) {
 
     nameUI.classList.remove("hidden");
     enableEnterKey(nameInput, nameButton);
+    startYoroIdle("menu");
 
     nameButton.onclick = () => {
         const name = nameInput.value.trim();
         if (name.length < 3) {
-            showQuickMessage(t("name_too_short"));
+            showInputError(t("name_too_short"));
             return;
         }
 
@@ -105,7 +115,7 @@ function askForName(event) {
 
         showDialogue(withGesture(nameDialogue3, -1, "wave"), () => {
             markEventCompleted(event.id);
-            startIdleDialogues();
+            startYoroIdle();
             showSkipTimeButton();
         });
     };

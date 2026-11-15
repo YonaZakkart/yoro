@@ -126,7 +126,8 @@ yoro/
 │   │   └── en.js           Textos en inglés
 │   ├── robot/
 │   │   ├── dialogue.js     Diálogos de Yoro
-│   │   └── yoro.js         Animación de Yoro (mirada, parpadeo, brazos)
+│   │   ├── yoro.js         Animación de Yoro (mirada, parpadeo, brazos, expresiones)
+│   │   └── moods.js        Ánimo de Yoro (dormir, reacciones a toques, errores y saltos)
 │   ├── games/
 │   │   ├── number.js       Adivina el Número
 │   │   ├── math.js         Cuenta Conmigo

@@ -350,6 +350,13 @@ const lang_en = {
     idle_filler_4: "bleh :b",
     idle_filler_5: "Saving data...",
     idle_filler_6: "Checking details...",
+    // Sleeping Yoro murmurs
+    murmur_1: "...seven... no... was it five?... zzz",
+    murmur_2: "...still cloudy outside... zzz...",
+    murmur_3: "...h... a... n... g... zzz",
+    murmur_4: "...saving dreams... 42%...",
+    murmur_5: "...don't turn off the light... zzz",
+    murmur_6: "...a new game... someday... zzz",
 
     // Tab title and music
     tab_away_1: "Are you leaving...?",
