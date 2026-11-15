@@ -7,11 +7,6 @@ function getCompletedEvents() {
     return Array.isArray(stored) ? stored : [];
 }
 
-// si el dialogo es una funcion, la ejecuta; si ya es un arreglo, lo devuelve tal cual
-function resolveDialogue(dialogue) {
-    return typeof dialogue === "function" ? dialogue() : dialogue;
-}
-
 //marca los eventos como completos
 function markEventCompleted(eventId) {
     const completed = getCompletedEvents();
@@ -33,7 +28,7 @@ function finishEvent(event) {
             showDialogue(askContinueDialogue, showContinueMenu);
         });
     } else {
-        showDialogue(resolveDialogue(event.outroDialogue), () => {
+        showDialogue(event.outroDialogue, () => {
             startIdleDialogues();
             showSkipTimeButton();
         });
@@ -219,7 +214,7 @@ function showDialogue(lines, onComplete) {
             return;
         }
         const line = lines[i];
-        dialogueParagraph.textContent = line.key ? t(line.key, line.params) : line.text;
+        dialogueParagraph.textContent = t(line.key, line.params);
         dialogueContainer.style.opacity = 1;
         i++;
         advanceDialogue = advance;
@@ -355,7 +350,7 @@ document.getElementById("game-menu-ui").onclick = (clickEvent) => {
     if (!game) return;
 
     document.getElementById("game-menu-ui").classList.add("hidden");
-    showDialogue(resolveDialogue(game.replayAcceptDialogue), () => startEvent(game));
+    showDialogue(game.replayAcceptDialogue, () => startEvent(game));
 };
 
 // muestra el menu de seleccion de modo (generico, para cualquier evento con "modes")
@@ -429,7 +424,7 @@ skipTimeButton.onclick = () => location.reload();
 const nextEvent = findNextEvent();
 
 if (nextEvent) {
-    showDialogue(resolveDialogue(nextEvent.introDialogue), () => startEvent(nextEvent));
+    showDialogue(nextEvent.introDialogue, () => startEvent(nextEvent));
 } else {
     showDialogue(returningDialogue, showGameMenu);
 }
