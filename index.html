@@ -117,7 +117,7 @@
         }
     </script>
     <!-- Estilos propios de Yoro -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="w-screen h-screen flex flex-col justify-center items-center">
@@ -141,10 +141,9 @@
         data-i18n="skip_time"></button>
 
     <!-- Panel de opciones: cubre toda la pantalla mientras esta abierto -->
-    <div id="settings-panel" class="hidden fixed inset-0 flex flex-col items-center justify-center screen-overlay"
-        data-i18n-title="btn_close">
-        <button id="settings-close-button" class="btn-secondary btn-round absolute top-3 right-3" aria-label="Cerrar"
-            title="Cerrar">
+    <div id="settings-panel" class="hidden fixed inset-0 flex flex-col items-center justify-center screen-overlay">
+        <button id="settings-close-button" class="btn-secondary btn-round absolute top-3 right-3"
+            data-i18n-title="btn_close" aria-label="Cerrar" title="Cerrar">
             <span class="material-symbols-outlined">close</span>
         </button>
         <h2 class="text-headline-md font-headline-md mb-6" data-i18n="settings_title">Opciones</h2>
@@ -152,8 +151,9 @@
             <!-- Selector de idioma -->
             <div id="settings-language" class="w-full relative">
                 <button id="language-button" class="px-4 py-2 btn-primary w-full flex items-center relative"
-                        data-i18n="opt_language" aria-haspopup="listbox" aria-expanded="false">
-                    <span id="language-button-text"></span>
+                        aria-haspopup="listbox" aria-expanded="false">
+                    <span data-i18n="opt_language">Idioma</span>
+                    <span id="language-button-text" class="ml-1 opacity-70"></span>
                     <span class="material-symbols-outlined text-sm">expand_more</span>
                 </button>
                 <div id="language-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 panel-box flex flex-col z-10"
@@ -197,10 +197,9 @@
     </div>
 
     <!-- Panel de estadisticas: cubre toda la pantalla mientras esta abierto -->
-    <div id="stats-panel" class="hidden fixed inset-0 flex flex-col items-center overflow-y-auto screen-overlay"
-        data-i18n-title="btn_close">
-        <button id="stats-close-button" class="btn-secondary btn-round fixed top-3 right-3" aria-label="Cerrar"
-            title="Cerrar">
+    <div id="stats-panel" class="hidden fixed inset-0 flex flex-col items-center overflow-y-auto screen-overlay">
+        <button id="stats-close-button" class="btn-secondary btn-round fixed top-3 right-3"
+            data-i18n-title="btn_close" aria-label="Cerrar" title="Cerrar">
             <span class="material-symbols-outlined">close</span>
         </button>
         <div class="flex flex-col items-center my-auto w-full max-w-5xl px-4 py-16">
@@ -213,8 +212,10 @@
                 <div id="stats-detail-buttons" class="flex flex-col gap-2 w-full">
                     <button data-game="number" class="px-4 py-2 btn-primary w-full"
                         data-i18n="game_guess_number">Adivina el Número</button>
-                    <button data-game="countWithMe" class="px-4 py-2 btn-primary w-full">Cuenta Conmigo</button>
-                    <button data-game="hangman" class="px-4 py-2 btn-primary w-full">Ahorcado</button>
+                    <button data-game="countWithMe" class="px-4 py-2 btn-primary w-full"
+                        data-i18n="game_cuenta_conmigo">Cuenta Conmigo</button>
+                    <button data-game="hangman" class="px-4 py-2 btn-primary w-full"
+                        data-i18n="game_ahorcado">Ahorcado</button>
                 </div>
             </div>
 
@@ -231,7 +232,6 @@
                 <button id="stats-back-button" class="px-4 py-2 btn-secondary" data-i18n="btn_back">Volver</button>
             </div>
         </div>
-    </div>
     </div>
 
     <!-- The Void (Container) -->
@@ -382,17 +382,21 @@
     </footer>
 
     <!-- Lógica de Yoro -->
-    <script src="lang/es.js"></script>
-    <script src="lang/en.js"></script>
-    <script src="i18n.js"></script>
-    <script src="robot/dialogue.js"></script>
-    <script src="games/number.js"></script>
-    <script src="games/math.js"></script>
-    <script src="games/hangman.js"></script>
-    <script src="storage.js"></script>
-    <script src="music.js"></script>
-    <script src="main.js"></script>
-    <script src="events.js"></script>
+    <script src="js/lang/es.js"></script>
+    <script src="js/lang/en.js"></script>
+    <script src="js/core/storage.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/core/timers.js"></script>
+    <script src="js/robot/dialogue.js"></script>
+    <script src="js/games/number.js"></script>
+    <script src="js/games/math.js"></script>
+    <script src="js/games/hangman-data.js"></script>
+    <script src="js/games/hangman.js"></script>
+    <script src="js/core/music.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/ui/settings-panel.js"></script>
+    <script src="js/ui/stats-panel.js"></script>
+    <script src="js/events.js"></script>
 </body>
 
 </html>

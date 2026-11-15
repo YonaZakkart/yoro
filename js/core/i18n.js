@@ -3,13 +3,13 @@
 const LANG_STORAGE_KEY = "yoro_lang";
 const supportedLangs = ["es", "en"];
 
-// un diccionario por idioma (vienen de lang/es.js y lang/en.js, que se cargan antes que este archivo)
+// un diccionario por idioma (vienen de js/lang/es.js y js/lang/en.js, que se cargan antes que este archivo)
 const dictionaries = { es: lang_es, en: lang_en };
 
 // lee el idioma guardado; si no hay (o no es válido), detecta del navegador; si no es es/en, usa inglés
 function loadLang() {
     try {
-        const saved = localStorage.getItem(LANG_STORAGE_KEY);
+        const saved = readStorage(LANG_STORAGE_KEY);
         if (supportedLangs.includes(saved)) return saved;
         const browserLang = navigator.language?.split('-')[0].toLowerCase();
         if (supportedLangs.includes(browserLang)) return browserLang;
@@ -21,7 +21,7 @@ function loadLang() {
 
 let currentLang = loadLang();
 
-// expone el idioma actual para que main.js pueda leerlo
+// expone el idioma actual (lo usan el selector de idioma y los bancos de palabras del Ahorcado)
 function getCurrentLang() { return currentLang; }
 
 // cambia el idioma activo y lo guarda para la próxima visita
@@ -30,20 +30,7 @@ function setLang(lang) {
     currentLang = lang;
     document.documentElement.lang = lang;
     applyTranslations();
-    try {
-        localStorage.setItem(LANG_STORAGE_KEY, lang);
-    } catch (error) {
-        console.warn("No se pudo guardar el idioma:", error);
-    }
-}
-
-// el nombre del jugador, para rellenar {name} automáticamente en cualquier texto
-function getPlayerName() {
-    try {
-        return localStorage.getItem("yoro_player_name") || "";
-    } catch (error) {
-        return "";
-    }
+    writeStorage(LANG_STORAGE_KEY, lang);
 }
 
 function t(key, params = {}) {
@@ -81,6 +68,3 @@ function applyTranslations() {
 }
 
 applyTranslations();
-
-// expone getCurrentLang globalmente para que games/hangman.js pueda usarlo
-window.getCurrentLang = getCurrentLang;

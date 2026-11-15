@@ -107,35 +107,47 @@ Después abre `index.html` en tu navegador.
 
 ```
 yoro/
-├── index.html          Estructura de la página y paneles
-├── style.css           Estilos propios (Yoro, botones, cajas, animaciones)
-├── main.js             Lógica de los juegos, ajustes y estadísticas
-├── events.js           Motor de eventos, diálogos y menús
-├── storage.js          Memoria persistente (localStorage)
-├── music.js            Reproductor de música
-├── manifest.json       Datos para instalarlo como app
+├── index.html              Estructura de la página y paneles
+├── manifest.json           Datos para instalarlo como app
 │
-├── robot/
-│   └── dialogue.js     Diálogos de Yoro
+├── css/
+│   └── style.css           Estilos propios (Yoro, botones, cajas, animaciones)
 │
-├── games/
-│   ├── number.js       Adivina el Número
-│   ├── math.js         Cuenta Conmigo
-│   └── hangman.js      Ahorcado
+├── js/
+│   ├── main.js             Arranque: visita, input compartido y mensajes cortos
+│   ├── events.js           Motor de eventos, diálogos y menús
+│   ├── core/
+│   │   ├── storage.js      Memoria persistente (localStorage)
+│   │   ├── i18n.js         Sistema de idiomas
+│   │   ├── timers.js       Pausa de diálogos con un panel abierto
+│   │   └── music.js        Reproductor de música
+│   ├── lang/
+│   │   ├── es.js           Textos en español
+│   │   └── en.js           Textos en inglés
+│   ├── robot/
+│   │   └── dialogue.js     Diálogos de Yoro
+│   ├── games/
+│   │   ├── number.js       Adivina el Número
+│   │   ├── math.js         Cuenta Conmigo
+│   │   ├── hangman-data.js Palabras y dibujos del Ahorcado
+│   │   └── hangman.js      Ahorcado
+│   └── ui/
+│       ├── settings-panel.js  Panel de Opciones
+│       └── stats-panel.js     Panel de Estadísticas
 │
 ├── assets/
-│   ├── icons/          Favicon e íconos de la app
-│   └── music/          Pistas de música
+│   ├── icons/              Favicon e íconos de la app
+│   └── music/              Pistas de música
 │
 └── docs/
-    └── capturas/       Imágenes de este README
+    └── capturas/           Imágenes de este README
 ```
 
 ### Cómo fluye todo
 
 ```mermaid
 flowchart LR
-    A[Abres la página] --> B[storage.js<br/>carga tu memoria]
+    A[Abres la página] --> B[core/storage.js<br/>carga tu memoria]
     B --> C[events.js<br/>busca el siguiente evento]
     C -->|hay uno nuevo| D[Diálogo de Yoro]
     D --> E[Juego o pregunta]

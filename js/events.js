@@ -3,13 +3,8 @@
 
 // obtiene los eventos ya completados
 function getCompletedEvents() {
-    const stored = localStorage.getItem("yoro_completed_events");
-    return stored ? JSON.parse(stored) : [];
-}
-
-// si el dialogo es una funcion, la ejecuta; si ya es un arreglo, lo devuelve tal cual
-function resolveDialogue(dialogue) {
-    return typeof dialogue === "function" ? dialogue() : dialogue;
+    const stored = readJSON("yoro_completed_events", []);
+    return Array.isArray(stored) ? stored : [];
 }
 
 //marca los eventos como completos
@@ -17,7 +12,7 @@ function markEventCompleted(eventId) {
     const completed = getCompletedEvents();
     if (!completed.includes(eventId)) {
         completed.push(eventId);
-        localStorage.setItem("yoro_completed_events", JSON.stringify(completed));
+        writeStorage("yoro_completed_events", JSON.stringify(completed));
     }
 }
 
@@ -33,7 +28,7 @@ function finishEvent(event) {
             showDialogue(askContinueDialogue, showContinueMenu);
         });
     } else {
-        showDialogue(resolveDialogue(event.outroDialogue), () => {
+        showDialogue(event.outroDialogue, () => {
             startIdleDialogues();
             showSkipTimeButton();
         });
@@ -182,9 +177,10 @@ function getLatestGames() {
 const dialogueContainer = document.querySelector(".dialogue-text");
 const dialogueParagraph = dialogueContainer ? dialogueContainer.querySelector("p") : null;
 
-const FADE_DURATION = 800; // debe coincidir con el "transition" de style.css
+const FADE_DURATION = 800; // debe coincidir con el "transition" de css/style.css
 
-// controla si se puede saltar la pausa actual del dialogo con un click
+// controla si se puede saltar la pausa actual del dialogo con un click.
+// Los temporizadores de dialogo son pausables (js/core/timers.js): se detienen con un panel abierto
 let dialogueSkipTimeout = null;
 let dialogueSkippable = false;
 let advanceDialogue = null; // referencia a la funcion "avanzar ya" de la linea actual
@@ -194,7 +190,7 @@ document.addEventListener("click", () => {
     cancelIdleDialogues();
 
     if (dialogueSkippable && advanceDialogue) {
-        clearTimeout(dialogueSkipTimeout);
+        clearPausableTimeout(dialogueSkipTimeout);
         advanceDialogue();
     }
 });
@@ -210,7 +206,7 @@ function showDialogue(lines, onComplete) {
     function advance() {
         dialogueSkippable = false;
         dialogueContainer.style.opacity = 0;
-        setTimeout(showNext, FADE_DURATION);
+        setPausableTimeout(showNext, FADE_DURATION);
     }
     function showNext() {
         if (i >= lines.length) {
@@ -219,14 +215,14 @@ function showDialogue(lines, onComplete) {
             return;
         }
         const line = lines[i];
-        dialogueParagraph.textContent = line.key ? t(line.key, line.params) : line.text;
+        dialogueParagraph.textContent = t(line.key, line.params);
         dialogueContainer.style.opacity = 1;
         i++;
         advanceDialogue = advance;
         dialogueSkippable = true;
-        dialogueSkipTimeout = setTimeout(advance, line.pause);
+        dialogueSkipTimeout = setPausableTimeout(advance, line.pause);
     }
-    setTimeout(showNext, 1000);
+    setPausableTimeout(showNext, 1000);
 }
 
 // Frases de relleno para cuando Yoro "piensa" entre una curiosidad y otra
@@ -273,7 +269,7 @@ function shuffleArray(array) {
 let idleTimeouts = [];
 
 function cancelIdleDialogues() {
-    idleTimeouts.forEach(clearTimeout);
+    idleTimeouts.forEach(clearPausableTimeout);
     idleTimeouts = [];
 }
 
@@ -298,11 +294,11 @@ function startIdleDialogues() {
         const gap = gaps[index] !== undefined ? gaps[index] : repeatGap;
         elapsed += gap;
 
-        const showId = setTimeout(() => {
+        const showId = setPausableTimeout(() => {
             dialogueParagraph.textContent = text;
             dialogueContainer.style.opacity = 1;
 
-            const hideId = setTimeout(() => {
+            const hideId = setPausableTimeout(() => {
                 dialogueContainer.style.opacity = 0;
             }, messageDuration);
             idleTimeouts.push(hideId);
@@ -355,7 +351,7 @@ document.getElementById("game-menu-ui").onclick = (clickEvent) => {
     if (!game) return;
 
     document.getElementById("game-menu-ui").classList.add("hidden");
-    showDialogue(resolveDialogue(game.replayAcceptDialogue), () => startEvent(game));
+    showDialogue(game.replayAcceptDialogue, () => startEvent(game));
 };
 
 // muestra el menu de seleccion de modo (generico, para cualquier evento con "modes")
@@ -429,7 +425,7 @@ skipTimeButton.onclick = () => location.reload();
 const nextEvent = findNextEvent();
 
 if (nextEvent) {
-    showDialogue(resolveDialogue(nextEvent.introDialogue), () => startEvent(nextEvent));
+    showDialogue(nextEvent.introDialogue, () => startEvent(nextEvent));
 } else {
     showDialogue(returningDialogue, showGameMenu);
 }
