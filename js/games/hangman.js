@@ -445,7 +445,7 @@ const hangmanStagesExperto = [
 ];
 
 // Mensajes al perder en modo Experto: se elige uno al azar, cada uno con su propio enlace.
-// Los textos viven en lang/es.js y lang/en.js (claves loseN_text, loseN_cancel, loseN_accept)
+// Los textos viven en js/lang/es.js y js/lang/en.js (claves loseN_text, loseN_cancel, loseN_accept)
 const loseMessages = [
     {
          textKey: "lose1_text",

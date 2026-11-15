@@ -177,10 +177,10 @@ function getLatestGames() {
 const dialogueContainer = document.querySelector(".dialogue-text");
 const dialogueParagraph = dialogueContainer ? dialogueContainer.querySelector("p") : null;
 
-const FADE_DURATION = 800; // debe coincidir con el "transition" de style.css
+const FADE_DURATION = 800; // debe coincidir con el "transition" de css/style.css
 
 // controla si se puede saltar la pausa actual del dialogo con un click.
-// Los temporizadores de dialogo son pausables (timers.js): se detienen con un panel abierto
+// Los temporizadores de dialogo son pausables (js/core/timers.js): se detienen con un panel abierto
 let dialogueSkipTimeout = null;
 let dialogueSkippable = false;
 let advanceDialogue = null; // referencia a la funcion "avanzar ya" de la linea actual

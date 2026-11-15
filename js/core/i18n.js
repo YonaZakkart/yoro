@@ -3,7 +3,7 @@
 const LANG_STORAGE_KEY = "yoro_lang";
 const supportedLangs = ["es", "en"];
 
-// un diccionario por idioma (vienen de lang/es.js y lang/en.js, que se cargan antes que este archivo)
+// un diccionario por idioma (vienen de js/lang/es.js y js/lang/en.js, que se cargan antes que este archivo)
 const dictionaries = { es: lang_es, en: lang_en };
 
 // lee el idioma guardado; si no hay (o no es válido), detecta del navegador; si no es es/en, usa inglés
