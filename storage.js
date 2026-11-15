@@ -1,5 +1,52 @@
 // Sistema de memoria persistente de Yoro (localStorage)
 
+// Lectura y escritura seguras: si el navegador bloquea localStorage, esta lleno o un dato
+// guardado esta corrupto, el juego sigue funcionando (solo no recuerda ese dato)
+function readStorage(key) {
+    try {
+        return localStorage.getItem(key);
+    } catch (error) {
+        return null;
+    }
+}
+
+function writeStorage(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        console.warn(`No se pudo guardar "${key}":`, error);
+    }
+}
+
+function removeStorage(key) {
+    try {
+        localStorage.removeItem(key);
+    } catch (error) {
+        console.warn(`No se pudo borrar "${key}":`, error);
+    }
+}
+
+// lee un dato guardado como JSON; si no existe o no se puede leer, devuelve "fallback"
+function readJSON(key, fallback) {
+    const raw = readStorage(key);
+    if (raw === null) return fallback;
+    try {
+        return JSON.parse(raw);
+    } catch (error) {
+        console.warn(`Dato guardado inválido en "${key}", se ignora:`, error);
+        return fallback;
+    }
+}
+
+// el nombre del jugador ("" si todavia no lo dijo); i18n.js lo usa para rellenar {name}
+function getPlayerName() {
+    return readStorage("yoro_player_name") || "";
+}
+
+function savePlayerName(name) {
+    writeStorage("yoro_player_name", name);
+}
+
 // Estructura inicial de las estadisticas (usada al empezar de cero y al reiniciar)
 function createInitialStats() {
     return {
@@ -47,9 +94,11 @@ function getTodayKey() {
 function fillMissing(target, defaults) {
     Object.keys(defaults).forEach(key => {
         const defaultValue = defaults[key];
-        if (target[key] === undefined) {
+        const isObjectDefault = defaultValue !== null && typeof defaultValue === "object";
+        // tambien se reemplaza un objeto que quedo guardado como null u otro tipo (dato corrupto)
+        if (target[key] === undefined || (isObjectDefault && (target[key] === null || typeof target[key] !== "object"))) {
             target[key] = defaultValue;
-        } else if (defaultValue !== null && typeof defaultValue === "object") {
+        } else if (isObjectDefault) {
             fillMissing(target[key], defaultValue);
         }
     });
@@ -57,11 +106,12 @@ function fillMissing(target, defaults) {
 
 // Carga las estadisticas guardadas, o crea la estructura inicial si es la primera vez
 function loadStats() {
-    const stored = localStorage.getItem("yoro_stats");
-    const stats = stored ? JSON.parse(stored) : createInitialStats();
+    const stored = readJSON("yoro_stats", null);
+    const isValid = stored !== null && typeof stored === "object" && !Array.isArray(stored);
+    const stats = isValid ? stored : createInitialStats();
 
-    if (!stored) {
-        stats.visits = Number(localStorage.getItem("yoro_visits")) || 0;
+    if (!isValid) {
+        stats.visits = Number(readStorage("yoro_visits")) || 0;
     }
 
     fillMissing(stats, createInitialStats());
@@ -71,9 +121,5 @@ function loadStats() {
 
 // Guarda las estadisticas actuales
 function saveStats(stats) {
-    try {
-        localStorage.setItem("yoro_stats", JSON.stringify(stats));
-    } catch (error) {
-        console.warn("No se pudo guardar el progreso de Yoro:", error);
-    }
+    writeStorage("yoro_stats", JSON.stringify(stats));
 }

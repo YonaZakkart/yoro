@@ -3,8 +3,8 @@
 
 // obtiene los eventos ya completados
 function getCompletedEvents() {
-    const stored = localStorage.getItem("yoro_completed_events");
-    return stored ? JSON.parse(stored) : [];
+    const stored = readJSON("yoro_completed_events", []);
+    return Array.isArray(stored) ? stored : [];
 }
 
 // si el dialogo es una funcion, la ejecuta; si ya es un arreglo, lo devuelve tal cual
@@ -17,7 +17,7 @@ function markEventCompleted(eventId) {
     const completed = getCompletedEvents();
     if (!completed.includes(eventId)) {
         completed.push(eventId);
-        localStorage.setItem("yoro_completed_events", JSON.stringify(completed));
+        writeStorage("yoro_completed_events", JSON.stringify(completed));
     }
 }
 

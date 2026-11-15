@@ -83,11 +83,7 @@ function switchMusic(list) {
 }
 
 function saveMusicPreference(on) {
-    try {
-        localStorage.setItem(MUSIC_STORAGE_KEY, on ? "1" : "0");
-    } catch (error) {
-        console.warn("No se pudo guardar la preferencia de música:", error);
-    }
+    writeStorage(MUSIC_STORAGE_KEY, on ? "1" : "0");
 }
 
 function setMusicEnabled(on) {
@@ -142,7 +138,7 @@ musicButton.onclick = (clickEvent) => {
 // Los navegadores bloquean el audio sin un gesto del usuario, así que si falla,
 // espera al primer click o tecla y lo reintenta.
 function resumeSavedMusic() {
-    if (localStorage.getItem(MUSIC_STORAGE_KEY) !== "1") return;
+    if (readStorage(MUSIC_STORAGE_KEY) !== "1") return;
 
     musicEnabled = true;
     updateMusicButton();

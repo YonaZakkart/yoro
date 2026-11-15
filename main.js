@@ -184,7 +184,7 @@ function askForName(event) {
             return;
         }
 
-        localStorage.setItem("yoro_player_name", name);
+        savePlayerName(name);
         nameUI.classList.add("hidden");
 
         showDialogue(nameDialogue3, () => {
@@ -1150,7 +1150,7 @@ function openSettingsPanel() {
     // quita el foco del input del juego, para que Enter no dispare el boton de abajo
     if (document.activeElement) document.activeElement.blur();
     showSettingsOptions();
-    changeNameOption.classList.toggle("hidden", !localStorage.getItem("yoro_player_name"));
+    changeNameOption.classList.toggle("hidden", !getPlayerName());
     updateLanguageButtonText();
     settingsPanel.classList.remove("hidden");
 }
@@ -1249,7 +1249,7 @@ changeNameOption.onclick = () => {
     settingsMessage.textContent = "";
     settingsOptions.classList.add("hidden");
     settingsNameForm.classList.remove("hidden");
-    settingsNameInput.value = localStorage.getItem("yoro_player_name") || "";
+    settingsNameInput.value = getPlayerName();
     settingsNameInput.focus();
 };
 
@@ -1262,8 +1262,8 @@ settingsNameSave.onclick = () => {
         return;
     }
 
-    const previousName = localStorage.getItem("yoro_player_name");
-    localStorage.setItem("yoro_player_name", name);
+    const previousName = getPlayerName();
+    savePlayerName(name);
     showSettingsOptions();
 
     // mismo nombre: Yoro no finge que es uno nuevo
@@ -1331,8 +1331,8 @@ resetStatsOption.onclick = () => {
 // Borra el progreso (eventos completados y nombre) y recarga la pagina para que Yoro empiece de cero.
 // Las estadisticas solo se reinician si resetStatsToo es true.
 function resetGame(resetStatsToo) {
-    localStorage.removeItem("yoro_completed_events");
-    localStorage.removeItem("yoro_player_name");
+    removeStorage("yoro_completed_events");
+    removeStorage("yoro_player_name");
 
     if (resetStatsToo) {
         // visits queda en 0 porque la recarga de abajo ya suma la visita nueva
@@ -1393,7 +1393,7 @@ function renderStatsGeneral() {
     const games = stats.games;
     const totalPlays = games.number.plays + games.countWithMe.plays + games.hangman.plays;
     const winRate = formatPercent(games.hangman.wins, games.hangman.plays);
-    const playerName = localStorage.getItem("yoro_player_name") || "—";
+    const playerName = getPlayerName() || "—";
 
     const rows = [
         [t("stat_name"), playerName],
