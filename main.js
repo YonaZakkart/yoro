@@ -1178,7 +1178,7 @@ function updateLanguageButtonText() {
     const languageButtonText = document.getElementById("language-button-text");
     if (!languageButtonText) return;
     const current = getCurrentLang();
-    languageButtonText.textContent = t(current === "es" ? "lang_spanish" : "lang_english");
+    languageButtonText.textContent = `· ${t(current === "es" ? "lang_spanish" : "lang_english")}`;
 }
 
 function toggleLanguageDropdown() {
