@@ -179,7 +179,8 @@ const dialogueParagraph = dialogueContainer ? dialogueContainer.querySelector("p
 
 const FADE_DURATION = 800; // debe coincidir con el "transition" de style.css
 
-// controla si se puede saltar la pausa actual del dialogo con un click
+// controla si se puede saltar la pausa actual del dialogo con un click.
+// Los temporizadores de dialogo son pausables (timers.js): se detienen con un panel abierto
 let dialogueSkipTimeout = null;
 let dialogueSkippable = false;
 let advanceDialogue = null; // referencia a la funcion "avanzar ya" de la linea actual
@@ -189,7 +190,7 @@ document.addEventListener("click", () => {
     cancelIdleDialogues();
 
     if (dialogueSkippable && advanceDialogue) {
-        clearTimeout(dialogueSkipTimeout);
+        clearPausableTimeout(dialogueSkipTimeout);
         advanceDialogue();
     }
 });
@@ -205,7 +206,7 @@ function showDialogue(lines, onComplete) {
     function advance() {
         dialogueSkippable = false;
         dialogueContainer.style.opacity = 0;
-        setTimeout(showNext, FADE_DURATION);
+        setPausableTimeout(showNext, FADE_DURATION);
     }
     function showNext() {
         if (i >= lines.length) {
@@ -219,9 +220,9 @@ function showDialogue(lines, onComplete) {
         i++;
         advanceDialogue = advance;
         dialogueSkippable = true;
-        dialogueSkipTimeout = setTimeout(advance, line.pause);
+        dialogueSkipTimeout = setPausableTimeout(advance, line.pause);
     }
-    setTimeout(showNext, 1000);
+    setPausableTimeout(showNext, 1000);
 }
 
 // Frases de relleno para cuando Yoro "piensa" entre una curiosidad y otra
@@ -268,7 +269,7 @@ function shuffleArray(array) {
 let idleTimeouts = [];
 
 function cancelIdleDialogues() {
-    idleTimeouts.forEach(clearTimeout);
+    idleTimeouts.forEach(clearPausableTimeout);
     idleTimeouts = [];
 }
 
@@ -293,11 +294,11 @@ function startIdleDialogues() {
         const gap = gaps[index] !== undefined ? gaps[index] : repeatGap;
         elapsed += gap;
 
-        const showId = setTimeout(() => {
+        const showId = setPausableTimeout(() => {
             dialogueParagraph.textContent = text;
             dialogueContainer.style.opacity = 1;
 
-            const hideId = setTimeout(() => {
+            const hideId = setPausableTimeout(() => {
                 dialogueContainer.style.opacity = 0;
             }, messageDuration);
             idleTimeouts.push(hideId);

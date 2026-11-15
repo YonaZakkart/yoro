@@ -1153,10 +1153,12 @@ function openSettingsPanel() {
     changeNameOption.classList.toggle("hidden", !getPlayerName());
     updateLanguageButtonText();
     settingsPanel.classList.remove("hidden");
+    syncDialoguePause();
 }
 
 function closeSettingsPanel() {
     settingsPanel.classList.add("hidden");
+    syncDialoguePause();
 }
 
 // Los clicks de aqui no deben llegar al listener global de events.js,
@@ -1414,10 +1416,12 @@ function openStatsPanel() {
     renderStatsGeneral();
     showStatsGeneral();
     statsPanel.classList.remove("hidden");
+    syncDialoguePause();
 }
 
 function closeStatsPanel() {
     statsPanel.classList.add("hidden");
+    syncDialoguePause();
 }
 
 // igual que en Ajustes: los clicks de aqui no deben llegar al listener global de events.js
