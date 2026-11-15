@@ -52,6 +52,66 @@ function setYoroArms(right, left = right) {
     yoroArmPoses.left.dataset.pose = left;
 }
 
+// Gestos con los brazos. Saludar y celebrar son secuencias que mandan sobre los brazos mientras duran;
+// el gesto de hablar es suelto y solo aparece si no hay una secuencia en curso.
+const yoroGestures = { token: 0, sequence: false };
+const yoroWait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// corre una secuencia; cada paso puede salir si otra secuencia empezó después (token distinto)
+async function runYoroSequence(steps) {
+    const token = ++yoroGestures.token;
+    yoroGestures.sequence = true;
+    const alive = () => token === yoroGestures.token;
+    await steps(alive);
+    if (!alive()) return;
+    setYoroArms(0);
+    yoroGestures.sequence = false;
+}
+
+function yoroWave() {
+    return runYoroSequence(async alive => {
+        for (let i = 0; i < 6; i++) {
+            if (!alive()) return;
+            setYoroArms(i % 2 ? 1 : 2, 0);
+            await yoroWait(260);
+        }
+    });
+}
+
+// la animación del antiguo "piedra, papel o tijeras", sin letras
+function yoroCelebrate() {
+    return runYoroSequence(async alive => {
+        setYoroArms(0);
+        await yoroWait(300);
+        for (let i = 0; i < 3; i++) {
+            if (!alive()) return;
+            setYoroArms(2);
+            yoroBoop();
+            await yoroWait(380);
+            if (!alive()) return;
+            setYoroArms(1);
+            await yoroWait(380);
+        }
+        if (!alive()) return;
+        setYoroArms(2);
+        await yoroWait(900);
+    });
+}
+
+const YORO_TALK_CHANCE = 0.4;
+const yoroTalkPoses = [[1, 1], [2, 2], [1, 0], [2, 0], [0, 1], [0, 2]];
+
+// al decir una línea, a veces sube uno o ambos brazos unos segundos y vuelve a bajarlos
+function yoroTalkGesture() {
+    if (yoroGestures.sequence || Math.random() >= YORO_TALK_CHANCE) return;
+    const token = ++yoroGestures.token;
+    const [right, left] = yoroTalkPoses[Math.floor(Math.random() * yoroTalkPoses.length)];
+    setYoroArms(right, left);
+    setTimeout(() => {
+        if (token === yoroGestures.token) setYoroArms(0);
+    }, 1500 + Math.random() * 1500);
+}
+
 function setYoroBlink(closed) {
     yoroParts.eyes.classList.toggle("yoro-blink", closed);
 }

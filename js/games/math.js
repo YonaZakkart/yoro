@@ -61,6 +61,7 @@ function startMathGame(event) {
     function finishGame() {
         const result = getMathResultMessage(hits, totalProblems);
         dialogueParagraph.textContent = result.text;
+        if (result.won) yoroCelebrate();
         dialogueContainer.style.opacity = 1;
         guessInput.disabled = true;
         guessButton.disabled = true;
@@ -131,6 +132,7 @@ function runMathGameCasual(event) {
     function finishGame() {
         const result = getMathResultMessage10(hits);
         dialogueParagraph.textContent = result.text;
+        if (result.won) yoroCelebrate();
         dialogueContainer.style.opacity = 1;
         guessInput.disabled = true;
         guessButton.disabled = true;
@@ -231,8 +233,10 @@ function runMathGameInfinito(event) {
 
         stats.games.countWithMe.plays++;
         stats.games.countWithMe.modes.infinito.plays++;
+        // el modo Infinito no se gana ni se pierde: Yoro celebra los récords nuevos
         if (stats.games.countWithMe.bestInfinite === null || racha > stats.games.countWithMe.bestInfinite) {
             stats.games.countWithMe.bestInfinite = racha;
+            if (racha > 0) yoroCelebrate();
         }
         saveStats(stats);
 

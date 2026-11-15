@@ -28,7 +28,7 @@ function finishEvent(event) {
             showDialogue(askContinueDialogue, showContinueMenu);
         });
     } else {
-        showDialogue(event.outroDialogue, () => {
+        showDialogue(withGesture(event.outroDialogue, -1, "wave"), () => {
             startIdleDialogues();
             showSkipTimeButton();
         });
@@ -195,6 +195,12 @@ document.addEventListener("click", () => {
     }
 });
 
+// copia de un dialogo con un gesto de Yoro en una de sus lineas (-1 = la ultima)
+function withGesture(lines, index, gesture) {
+    const target = index < 0 ? lines.length + index : index;
+    return lines.map((line, i) => i === target ? { ...line, gesture } : line);
+}
+
 // muestra dialogo en la pantalla
 function showDialogue(lines, onComplete) {
     if (!dialogueContainer || !dialogueParagraph) {
@@ -217,6 +223,7 @@ function showDialogue(lines, onComplete) {
         const line = lines[i];
         dialogueParagraph.textContent = t(line.key, line.params);
         dialogueContainer.style.opacity = 1;
+        if (line.gesture === "wave") yoroWave(); else yoroTalkGesture();
         i++;
         advanceDialogue = advance;
         dialogueSkippable = true;
@@ -407,7 +414,7 @@ document.getElementById("continue-yes-button").onclick = () => {
 
 document.getElementById("continue-later-button").onclick = () => {
     document.getElementById("continue-menu-ui").classList.add("hidden");
-    showDialogue(continueLaterDialogue, startIdleDialogues);
+    showDialogue(withGesture(continueLaterDialogue, 0, "wave"), startIdleDialogues);
 };
 
 // Botón [Saltar tiempo...]: recarga la página para pasar al siguiente evento sin esperar.
@@ -425,7 +432,7 @@ skipTimeButton.onclick = () => location.reload();
 const nextEvent = findNextEvent();
 
 if (nextEvent) {
-    showDialogue(nextEvent.introDialogue, () => startEvent(nextEvent));
+    showDialogue(withGesture(nextEvent.introDialogue, 0, "wave"), () => startEvent(nextEvent));
 } else {
-    showDialogue(returningDialogue, showGameMenu);
+    showDialogue(withGesture(returningDialogue, 0, "wave"), showGameMenu);
 }
