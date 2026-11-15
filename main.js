@@ -24,6 +24,29 @@ function enableEnterKey(inputElement, buttonElement) {
     };
 }
 
+// Prepara el input y el boton compartidos (#guess-input / #guess-button) al empezar cualquier juego:
+// los reactiva, limpia el valor anterior y ajusta tipo, placeholder y texto del boton,
+// para que no quede nada del juego anterior (por ejemplo, el placeholder del Ahorcado).
+// Los data-i18n hacen que un cambio de idioma a mitad de partida traduzca el texto correcto.
+function setupGameInput({ type, placeholderKey, buttonKey }) {
+    const gameUI = document.getElementById("game-ui");
+    const guessInput = document.getElementById("guess-input");
+    const guessButton = document.getElementById("guess-button");
+
+    guessInput.type = type;
+    guessInput.value = "";
+    guessInput.disabled = false;
+    guessInput.dataset.i18nPlaceholder = placeholderKey;
+    guessInput.placeholder = t(placeholderKey);
+    guessButton.dataset.i18n = buttonKey;
+    guessButton.textContent = t(buttonKey);
+    guessButton.disabled = false;
+    gameUI.classList.remove("hidden");
+    enableEnterKey(guessInput, guessButton);
+
+    return { gameUI, guessInput, guessButton };
+}
+
 // Recuerda si hay un mensaje corto visible ahora mismo (y su temporizador para ocultarse).
 // null = no hay ninguno visible.
 let quickMessageTimeout = null;
@@ -60,18 +83,13 @@ function showQuickMessage(text, { duration = 2000, restoreText = null } = {}) {
 // Evento 1. Juego: Adivina el numero (1)
 function startGuessingGame(event) {
     const secretNumber = pickSecretNumber(10);
-    const gameUI = document.getElementById("game-ui");
-    const guessInput = document.getElementById("guess-input");
-    const guessButton = document.getElementById("guess-button");
-
-    gameUI.classList.remove("hidden");
-    enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = t("btn_guess");
-    guessInput.type = "number";
+    const { gameUI, guessInput, guessButton } = setupGameInput({
+        type: "number", placeholderKey: "number_placeholder", buttonKey: "btn_guess"
+    });
 
     let attempts = 0;
 
-    guessButton.addEventListener("click", () => {
+    guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
             showQuickMessage(t("msg_write_number"));
             return;
@@ -103,20 +121,15 @@ function startGuessingGame(event) {
         } else {
             showQuickMessage(t("number_miss_v1", { attempts }));
         }
-    });
+    };
 }
 
 //Evento 2. Juego: Adivina el numero 1.1
 function startGuessingGame_1_1(event) {
     const secretNumber = pickSecretNumber(20);
-    const gameUI = document.getElementById("game-ui");
-    const guessInput = document.getElementById("guess-input");
-    const guessButton = document.getElementById("guess-button");
-
-    gameUI.classList.remove("hidden");
-    enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = t("btn_guess");
-    guessInput.type = "number";
+    const { gameUI, guessInput, guessButton } = setupGameInput({
+        type: "number", placeholderKey: "number_placeholder", buttonKey: "btn_guess"
+    });
 
     let attempts = 0;
 
@@ -188,14 +201,9 @@ function runGuessingGame_1_2(event, mode) {
     let failStreak = 0;
     let escapes = 0;
 
-    const gameUI = document.getElementById("game-ui");
-    const guessInput = document.getElementById("guess-input");
-    const guessButton = document.getElementById("guess-button");
-
-    gameUI.classList.remove("hidden");
-    enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = t("btn_guess");
-    guessInput.type = "number";
+    const { gameUI, guessInput, guessButton } = setupGameInput({
+        type: "number", placeholderKey: "number_placeholder", buttonKey: "btn_guess"
+    });
 
     let attempts = 0;
 
@@ -262,14 +270,9 @@ function runGuessingGame_1_2(event, mode) {
 
 // Evento 5. Juego: Cuenta Conmigo (suma y resta)
 function startMathGame(event) {
-    const gameUI = document.getElementById("game-ui");
-    const guessInput = document.getElementById("guess-input");
-    const guessButton = document.getElementById("guess-button");
-
-    gameUI.classList.remove("hidden");
-    enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = t("btn_answer");
-    guessInput.type = "number";
+    const { gameUI, guessInput, guessButton } = setupGameInput({
+        type: "number", placeholderKey: "number_placeholder", buttonKey: "btn_answer"
+    });
 
     const totalProblems = 5;
     let problemIndex = 0;
@@ -334,14 +337,9 @@ function startMathGame(event) {
 
 // Evento 6. Modo Casual: 10 preguntas, rango mayor
 function runMathGameCasual(event) {
-    const gameUI = document.getElementById("game-ui");
-    const guessInput = document.getElementById("guess-input");
-    const guessButton = document.getElementById("guess-button");
-
-    gameUI.classList.remove("hidden");
-    enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = t("btn_answer");
-    guessInput.type = "number";
+    const { gameUI, guessInput, guessButton } = setupGameInput({
+        type: "number", placeholderKey: "number_placeholder", buttonKey: "btn_answer"
+    });
 
     const totalProblems = 10;
     const maxRange = 50;
@@ -433,14 +431,9 @@ function runMathGameCasual(event) {
 
 // Evento 6. Modo Infinito: sin limite de preguntas, termina al primer fallo
 function runMathGameInfinito(event) {
-    const gameUI = document.getElementById("game-ui");
-    const guessInput = document.getElementById("guess-input");
-    const guessButton = document.getElementById("guess-button");
-
-    gameUI.classList.remove("hidden");
-    enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = t("btn_answer");
-    guessInput.type = "number";
+    const { gameUI, guessInput, guessButton } = setupGameInput({
+        type: "number", placeholderKey: "number_placeholder", buttonKey: "btn_answer"
+    });
 
     const maxRange = 50;
     let attempts = 0;
@@ -555,18 +548,12 @@ function getLetterMessage(letter, count) {
 function startHangmanGame(event) {
     const secretWord = pickSecretWord();
 
-    const gameUI = document.getElementById("game-ui");
-    const guessInput = document.getElementById("guess-input");
-    const guessButton = document.getElementById("guess-button");
+    const { gameUI, guessInput, guessButton } = setupGameInput({
+        type: "text", placeholderKey: "hangman_placeholder", buttonKey: "btn_guess"
+    });
     const hangmanStatus = document.getElementById("hangman-status");
     const hangmanHint = document.getElementById("hangman-hint");
     const hangmanProgress = document.getElementById("hangman-progress");
-
-    gameUI.classList.remove("hidden");
-    enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = t("btn_guess");
-    guessInput.type = "text";
-    guessInput.placeholder = t("hangman_placeholder");
 
     let guessedLetters = [];
     let guessedWords = [];
@@ -704,9 +691,9 @@ function runHangmanGame_1_1(event, mode) {
     const stages = mode === "casual" ? hangmanStagesCasual : mode === "desafio" ? hangmanStagesDesafio : hangmanStagesExperto;
     const maxWrongGuesses = stages.length - 1;
 
-    const gameUI = document.getElementById("game-ui");
-    const guessInput = document.getElementById("guess-input");
-    const guessButton = document.getElementById("guess-button");
+    const { gameUI, guessInput, guessButton } = setupGameInput({
+        type: "text", placeholderKey: "hangman_placeholder", buttonKey: "btn_guess"
+    });
     const hangmanStatus = document.getElementById("hangman-status");
     const hangmanHint = document.getElementById("hangman-hint");
     const hangmanProgress = document.getElementById("hangman-progress");
@@ -730,12 +717,6 @@ function runHangmanGame_1_1(event, mode) {
     const hangmanLoseAccept = document.getElementById("hangman-lose-accept");
     const hangmanRewardModal = document.getElementById("hangman-reward-modal");
     const hangmanRewardAccept = document.getElementById("hangman-reward-accept");
-
-    gameUI.classList.remove("hidden");
-    enableEnterKey(guessInput, guessButton);
-    guessButton.textContent = t("btn_guess");
-    guessInput.type = "text";
-    guessInput.placeholder = t("hangman_placeholder");
 
     let guessedLetters = [];
     let guessedWords = [];
