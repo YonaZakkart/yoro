@@ -364,9 +364,9 @@ function runMathGameCasual(event) {
         guessButton.disabled = true;
 
         stats.games.countWithMe.plays++;
+        stats.games.countWithMe.modes.casual.plays++;
         if (stats.games.countWithMe.bestTen === null || hits > stats.games.countWithMe.bestTen) {
             stats.games.countWithMe.bestTen = hits;
-            stats.games.countWithMe.modes.casual.plays++;
         }
         saveStats(stats);
 
