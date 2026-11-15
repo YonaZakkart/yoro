@@ -139,6 +139,7 @@ function startHangmanGame(event) {
         guessInput.disabled = true;
         guessButton.disabled = true;
         yoroCelebrate(); // la version base solo termina al adivinar la palabra
+        yoroGameOver();
 
         setTimeout(() => {
             dialogueContainer.style.opacity = 0;
@@ -157,11 +158,11 @@ function startHangmanGame(event) {
         guessInput.value = "";
 
         if (raw.length === 0) {
-            showQuickMessage(t("msg_write_letter_or_word"));
+            showInputError(t("msg_write_letter_or_word"));
             return;
         }
         if (!getLetterRegex().test(raw)) {
-            showQuickMessage(t("msg_letters_only"));
+            showInputError(t("msg_letters_only"));
             return;
         }
 
@@ -176,7 +177,10 @@ function startHangmanGame(event) {
             const count = countLetterOccurrences(secretWord, letter);
             const message = getLetterMessage(letter, count);
 
-            if (count > 0) updateProgress();
+            if (count > 0) {
+                updateProgress();
+                yoroCheers();
+            }
 
             if (isWordFullyRevealed()) {
                 dialogueContainer.style.opacity = 1;
@@ -189,7 +193,7 @@ function startHangmanGame(event) {
         }
 
         if (raw.length === 2) {
-            showQuickMessage(t("msg_one_letter_or_word"));
+            showInputError(t("msg_one_letter_or_word"));
             return;
         }
 
@@ -514,6 +518,7 @@ function runHangmanGame_1_1(event, mode) {
             guessInput.disabled = false;
             guessButton.disabled = false;
             if (won) yoroCelebrate(); // Yoro estaba oculto tras la tabla: celebra al volver
+            yoroGameOver(won);
             finishEvent(event);
         });
     }
@@ -561,11 +566,11 @@ function runHangmanGame_1_1(event, mode) {
         guessInput.value = "";
 
         if (raw.length === 0) {
-            showQuickMessage(t("msg_write_letter_or_word"));
+            showInputError(t("msg_write_letter_or_word"));
             return;
         }
         if (!getLetterRegex().test(raw)) {
-            showQuickMessage(t("msg_letters_only"));
+            showInputError(t("msg_letters_only"));
             return;
         }
 
@@ -585,6 +590,8 @@ function runHangmanGame_1_1(event, mode) {
             if (count === 0) {
                 wrongGuesses++;
                 letterFailsSinceHint++;
+            } else {
+                yoroCheers();
             }
             updateProgress();
             updateHint();
@@ -609,7 +616,7 @@ function runHangmanGame_1_1(event, mode) {
         }
 
         if (raw.length === 2) {
-            showQuickMessage(t("msg_one_letter_or_word"));
+            showInputError(t("msg_one_letter_or_word"));
             return;
         }
 

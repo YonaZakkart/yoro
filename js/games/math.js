@@ -62,6 +62,7 @@ function startMathGame(event) {
         const result = getMathResultMessage(hits, totalProblems);
         dialogueParagraph.textContent = result.text;
         if (result.won) yoroCelebrate();
+        yoroGameOver(hits === totalProblems);
         dialogueContainer.style.opacity = 1;
         guessInput.disabled = true;
         guessButton.disabled = true;
@@ -82,13 +83,16 @@ function startMathGame(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage(t("msg_write_number"), { restoreText: `${currentProblem.text} = ?` });
+            showInputError(t("msg_write_number"), { restoreText: `${currentProblem.text} = ?` });
             return;
         }
         guessButton.disabled = true;
         const answer = Number(guessInput.value);
         const correct = answer === currentProblem.answer;
-        if (correct) hits++;
+        if (correct) {
+            hits++;
+            yoroCheers();
+        }
         problemIndex++;
 
         stats.games.countWithMe.totalAnswers++;
@@ -133,6 +137,7 @@ function runMathGameCasual(event) {
         const result = getMathResultMessage10(hits);
         dialogueParagraph.textContent = result.text;
         if (result.won) yoroCelebrate();
+        yoroGameOver(hits === 10);
         dialogueContainer.style.opacity = 1;
         guessInput.disabled = true;
         guessButton.disabled = true;
@@ -157,7 +162,7 @@ function runMathGameCasual(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage(t("msg_write_number"), { restoreText: `${currentProblem.text} = ?` });
+            showInputError(t("msg_write_number"), { restoreText: `${currentProblem.text} = ?` });
             return;
         }
         guessButton.disabled = true;
@@ -168,6 +173,7 @@ function runMathGameCasual(event) {
         if (correct) {
             hits++;
             racha++;
+            yoroCheers();
             feedbackText = t("math_correct_streak", { streak: racha });
         } else {
             racha = 0;
@@ -238,6 +244,7 @@ function runMathGameInfinito(event) {
             stats.games.countWithMe.bestInfinite = racha;
             if (racha > 0) yoroCelebrate();
         }
+        yoroGameOver(racha >= 20);
         saveStats(stats);
 
         setTimeout(() => {
@@ -253,7 +260,7 @@ function runMathGameInfinito(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage(t("msg_write_number"), { restoreText: `${currentProblem.text} = ?` });
+            showInputError(t("msg_write_number"), { restoreText: `${currentProblem.text} = ?` });
             return;
         }
         guessButton.disabled = true;
@@ -266,6 +273,7 @@ function runMathGameInfinito(event) {
             stats.games.countWithMe.correctAnswers++;
             stats.games.countWithMe.modes.infinito.correctAnswers++;
             saveStats(stats);
+            yoroCheers();
             showQuickMessage(t("math_correct_chain", { count: attempts }), { duration: 1200 });
             setTimeout(showProblem, 1200 + FADE_DURATION);
         } else {

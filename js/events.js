@@ -29,7 +29,7 @@ function finishEvent(event) {
         });
     } else {
         showDialogue(withGesture(event.outroDialogue, -1, "wave"), () => {
-            startIdleDialogues();
+            startYoroIdle();
             showSkipTimeButton();
         });
     }
@@ -187,10 +187,11 @@ let advanceDialogue = null; // referencia a la funcion "avanzar ya" de la linea 
 
 // click en cualquier parte de la pantalla salta la pausa (el fade se respeta igual)
 document.addEventListener("click", () => {
-    cancelIdleDialogues();
+    hideIdleDialogue();
 
     if (dialogueSkippable && advanceDialogue) {
         clearPausableTimeout(dialogueSkipTimeout);
+        noteYoroDialogueSkipped();
         advanceDialogue();
     }
 });
@@ -208,6 +209,8 @@ function showDialogue(lines, onComplete) {
         return;
     }
 
+    setYoroBusy();
+    hideIdleDialogue();
     let i = 0;
     function advance() {
         dialogueSkippable = false;
@@ -222,12 +225,17 @@ function showDialogue(lines, onComplete) {
         }
         const line = lines[i];
         dialogueParagraph.textContent = t(line.key, line.params);
+        dialogueParagraph.classList.remove("dialogue-murmur");
         dialogueContainer.style.opacity = 1;
         if (line.gesture === "wave") yoroWave(); else yoroTalkGesture();
+        yoroTalks();
         i++;
         advanceDialogue = advance;
         dialogueSkippable = true;
-        dialogueSkipTimeout = setPausableTimeout(advance, line.pause);
+        dialogueSkipTimeout = setPausableTimeout(() => {
+            noteYoroDialogueRead();
+            advance();
+        }, line.pause);
     }
     setPausableTimeout(showNext, 1000);
 }
@@ -262,58 +270,40 @@ function getAvailableCuriosities() {
     return list.filter(text => text !== null);
 }
 
-// Mezcla un arreglo sin modificar el original (Fisher-Yates)
-function shuffleArray(array) {
-    const result = [...array];
-    for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [result[i], result[j]] = [result[j], result[i]];
-    }
-    return result;
+// Dialogos ociosos: ya no salen solos con el tiempo. Uno al azar aparece cuando Yoro se pone feliz
+// porque lo tocaron, y dormido a veces murmura (ver js/robot/moods.js)
+const murmurKeys = ["murmur_1", "murmur_2", "murmur_3", "murmur_4", "murmur_5", "murmur_6"];
+let idleLineTimeout = null;
+let idleLineVisible = false;
+
+const pickRandom = list => list[Math.floor(Math.random() * list.length)];
+
+function hideIdleDialogue() {
+    clearPausableTimeout(idleLineTimeout);
+    idleLineTimeout = null;
+    if (!idleLineVisible) return;
+    idleLineVisible = false;
+    dialogueContainer.style.opacity = 0;
 }
 
-// Sistema de dialogo ocioso: Yoro comenta cosas cuando la pantalla queda en silencio
-let idleTimeouts = [];
-
-function cancelIdleDialogues() {
-    idleTimeouts.forEach(clearPausableTimeout);
-    idleTimeouts = [];
+function showIdleLine(text, { murmur = false, duration = 3000 } = {}) {
+    clearPausableTimeout(idleLineTimeout);
+    dialogueParagraph.textContent = text;
+    dialogueParagraph.classList.toggle("dialogue-murmur", murmur);
+    dialogueContainer.style.opacity = 1;
+    idleLineVisible = true;
+    idleLineTimeout = setPausableTimeout(hideIdleDialogue, duration);
 }
 
-function startIdleDialogues() {
-    cancelIdleDialogues(); // evita que se solapen dos secuencias
+// una curiosidad de las estadisticas, o una frase de relleno si todavia no hay ninguna (o por azar)
+function showIdleDialogue() {
+    const curiosities = getAvailableCuriosities();
+    const useFiller = curiosities.length === 0 || Math.random() < 0.3;
+    showIdleLine(useFiller ? t(pickRandom(idleFillerKeys)) : pickRandom(curiosities));
+}
 
-    const gaps = [6000, 8000, 10000, 12000, 15000, 18000];
-    const repeatGap = 24000;
-    const messageDuration = 3000;
-
-    const curiosities = shuffleArray(getAvailableCuriosities());
-    if (curiosities.length === 0) return; // todavia no hay nada que decir
-
-    const queue = [];
-    curiosities.forEach(stat => {
-        queue.push(stat);
-        queue.push(t(idleFillerKeys[Math.floor(Math.random() * idleFillerKeys.length)]));
-    });
-
-    let elapsed = 0;
-    queue.forEach((text, index) => {
-        const gap = gaps[index] !== undefined ? gaps[index] : repeatGap;
-        elapsed += gap;
-
-        const showId = setPausableTimeout(() => {
-            dialogueParagraph.textContent = text;
-            dialogueContainer.style.opacity = 1;
-
-            const hideId = setPausableTimeout(() => {
-                dialogueContainer.style.opacity = 0;
-            }, messageDuration);
-            idleTimeouts.push(hideId);
-        }, elapsed);
-
-        idleTimeouts.push(showId);
-        elapsed += messageDuration;
-    });
+function showMurmur() {
+    showIdleLine(t(pickRandom(murmurKeys)), { murmur: true, duration: 4500 });
 }
 
 // muestra el menu de seleccion de juego
@@ -336,6 +326,7 @@ function showGameMenu() {
     });
 
     menuUI.classList.remove("hidden");
+    startYoroIdle("menu");
 
     // Iguala el ancho de todos los botones al del texto más largo entre ellos
     const gameButtons = menuUI.querySelectorAll("button[data-game-id]");
@@ -346,8 +337,6 @@ function showGameMenu() {
     gameButtons.forEach(button => {
         button.style.width = `${maxWidth}px`;
     });
-
-    startIdleDialogues();
 }
 
 document.getElementById("game-menu-ui").onclick = (clickEvent) => {
@@ -388,6 +377,7 @@ function showModeMenu(event) {
     });
 
     modeMenuUI.classList.remove("hidden");
+    startYoroIdle("menu");
 }
 
 document.getElementById("mode-menu-ui").onclick = (clickEvent) => {
@@ -405,6 +395,7 @@ document.getElementById("mode-menu-ui").onclick = (clickEvent) => {
 // muestra el mini-menu de "seguir jugando" (tras repetir un juego desde el menu)
 function showContinueMenu() {
     document.getElementById("continue-menu-ui").classList.remove("hidden");
+    startYoroIdle("menu");
 }
 
 document.getElementById("continue-yes-button").onclick = () => {
@@ -414,7 +405,7 @@ document.getElementById("continue-yes-button").onclick = () => {
 
 document.getElementById("continue-later-button").onclick = () => {
     document.getElementById("continue-menu-ui").classList.add("hidden");
-    showDialogue(withGesture(continueLaterDialogue, 0, "wave"), startIdleDialogues);
+    showDialogue(withGesture(continueLaterDialogue, 0, "wave"), () => startYoroIdle());
 };
 
 // Botón [Saltar tiempo...]: recarga la página para pasar al siguiente evento sin esperar.
@@ -431,7 +422,10 @@ skipTimeButton.onclick = () => location.reload();
 // Arranca el flujo: busca el siguiente evento sin completar y lo reproduce
 const nextEvent = findNextEvent();
 
-if (nextEvent) {
+if (nextEvent && nextEvent.id === "event_1_number_game") {
+    // primera visita: Yoro estaba dormido; se despierta, se sorprende y dice "Oh...."
+    startYoroWakeUpIntro(() => showDialogue(nextEvent.introDialogue, () => startEvent(nextEvent)));
+} else if (nextEvent) {
     showDialogue(withGesture(nextEvent.introDialogue, 0, "wave"), () => startEvent(nextEvent));
 } else {
     showDialogue(withGesture(returningDialogue, 0, "wave"), showGameMenu);

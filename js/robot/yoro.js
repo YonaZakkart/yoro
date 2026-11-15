@@ -113,7 +113,8 @@ function yoroTalkGesture() {
 }
 
 // Expresiones: neutral, sleep, happy, surprised, sad (aburrido/molesto), angry, dizzy.
-// Con duración (ms), al terminar pasa a "next" (por defecto vuelve a neutral).
+// Con duración (ms), al terminar pasa a "next" (por defecto vuelve a neutral);
+// "next" también puede ser [nombre, duración, siguiente] para encadenar expresiones.
 const YORO_EXPRESSIONS = ["neutral", "sleep", "happy", "surprised", "sad", "angry", "dizzy"];
 let yoroExpressionTimer = null;
 
@@ -123,7 +124,10 @@ function setYoroExpression(name, duration = 0, next = "neutral") {
     yoroExpressionTimer = null;
     yoroStage.dataset.expression = name;
     if (duration > 0) {
-        yoroExpressionTimer = setTimeout(() => setYoroExpression(next), duration);
+        yoroExpressionTimer = setTimeout(() => {
+            if (Array.isArray(next)) setYoroExpression(...next);
+            else setYoroExpression(next);
+        }, duration);
     }
 }
 
@@ -146,8 +150,15 @@ function yoroPulseCore() {
     yoroState.flashAt = performance.now() / 1000;
 }
 
-document.getElementById("yoro-hit-head").addEventListener("click", yoroBoop);
-document.getElementById("yoro-hit-core").addEventListener("click", yoroPulseCore);
+// tocar a Yoro no cuenta como click para saltar el diálogo (listener global de js/events.js)
+document.getElementById("yoro-hit-head").addEventListener("click", event => {
+    event.stopPropagation();
+    yoroBoop();
+});
+document.getElementById("yoro-hit-core").addEventListener("click", event => {
+    event.stopPropagation();
+    yoroPulseCore();
+});
 
 function yoroFrame(now) {
     requestAnimationFrame(yoroFrame);
@@ -158,9 +169,11 @@ function yoroFrame(now) {
     if (yoroStage.classList.contains("hidden")) return;
 
     const M = YORO_MOTION;
-    const follow = 1 - Math.exp(-dt * 9);
-    s.gazeX += (s.targetX - s.gazeX) * follow;
-    s.gazeY += (s.targetY - s.gazeY) * follow;
+    // dormido no sigue el cursor: deja caer la cabeza
+    const asleep = yoroStage.dataset.expression === "sleep";
+    const follow = 1 - Math.exp(-dt * (asleep ? 2 : 9));
+    s.gazeX += ((asleep ? 0 : s.targetX) - s.gazeX) * follow;
+    s.gazeY += ((asleep ? 0.6 : s.targetY) - s.gazeY) * follow;
     const gx = s.gazeX, gy = s.gazeY;
 
     // flotar y respirar

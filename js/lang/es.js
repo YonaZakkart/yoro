@@ -360,6 +360,13 @@ const lang_es = {
     idle_filler_4: "bleh :b",
     idle_filler_5: "Guardando datos...",
     idle_filler_6: "Revisando detalles...",
+    // Murmullos de Yoro dormido
+    murmur_1: "...siete... no... ¿era el cinco?... zzz",
+    murmur_2: "...afuera sigue nublado... zzz...",
+    murmur_3: "...a... h... o... r... zzz",
+    murmur_4: "...guardando sueños... 42%...",
+    murmur_5: "...no apagues la luz... zzz",
+    murmur_6: "...un juego nuevo... algún día... zzz",
 
     // Título de la pestaña y música
     tab_away_1: "¿Te vas...?",

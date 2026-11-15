@@ -60,7 +60,7 @@ function startGuessingGame(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage(t("msg_write_number"));
+            showInputError(t("msg_write_number"));
             return;
         }
         const guess = Number(guessInput.value);
@@ -75,6 +75,7 @@ function startGuessingGame(event) {
             stats.games.number.plays++;
             stats.games.number.wins++;
             yoroCelebrate();
+            yoroGameOver();
             stats.games.number.totalAttempts += attempts;
             if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
                 stats.games.number.bestAttempts = attempts;
@@ -105,7 +106,7 @@ function startGuessingGame_1_1(event) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage(t("msg_write_number"));
+            showInputError(t("msg_write_number"));
             return;
         }
         const guess = Number(guessInput.value);
@@ -120,6 +121,7 @@ function startGuessingGame_1_1(event) {
             stats.games.number.plays++;
             stats.games.number.wins++;
             yoroCelebrate();
+            yoroGameOver();
             stats.games.number.totalAttempts += attempts;
             if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
                 stats.games.number.bestAttempts = attempts;
@@ -153,7 +155,7 @@ function runGuessingGame_1_2(event, mode) {
 
     guessButton.onclick = () => {
         if (guessInput.value.trim() === "") {
-            showQuickMessage(t("msg_write_number"));
+            showInputError(t("msg_write_number"));
             return;
         }
         const guess = Number(guessInput.value);
@@ -171,6 +173,7 @@ function runGuessingGame_1_2(event, mode) {
             stats.games.number.plays++;
             stats.games.number.wins++;
             yoroCelebrate();
+            yoroGameOver();
             stats.games.number.totalAttempts += attempts;
             if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
                 stats.games.number.bestAttempts = attempts;
