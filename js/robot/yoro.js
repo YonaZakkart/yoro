@@ -98,7 +98,7 @@ function yoroCelebrate() {
     });
 }
 
-const YORO_TALK_CHANCE = 0.4;
+const YORO_TALK_CHANCE = 0.3;
 const yoroTalkPoses = [[1, 1], [2, 2], [1, 0], [2, 0], [0, 1], [0, 2]];
 
 // al decir una línea, a veces sube uno o ambos brazos unos segundos y vuelve a bajarlos
@@ -110,6 +110,25 @@ function yoroTalkGesture() {
     setTimeout(() => {
         if (token === yoroGestures.token) setYoroArms(0);
     }, 1500 + Math.random() * 1500);
+}
+
+// Expresiones: neutral, sleep, happy, surprised, sad (aburrido/molesto), angry, dizzy.
+// Con duración (ms), al terminar pasa a "next" (por defecto vuelve a neutral).
+const YORO_EXPRESSIONS = ["neutral", "sleep", "happy", "surprised", "sad", "angry", "dizzy"];
+let yoroExpressionTimer = null;
+
+function setYoroExpression(name, duration = 0, next = "neutral") {
+    if (!YORO_EXPRESSIONS.includes(name)) return;
+    clearTimeout(yoroExpressionTimer);
+    yoroExpressionTimer = null;
+    yoroStage.dataset.expression = name;
+    if (duration > 0) {
+        yoroExpressionTimer = setTimeout(() => setYoroExpression(next), duration);
+    }
+}
+
+function getYoroExpression() {
+    return yoroStage.dataset.expression;
 }
 
 function setYoroBlink(closed) {
