@@ -602,12 +602,12 @@ function startHangmanGame(event) {
 
     function updateProgress() {
         hangmanProgress.textContent = secretWord.split("").map(char =>
-            guessedLetters.includes(char) ? char : "_"
+            isLetterGuessed(char, guessedLetters) ? char : "_"
         ).join(" ");
     }
 
     function isWordFullyRevealed() {
-        return secretWord.split("").every(char => guessedLetters.includes(char));
+        return secretWord.split("").every(char => isLetterGuessed(char, guessedLetters));
     }
 
     function finishGame() {
@@ -627,7 +627,7 @@ function startHangmanGame(event) {
     }
 
     guessButton.onclick = () => {
-        const raw = guessInput.value.trim().toLowerCase();
+        const raw = normalizeHangmanText(guessInput.value.trim());
         guessInput.value = "";
 
         if (raw.length === 0) {
@@ -795,7 +795,7 @@ function runHangmanGame_1_1(event, mode) {
 
     function updateProgress() {
         hangmanProgress.textContent = secretWord.split("").map(char =>
-            guessedLetters.includes(char) ? char : "_"
+            isLetterGuessed(char, guessedLetters) ? char : "_"
         ).join(" ");
     }
 
@@ -881,7 +881,7 @@ function runHangmanGame_1_1(event, mode) {
     }
 
     function isWordFullyRevealed() {
-        return secretWord.split("").every(char => guessedLetters.includes(char));
+        return secretWord.split("").every(char => isLetterGuessed(char, guessedLetters));
     }
 
     function formatAttemptCount(count) {
@@ -1030,7 +1030,7 @@ function runHangmanGame_1_1(event, mode) {
     };
 
     guessButton.onclick = () => {
-        const raw = guessInput.value.trim().toLowerCase();
+        const raw = normalizeHangmanText(guessInput.value.trim());
         guessInput.value = "";
 
         if (raw.length === 0) {
