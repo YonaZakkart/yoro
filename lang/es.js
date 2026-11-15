@@ -1,8 +1,5 @@
 // Textos de Yoro en español.
-// Las claves de "test_" son solo para probar el mecanismo; se borran en la siguiente rama.
 const lang_es = {
-    test_hello: "Hola",
-    test_greeting: "Hola, {name}, bienvenido",
     //Evento 1
     e1_intro_1: "Oh....",
     e1_intro_2: "No esperaba que alguien entrara...",

@@ -21,7 +21,7 @@ function loadLang() {
 
 let currentLang = loadLang();
 
-// expone el idioma actual para que main.js pueda leerlo
+// expone el idioma actual (lo usan el selector de idioma y los bancos de palabras del Ahorcado)
 function getCurrentLang() { return currentLang; }
 
 // cambia el idioma activo y lo guarda para la próxima visita
@@ -68,6 +68,3 @@ function applyTranslations() {
 }
 
 applyTranslations();
-
-// expone getCurrentLang globalmente para que games/hangman.js pueda usarlo
-window.getCurrentLang = getCurrentLang;

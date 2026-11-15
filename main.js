@@ -1452,12 +1452,6 @@ function formatOrDash(value) {
     return value === null ? "—" : value;
 }
 
-// un valor con su unidad en singular o plural ("1 vida", "6 vidas"), o un guion si no hay dato
-function formatCount(value, singular, plural) {
-    if (value === null) return "—";
-    return `${value} ${value === 1 ? singular : plural}`;
-}
-
 // un valor con su unidad en singular o plural según el idioma ("1 vida", "6 lives"), o un guion si no hay dato.
 // "key" es la base de las claves _one/_other, igual que en tp()
 function formatUnits(value, key) {

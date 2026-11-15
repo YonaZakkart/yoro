@@ -1,8 +1,5 @@
 // Textos de Yoro en inglés.
 const lang_en = {
-    test_hello: "Hello",
-    test_greeting: "Hello, {name}, welcome",
-
     e1_intro_1: "Oh....",
     e1_intro_2: "I didn't expect anyone to come in...",
     e1_intro_3: "Hi, my name is Yoro",

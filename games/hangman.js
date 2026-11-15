@@ -62,7 +62,7 @@ const hangmanWordsExperto = {
 
 // elige una palabra al azar del banco según idioma actual
 function pickSecretWord() {
-    const lang = window.getCurrentLang();
+    const lang = getCurrentLang();
     const pool = hangmanWords[lang];
     const index = Math.floor(Math.random() * pool.length);
     return pool[index];
@@ -97,7 +97,7 @@ function isWordMatch(secretWord, guess) {
 
 // elige una palabra al azar del banco exclusivo de Experto según idioma
 function pickSecretWordExperto() {
-    const lang = window.getCurrentLang();
+    const lang = getCurrentLang();
     const pool = hangmanWordsExperto[lang];
     const index = Math.floor(Math.random() * pool.length);
     return pool[index];
@@ -469,6 +469,6 @@ const loseMessages = [
 
 // Regex dinámico según idioma: ES acepta tildes y ñ, EN solo a-z
 function getLetterRegex() {
-    const lang = window.getCurrentLang();
+    const lang = getCurrentLang();
     return lang === "en" ? /^[a-z]+$/i : /^[a-záéíóúüñ]+$/i;
 }
