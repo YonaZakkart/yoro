@@ -162,22 +162,23 @@ body {
 
 .yoro-eye-glow {
     opacity: 0.95;
-    transition: opacity 0.06s linear;
 }
 
-/* Parpadeo: el ojo se aplasta hacia su borde inferior */
-.yoro-eye-shape {
+/* Parpadeo: el ojo (y su brillo) se aplasta hacia su borde inferior */
+.yoro-eye-shape,
+.yoro-eye-glow {
     transform-box: fill-box;
     transform-origin: 50% 100%;
-    transition: transform 0.06s linear;
+    transition: transform 0.06s linear, opacity 0.06s linear;
 }
 
-.yoro-blink .yoro-eye-shape {
+.yoro-blink .yoro-eye-shape,
+.yoro-blink .yoro-eye-glow {
     transform: scaleY(0.07);
 }
 
 .yoro-blink .yoro-eye-glow {
-    opacity: 0.15;
+    opacity: 0.5;
 }
 
 /* Boca "ω": mismo color tenue que tenía el diseño original */
@@ -187,7 +188,139 @@ body {
     stroke-width: 11;
     stroke-linecap: round;
     stroke-linejoin: round;
+}
+
+#yoro-mouth {
     opacity: 0.6;
+}
+
+/* Expresiones: #yoro-avatar[data-expression] decide qué ojos, boca y adorno se ven */
+.yoro-face,
+.yoro-mouth-shape,
+.yoro-extra {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.08s linear, visibility 0.08s linear;
+}
+
+[data-expression="neutral"] .yoro-face[data-face="base"],
+[data-expression="sleep"] .yoro-face[data-face="base"],
+[data-expression="happy"] .yoro-face[data-face="base"],
+[data-expression="surprised"] .yoro-face[data-face="base"],
+[data-expression="sad"] .yoro-face[data-face="sad"],
+[data-expression="angry"] .yoro-face[data-face="angry"],
+[data-expression="dizzy"] .yoro-face[data-face="dizzy"],
+[data-expression="neutral"] [data-mouth="neutral"],
+[data-expression="sleep"] [data-mouth="sleep"],
+[data-expression="dizzy"] [data-mouth="sleep"],
+[data-expression="happy"] [data-mouth="happy"],
+[data-expression="surprised"] [data-mouth="surprised"],
+[data-expression="sad"] [data-mouth="sad"],
+[data-expression="angry"] [data-mouth="angry"],
+[data-expression="sleep"] .yoro-extra[data-extra="sleep"],
+[data-expression="angry"] .yoro-extra[data-extra="angry"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* dormido: ojos cerrados todo el tiempo */
+[data-expression="sleep"] .yoro-eye-shape,
+[data-expression="sleep"] .yoro-eye-glow {
+    transform: scaleY(0.07);
+}
+
+[data-expression="sleep"] .yoro-eye-glow {
+    opacity: 0.5;
+}
+
+/* mareado: ojos en espiral que giran */
+.yoro-face[data-face="dizzy"] .yoro-eye-glow,
+.yoro-face[data-face="dizzy"] .yoro-eye-shape {
+    fill: none;
+    stroke: var(--yoro-eye);
+    stroke-width: 13;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.yoro-face[data-face="dizzy"] use {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+}
+
+[data-expression="dizzy"] .yoro-face[data-face="dizzy"] use {
+    animation: yoroSpin 1.6s linear infinite;
+}
+
+.yoro-z,
+.yoro-z-outline {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.yoro-z {
+    stroke: var(--yoro-eye);
+    stroke-width: 24;
+}
+
+.yoro-z-outline {
+    stroke: #000;
+    stroke-width: 34;
+}
+
+.yoro-vein {
+    fill: none;
+    stroke: #E3262B;
+    stroke-width: 22;
+    stroke-linecap: round;
+}
+
+.yoro-vein-glow {
+    opacity: 0.6;
+}
+
+.yoro-extra {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+}
+
+[data-expression="sleep"] .yoro-extra[data-extra="sleep"] {
+    animation: yoroZ 2.2s ease-in-out infinite;
+}
+
+[data-expression="angry"] .yoro-extra[data-extra="angry"] {
+    animation: yoroAngry 0.34s steps(2, end) infinite;
+}
+
+@keyframes yoroSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes yoroZ {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-5deg);
+    }
+
+    50% {
+        transform: translateY(-14px) rotate(4deg);
+    }
+}
+
+@keyframes yoroAngry {
+
+    0%,
+    100% {
+        transform: translateX(0) rotate(-2deg);
+    }
+
+    50% {
+        transform: translateX(4px) rotate(2deg);
+    }
 }
 
 /* Poses de los brazos (0 abajo, 1 medio, 2 arriba). Medidas sobre el brazo derecho;
@@ -226,8 +359,16 @@ body {
 @media (prefers-reduced-motion: reduce) {
     .yoro-arm-pose,
     .yoro-eye-shape,
-    .yoro-eye-glow {
+    .yoro-eye-glow,
+    .yoro-face,
+    .yoro-mouth-shape,
+    .yoro-extra {
         transition: none;
+    }
+
+    .yoro-extra,
+    .yoro-face[data-face="dizzy"] use {
+        animation: none !important;
     }
 }
 

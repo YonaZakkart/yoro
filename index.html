@@ -237,7 +237,7 @@
     <!-- The Void (Container) -->
     <main class="w-full h-full flex flex-col justify-center items-center relative">
         <!-- Centerpiece: Yoro Robot (SVG en coordenadas 1190x1900; js/robot/yoro.js lo anima) -->
-        <div id="yoro-avatar" class="yoro-stage">
+        <div id="yoro-avatar" class="yoro-stage" data-expression="neutral">
             <div class="yoro-figure">
                 <svg class="yoro-svg" viewBox="0 0 1190 1900" aria-hidden="true" focusable="false">
                     <defs>
@@ -258,6 +258,10 @@
                         </linearGradient>
                         <!-- brazo (cápsula) colgando del hombro: el origen es el centro del círculo del hombro -->
                         <rect id="yoro-arm-shape" x="-53" y="-53" width="106" height="284" rx="53" />
+                        <!-- ojos de las expresiones (ojo derecho; el izquierdo es su reflejo) -->
+                        <path id="yoro-eye-sad" d="M668 532Q770 520 872 532Q886 548 874 572Q856 604 800 604H732Q680 604 664 568Q656 546 668 532Z" />
+                        <path id="yoro-eye-angry" d="M698 578Q752 524 838 496Q864 488 862 536Q862 600 822 603H724Q690 603 698 578Z" />
+                        <path id="yoro-eye-dizzy" d="M796 548 L797 550 L797 552 L797 554 L796 556 L794 558 L791 560 L789 561 L785 561 L782 560 L778 558 L775 556 L773 552 L771 548 L771 544 L772 539 L774 534 L777 530 L781 526 L787 524 L793 523 L799 523 L805 525 L811 529 L816 534 L819 540 L821 547 L821 555 L820 563 L816 570 L811 576 L804 581 L795 585 L786 586 L777 585 L768 581 L760 576 L754 569 L749 559 L746 549 L746 539 L749 528 L754 518 L762 510 L771 503 L782 499 L794 498 L806 499 L818 504 L829 511 L837 521 L843 533 L846 546 L846 559 L843 573 L836 585 L826 596 L814 604 L800 609 L785 611 L770 609" />
                     </defs>
 
                     <ellipse id="yoro-shadow" class="yoro-shadow" cx="594" cy="1868" rx="238" ry="22"
@@ -286,20 +290,69 @@
                             <rect class="yoro-head-shell" x="73" y="245" width="1040" height="768" rx="294" />
                             <rect class="yoro-face-plate" x="181" y="391" width="822" height="448" rx="148" />
                             <g id="yoro-eyes">
-                                <g class="yoro-eye">
-                                    <rect class="yoro-eye-glow" x="683" y="489" width="178" height="114" rx="57"
-                                        filter="url(#yoro-glow)" />
-                                    <rect class="yoro-eye-shape" x="683" y="489" width="178" height="114" rx="57" />
+                                <g class="yoro-face" data-face="base">
+                                    <g class="yoro-eye">
+                                        <rect class="yoro-eye-glow" x="683" y="489" width="178" height="114" rx="57"
+                                            filter="url(#yoro-glow)" />
+                                        <rect class="yoro-eye-shape" x="683" y="489" width="178" height="114" rx="57" />
+                                    </g>
+                                    <g class="yoro-eye">
+                                        <rect class="yoro-eye-glow" x="323" y="489" width="178" height="114" rx="57"
+                                            filter="url(#yoro-glow)" />
+                                        <rect class="yoro-eye-shape" x="323" y="489" width="178" height="114" rx="57" />
+                                    </g>
                                 </g>
-                                <g class="yoro-eye">
-                                    <rect class="yoro-eye-glow" x="323" y="489" width="178" height="114" rx="57"
-                                        filter="url(#yoro-glow)" />
-                                    <rect class="yoro-eye-shape" x="323" y="489" width="178" height="114" rx="57" />
+                                <g class="yoro-face" data-face="sad">
+                                    <g class="yoro-eye">
+                                        <use class="yoro-eye-glow" href="#yoro-eye-sad" filter="url(#yoro-glow)" />
+                                        <g class="yoro-eye-shape"><use href="#yoro-eye-sad" /></g>
+                                    </g>
+                                    <g class="yoro-eye" transform="matrix(-1 0 0 1 1188 0)">
+                                        <use class="yoro-eye-glow" href="#yoro-eye-sad" filter="url(#yoro-glow)" />
+                                        <g class="yoro-eye-shape"><use href="#yoro-eye-sad" /></g>
+                                    </g>
+                                </g>
+                                <g class="yoro-face" data-face="angry">
+                                    <g class="yoro-eye">
+                                        <use class="yoro-eye-glow" href="#yoro-eye-angry" filter="url(#yoro-glow)" />
+                                        <g class="yoro-eye-shape"><use href="#yoro-eye-angry" /></g>
+                                    </g>
+                                    <g class="yoro-eye" transform="matrix(-1 0 0 1 1188 0)">
+                                        <use class="yoro-eye-glow" href="#yoro-eye-angry" filter="url(#yoro-glow)" />
+                                        <g class="yoro-eye-shape"><use href="#yoro-eye-angry" /></g>
+                                    </g>
+                                </g>
+                                <g class="yoro-face" data-face="dizzy">
+                                    <g class="yoro-eye">
+                                        <use class="yoro-eye-glow" href="#yoro-eye-dizzy" filter="url(#yoro-glow)" />
+                                        <g class="yoro-eye-shape"><use href="#yoro-eye-dizzy" /></g>
+                                    </g>
+                                    <g class="yoro-eye" transform="matrix(-1 0 0 1 1188 0)">
+                                        <use class="yoro-eye-glow" href="#yoro-eye-dizzy" filter="url(#yoro-glow)" />
+                                        <g class="yoro-eye-shape"><use href="#yoro-eye-dizzy" /></g>
+                                    </g>
                                 </g>
                             </g>
                             <g id="yoro-mouth">
-                                <path class="yoro-mouth-shape"
+                                <path class="yoro-mouth-shape" data-mouth="neutral"
                                     d="M548 698V716Q548 739 570 739Q592 739 592 716V708V716Q592 739 614 739Q636 739 636 716V698" />
+                                <path class="yoro-mouth-shape" data-mouth="sleep" d="M568 724H618" />
+                                <path class="yoro-mouth-shape" data-mouth="happy" d="M545 726Q569 748 593 726Q617 748 641 726C641 798 545 798 545 726Z" />
+                                <ellipse class="yoro-mouth-shape" data-mouth="surprised" cx="598" cy="739" rx="31" ry="25"
+                                    transform="rotate(-12 598 739)" />
+                                <path class="yoro-mouth-shape" data-mouth="sad" d="M544 739Q593 700 643 739" />
+                                <path class="yoro-mouth-shape" data-mouth="angry" d="M560 761L593 713L627 761" />
+                            </g>
+                            <!-- adornos sobre la cabeza: Z al dormir, vena al enojarse -->
+                            <g class="yoro-extra" data-extra="sleep">
+                                <path class="yoro-z-outline" d="M1003 166L1080 162L1006 254L1088 250" />
+                                <path class="yoro-z" d="M1003 166L1080 162L1006 254L1088 250" />
+                            </g>
+                            <g class="yoro-extra" data-extra="angry">
+                                <path class="yoro-vein yoro-vein-glow" filter="url(#yoro-glow)"
+                                    d="M573 62Q623 100 673 62M573 198Q623 160 673 198M555 80Q593 130 555 180M691 80Q653 130 691 180" />
+                                <path class="yoro-vein"
+                                    d="M573 62Q623 100 673 62M573 198Q623 160 673 198M555 80Q593 130 555 180M691 80Q653 130 691 180" />
                             </g>
                         </g>
                         <g id="yoro-arm-r">
