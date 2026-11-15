@@ -275,6 +275,8 @@ const lang_es = {
     // Interfaz fija (HTML)
     top_settings: "Opciones",
     top_stats: "Estadísticas",
+    yoro_touch_head: "Tocar la cabeza de Yoro",
+    yoro_touch_core: "Tocar el núcleo de Yoro",
     skip_time: "Saltar tiempo...",
     settings_title: "Opciones",
     opt_change_name: "Cambiar mi nombre",

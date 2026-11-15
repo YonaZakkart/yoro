@@ -65,6 +65,10 @@ function applyTranslations() {
         element.title = text;
         element.setAttribute("aria-label", text);
     });
+    // solo aria-label (sin tooltip), para zonas invisibles como la cabeza y el núcleo de Yoro
+    document.querySelectorAll("[data-i18n-aria]").forEach(element => {
+        element.setAttribute("aria-label", t(element.dataset.i18nAria));
+    });
 }
 
 applyTranslations();

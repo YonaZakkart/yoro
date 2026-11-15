@@ -1,35 +1,33 @@
 /* Custom Colors & Structure for Yoro overriding Tailwind where specific exact hexes were mandated in prompt */
 :root {
     --bg-void: #050505;
-    --yoro-body: #24272B;
+    --yoro-body: #23272D;
+    --yoro-torso: #20262A;
+    --yoro-outline: #6E7278;
+    --yoro-plate: #121315;
+    --yoro-panel: #040506;
     --yoro-border: #454A50;
-    --yoro-eye: #6EE7F2;
-    /* Cyan from prompt, matches primary-container */
-    --yoro-indicator: #7AA7FF;
+    --yoro-eye: #1BEAF5;
+    --yoro-core: #1BEAF5;
     --text-dialogue: #E8EAED;
 }
 
-/* Escala de Yoro según la altura de la pantalla.
-   Un solo número controla todo su tamaño. Valores de partida, ajústalos a tu gusto */
+/* Alto de Yoro según la altura de la pantalla (el ancho sale de la proporción 1190x1900).
+   Valores de partida, ajústalos a tu gusto */
 :root {
-    --yoro-scale: 1.25;
-}
-
-@media (max-height: 800px) {
-    :root {
-        --yoro-scale: 1;
-    }
+    --yoro-height: min(44svh, 440px);
+    --yoro-min-height: min(24svh, 200px);
 }
 
 @media (max-height: 640px) {
     :root {
-        --yoro-scale: 0.8;
+        --yoro-height: 40svh;
     }
 }
 
 @media (max-height: 520px) {
     :root {
-        --yoro-scale: 0.65;
+        --yoro-height: 36svh;
     }
 }
 
@@ -42,49 +40,6 @@ body {
 }
 
 /* Animations */
-@keyframes yoroHover {
-
-    0%,
-    100% {
-        transform: translateY(0px);
-    }
-
-    50% {
-        transform: translateY(-12px);
-    }
-}
-
-@keyframes yoroBlink {
-
-    0%,
-    96%,
-    98%,
-    100% {
-        opacity: 1;
-        height: 16px;
-    }
-
-    97%,
-    99% {
-        opacity: 0.1;
-        height: 2px;
-    }
-}
-
-@keyframes indicatorPulse {
-
-    0%,
-    100% {
-        opacity: 0.8;
-        box-shadow: 0 0 4px var(--yoro-indicator);
-    }
-
-    50% {
-        opacity: 0.3;
-        box-shadow: 0 0 0px var(--yoro-indicator);
-    }
-}
-
 @keyframes fadeInText {
     0% {
         opacity: 0;
@@ -97,27 +52,37 @@ body {
     }
 }
 
-/* Yoro CSS Entity */
-.yoro-container {
-    animation: yoroHover 4s ease-in-out infinite;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* Yoro (SVG). Las coordenadas internas van en unidades del viewBox 1190x1900.
+   El escenario se encoge (hasta --yoro-min-height) si el juego de turno necesita más espacio */
+.yoro-stage {
     position: relative;
-    top: 45px;
-    zoom: var(--yoro-scale);
+    flex: 0 1 var(--yoro-height);
+    height: var(--yoro-height);
+    min-height: var(--yoro-min-height);
+    display: flex;
+    justify-content: center;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.yoro-figure {
+    position: relative;
+    height: 100%;
+    aspect-ratio: 1190 / 1900;
 }
 
 /* Halo cian suave detrás de Yoro. Es un pseudo-elemento: no necesita HTML.
    z-index negativo para quedar detrás del robot y pointer-events: none
    para que no bloquee ningún click. */
-.yoro-container::before {
+.yoro-figure::before {
     content: "";
     position: absolute;
-    top: 50%;
+    top: 52%;
     left: 50%;
-    width: 420px;
-    height: 420px;
+    width: 170%;
+    aspect-ratio: 1;
     transform: translate(-50%, -50%);
     background: radial-gradient(circle closest-side,
             rgba(110, 231, 242, 0.16) 0%,
@@ -127,153 +92,143 @@ body {
     pointer-events: none;
 }
 
-/* Head */
-.yoro-head {
-    width: 140px;
-    height: 100px;
-    background-color: var(--yoro-body);
-    border: 2px solid var(--yoro-border);
-    border-radius: 40px;
-    /* Rounded rectangle */
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-    box-shadow: inset 0 -4px 10px rgba(0, 0, 0, 0.5);
-    /* Slight inner depth */
+.yoro-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
 }
 
-/* Face Plate (inner dark area) */
+.yoro-shadow {
+    fill: rgba(110, 231, 242, 0.08);
+}
+
+.yoro-limb {
+    fill: var(--yoro-body);
+    stroke: var(--yoro-outline);
+    stroke-width: 12;
+}
+
+.yoro-hips {
+    fill: var(--yoro-panel);
+    stroke: var(--yoro-outline);
+    stroke-width: 7;
+}
+
+.yoro-torso-shell {
+    fill: var(--yoro-torso);
+    stroke: var(--yoro-outline);
+    stroke-width: 12;
+    stroke-linejoin: round;
+}
+
+.yoro-torso-panel {
+    fill: var(--yoro-panel);
+    stroke: var(--yoro-panel);
+    stroke-width: 6;
+    stroke-linejoin: round;
+}
+
+.yoro-core-shape,
+.yoro-core-glow {
+    fill: var(--yoro-core);
+    stroke: var(--yoro-core);
+    stroke-width: 22;
+    stroke-linejoin: round;
+}
+
+.yoro-core-glow {
+    opacity: 0.85;
+}
+
+.yoro-head-shell {
+    fill: url(#yoro-head-fill);
+    stroke: var(--yoro-outline);
+    stroke-width: 12;
+}
+
 .yoro-face-plate {
-    width: 110px;
-    height: 60px;
-    background-color: #111315;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    position: relative;
+    fill: var(--yoro-plate);
+    stroke: #1a1d21;
+    stroke-width: 4;
 }
 
-/* Eyes */
-.yoro-eyes-container {
-    display: flex;
-    gap: 24px;
+.yoro-eye-shape,
+.yoro-eye-glow {
+    fill: var(--yoro-eye);
 }
 
-.yoro-eye {
-    width: 24px;
-    height: 16px;
-    background-color: var(--yoro-eye);
-    border-radius: 8px;
-    /* Glowing rectangles per prompt, but slightly rounded for friendly feel */
-    box-shadow: 0 0 12px 2px rgba(110, 231, 242, 0.4);
-    animation: yoroBlink 6s infinite;
+.yoro-eye-glow {
+    opacity: 0.95;
+    transition: opacity 0.06s linear;
 }
 
-/* Mouth */
-.yoro-mouth {
-    width: 12px;
-    height: 2px;
-    background-color: var(--yoro-border);
-    border-radius: 1px;
-    opacity: 0.5;
+/* Parpadeo: el ojo se aplasta hacia su borde inferior */
+.yoro-eye-shape {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    transition: transform 0.06s linear;
 }
 
-/* Body: contenedor del torso y los brazos */
-.yoro-body {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    margin-top: -2px;
-    /* casi pegado a la cabeza */
+.yoro-blink .yoro-eye-shape {
+    transform: scaleY(0.07);
 }
 
-/* Torso trapezoidal: el contorno se hace con dos capas, porque clip-path recorta
-   también los bordes. La capa de atrás (color de borde) y ::before (color del cuerpo,
-   2px más chica) usan la misma forma */
-.yoro-torso {
-    position: relative;
-    z-index: 5;
-    width: 76px;
-    height: 50px;
-    background-color: var(--yoro-border);
-    clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+.yoro-blink .yoro-eye-glow {
+    opacity: 0.15;
 }
 
-.yoro-torso::before {
-    content: "";
+/* Boca "ω": mismo color tenue que tenía el diseño original */
+.yoro-mouth-shape {
+    fill: none;
+    stroke: var(--yoro-border);
+    stroke-width: 11;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.6;
+}
+
+/* Poses de los brazos (0 abajo, 1 medio, 2 arriba). Medidas sobre el brazo derecho;
+   el izquierdo es su reflejo. El origen del brazo es el centro de su hombro */
+.yoro-arm-pose {
+    transform-box: view-box;
+    transform-origin: 0 0;
+    transform: translate(878px, 1074px) rotate(-26deg);
+    transition: transform 0.16s ease-out;
+}
+
+.yoro-arm-pose[data-pose="1"] {
+    transform: translate(866px, 1022px) rotate(-90deg);
+}
+
+.yoro-arm-pose[data-pose="2"] {
+    transform: translate(904px, 893px) rotate(-150.6deg);
+}
+
+/* Zonas táctiles invisibles sobre la cabeza y el núcleo */
+.yoro-hit {
     position: absolute;
-    inset: 2px;
-    background-color: var(--yoro-body);
-    clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    border-radius: 30%;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* Luz del pecho */
-.yoro-indicator {
-    position: absolute;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 10px;
-    height: 6px;
-    border-radius: 3px;
-    background-color: var(--yoro-indicator);
-    animation: indicatorPulse 2s ease-in-out infinite;
-    z-index: 1;
+.yoro-hit:focus-visible {
+    outline: 2px solid var(--yoro-eye);
 }
 
-/* Brazos: largos y angulados hacia afuera, girando desde el hombro */
-.yoro-arm {
-    position: absolute;
-    top: 2px;
-    width: 12px;
-    height: 62px;
-    background-color: var(--yoro-body);
-    border: 2px solid var(--yoro-border);
-    border-radius: 8px;
-    transform-origin: top center;
-    z-index: 4;
-}
-
-.yoro-arm-left {
-    left: 8px;
-    transform: rotate(40deg);
-}
-
-.yoro-arm-right {
-    right: 8px;
-    transform: rotate(-40deg);
-}
-
-/* Base oscura bajo el torso: queda metida debajo de él (z-index menor) */
-.yoro-base {
-    width: 62px;
-    height: 12px;
-    margin-top: -4px;
-    background-color: #1b1d20;
-    border: 2px solid var(--yoro-border);
-    border-top: 0;
-    border-radius: 0 0 10px 10px;
-    z-index: 3;
-}
-
-/* Piernas flotantes: separadas de la base, sin tocarla */
-.yoro-legs {
-    display: flex;
-    gap: 12px;
-    margin-top: 5px;
-}
-
-.yoro-leg {
-    width: 15px;
-    height: 29px;
-    background-color: var(--yoro-body);
-    border: 2px solid var(--yoro-border);
-    border-radius: 8px;
+@media (prefers-reduced-motion: reduce) {
+    .yoro-arm-pose,
+    .yoro-eye-shape,
+    .yoro-eye-glow {
+        transition: none;
+    }
 }
 
 /* Dialogue */

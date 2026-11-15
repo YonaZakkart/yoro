@@ -93,7 +93,7 @@ Después abre `index.html` en tu navegador.
 | Herramienta | Para qué se usa |
 |---|---|
 | HTML5 | Estructura de la página y de todos los paneles |
-| CSS3 | Yoro está dibujado solo con CSS, más animaciones y estilo de botones |
+| SVG + CSS3 | Yoro está dibujado en SVG; CSS para sus colores, poses y el estilo de botones |
 | JavaScript | Toda la lógica: diálogos, eventos, juegos, estadísticas y música |
 | localStorage | Memoria de Yoro: progreso, nombre, estadísticas y preferencia de música |
 | Tailwind CSS (CDN) | Utilidades de diseño |
@@ -125,7 +125,8 @@ yoro/
 │   │   ├── es.js           Textos en español
 │   │   └── en.js           Textos en inglés
 │   ├── robot/
-│   │   └── dialogue.js     Diálogos de Yoro
+│   │   ├── dialogue.js     Diálogos de Yoro
+│   │   └── yoro.js         Animación de Yoro (mirada, parpadeo, brazos)
 │   ├── games/
 │   │   ├── number.js       Adivina el Número
 │   │   ├── math.js         Cuenta Conmigo

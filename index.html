@@ -236,41 +236,91 @@
 
     <!-- The Void (Container) -->
     <main class="w-full h-full flex flex-col justify-center items-center relative">
-        <!-- Centerpiece: Yoro Robot -->
-        <div id="yoro-avatar" class="yoro-container mb-12">
-            <!-- Head -->
-            <div class="yoro-head">
-                <div class="yoro-face-plate">
-                    <div class="yoro-eyes-container">
-                        <div class="yoro-eye"></div>
-                        <div class="yoro-eye"></div>
-                    </div>
-                    <div class="yoro-mouth"
-                        style="width: auto; height: auto; background-color: transparent; opacity: 0.6;">
-                        <div style="display: flex; gap: 0;">
-                            <div
-                                style="width: 8px; height: 6px; border: 2px solid var(--yoro-border); border-top: 0; border-radius: 0 0 4px 4px;">
-                            </div>
-                            <div
-                                style="width: 8px; height: 6px; border: 2px solid var(--yoro-border); border-top: 0; border-radius: 0 0 4px 4px; margin-left: -2px;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Body -->
-            <div class="yoro-body">
-                <div class="yoro-arm yoro-arm-left"></div>
-                <div class="yoro-arm yoro-arm-right"></div>
-                <div class="yoro-torso">
-                    <div class="yoro-indicator"></div>
-                </div>
-            </div>
-            <!-- Base y piernas flotantes -->
-            <div class="yoro-base"></div>
-            <div class="yoro-legs">
-                <div class="yoro-leg"></div>
-                <div class="yoro-leg"></div>
+        <!-- Centerpiece: Yoro Robot (SVG en coordenadas 1190x1900; js/robot/yoro.js lo anima) -->
+        <div id="yoro-avatar" class="yoro-stage">
+            <div class="yoro-figure">
+                <svg class="yoro-svg" viewBox="0 0 1190 1900" aria-hidden="true" focusable="false">
+                    <defs>
+                        <filter id="yoro-glow" x="-60%" y="-60%" width="220%" height="220%">
+                            <feGaussianBlur stdDeviation="22" />
+                        </filter>
+                        <filter id="yoro-soft" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="5" />
+                        </filter>
+                        <filter id="yoro-shadow-blur" x="-20%" y="-200%" width="140%" height="500%">
+                            <feGaussianBlur stdDeviation="10" />
+                        </filter>
+                        <linearGradient id="yoro-head-fill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0" stop-color="#1d2125" />
+                            <stop offset="0.05" stop-color="var(--yoro-body)" />
+                            <stop offset="0.82" stop-color="var(--yoro-body)" />
+                            <stop offset="1" stop-color="#181b1f" />
+                        </linearGradient>
+                        <!-- brazo (cápsula) colgando del hombro: el origen es el centro del círculo del hombro -->
+                        <rect id="yoro-arm-shape" x="-53" y="-53" width="106" height="284" rx="53" />
+                    </defs>
+
+                    <ellipse id="yoro-shadow" class="yoro-shadow" cx="594" cy="1868" rx="238" ry="22"
+                        filter="url(#yoro-shadow-blur)" />
+
+                    <g id="yoro-root">
+                        <path class="yoro-hips"
+                            d="M317 1371C317 1330 455 1307 594 1307C733 1307 870 1330 870 1371C870 1440 735 1497 594 1497C453 1497 317 1440 317 1371Z" />
+                        <g id="yoro-leg-r">
+                            <rect class="yoro-limb" x="675" y="1497" width="108" height="287" rx="54"
+                                transform="rotate(-2.7 729 1640)" />
+                        </g>
+                        <g id="yoro-leg-l">
+                            <rect class="yoro-limb" x="397" y="1497" width="108" height="287" rx="54"
+                                transform="rotate(2.7 451 1640)" />
+                        </g>
+                        <g id="yoro-torso">
+                            <path class="yoro-torso-shell" d="M382 981H804L886 1333L593 1433L302 1333Z" />
+                            <path class="yoro-torso-panel" d="M437 1033L593 1040L751 1033L815 1305L593 1384L372 1305Z" />
+                        </g>
+                        <g id="yoro-core">
+                            <path class="yoro-core-glow" d="M593 1095L659 1178H527Z" filter="url(#yoro-glow)" />
+                            <path class="yoro-core-shape" d="M593 1098L655 1175H531Z" filter="url(#yoro-soft)" />
+                        </g>
+                        <g id="yoro-head">
+                            <rect class="yoro-head-shell" x="73" y="245" width="1040" height="768" rx="294" />
+                            <rect class="yoro-face-plate" x="181" y="391" width="822" height="448" rx="148" />
+                            <g id="yoro-eyes">
+                                <g class="yoro-eye">
+                                    <rect class="yoro-eye-glow" x="683" y="489" width="178" height="114" rx="57"
+                                        filter="url(#yoro-glow)" />
+                                    <rect class="yoro-eye-shape" x="683" y="489" width="178" height="114" rx="57" />
+                                </g>
+                                <g class="yoro-eye">
+                                    <rect class="yoro-eye-glow" x="323" y="489" width="178" height="114" rx="57"
+                                        filter="url(#yoro-glow)" />
+                                    <rect class="yoro-eye-shape" x="323" y="489" width="178" height="114" rx="57" />
+                                </g>
+                            </g>
+                            <g id="yoro-mouth">
+                                <path class="yoro-mouth-shape"
+                                    d="M548 698V716Q548 739 570 739Q592 739 592 716V708V716Q592 739 614 739Q636 739 636 716V698" />
+                            </g>
+                        </g>
+                        <g id="yoro-arm-r">
+                            <g class="yoro-arm-pose" data-pose="0">
+                                <use class="yoro-limb" href="#yoro-arm-shape" />
+                            </g>
+                        </g>
+                        <!-- el brazo izquierdo es el derecho reflejado (eje x = 594) -->
+                        <g transform="matrix(-1 0 0 1 1188 0)">
+                            <g id="yoro-arm-l">
+                                <g class="yoro-arm-pose" data-pose="0">
+                                    <use class="yoro-limb" href="#yoro-arm-shape" />
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+                <button id="yoro-hit-head" class="yoro-hit" data-i18n-aria="yoro_touch_head" aria-label="Tocar la cabeza de Yoro"
+                    style="left:5.6%;top:12.6%;width:88.4%;height:41%"></button>
+                <button id="yoro-hit-core" class="yoro-hit" data-i18n-aria="yoro_touch_core" aria-label="Tocar el núcleo de Yoro"
+                    style="left:40.3%;top:55.3%;width:19.2%;height:10%"></button>
             </div>
         </div>
         <!-- Dialogue -->
@@ -388,6 +438,7 @@
     <script src="js/core/i18n.js"></script>
     <script src="js/core/timers.js"></script>
     <script src="js/robot/dialogue.js"></script>
+    <script src="js/robot/yoro.js"></script>
     <script src="js/games/number.js"></script>
     <script src="js/games/math.js"></script>
     <script src="js/games/hangman-data.js"></script>
