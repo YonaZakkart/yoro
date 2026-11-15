@@ -544,6 +544,41 @@ function getLetterMessage(letter, count) {
         : t("hangman_letter_missing", { letter });
 }
 
+// Botones "Letras usadas" / "Palabras usadas" y su modal, compartidos por todas las versiones del Ahorcado.
+// El modal reemplaza al dibujo ASCII dentro de la misma caja mientras esta abierto.
+// Se reciben funciones (y no los arreglos) porque cada juego puede reemplazar su arreglo de letras.
+function setupHangmanUsedModal(getLetters, getWords) {
+    const figure = document.getElementById("hangman-figure");
+    const usedButtons = document.getElementById("hangman-used-buttons");
+    const modal = document.getElementById("hangman-used-modal");
+    const modalContent = document.getElementById("hangman-used-modal-content");
+
+    function open(isLetters) {
+        figure.classList.add("hidden");
+        usedButtons.classList.add("hidden");
+
+        const items = isLetters ? getLetters() : getWords();
+        const label = t(isLetters ? "hangman_used_letters" : "hangman_used_words");
+        modalContent.textContent = items.length > 0
+            ? t("hangman_used_list", { label, items: items.join(", ") })
+            : t("hangman_used_empty", { label });
+
+        modal.classList.remove("hidden");
+    }
+
+    // cierra el modal; el dibujo solo vuelve si tiene contenido (la version base no tiene)
+    function close() {
+        modal.classList.add("hidden");
+        figure.classList.toggle("hidden", figure.textContent === "");
+        usedButtons.classList.remove("hidden");
+    }
+
+    document.getElementById("hangman-letters-button").onclick = () => open(true);
+    document.getElementById("hangman-words-button").onclick = () => open(false);
+    document.getElementById("hangman-used-close-button").onclick = close;
+    close();
+}
+
 // Evento 7. Juego: Ahorcado (version base) - letra por letra o palabra completa, sin limite de intentos
 function startHangmanGame(event) {
     const secretWord = pickSecretWord();
@@ -558,10 +593,11 @@ function startHangmanGame(event) {
     let guessedLetters = [];
     let guessedWords = [];
 
-    function updateHint() {
-        hangmanHint.textContent = tp("hangman_hint_lives", attemptsLeft(), { letters: secretWord.length });
-    }
+    // la version base no tiene vidas ni dibujo: solo el largo de la palabra
+    hangmanHint.textContent = t("hangman_hint_base", { letters: secretWord.length });
+    document.getElementById("hangman-figure").textContent = "";
     updateProgress();
+    setupHangmanUsedModal(() => guessedLetters, () => guessedWords);
     hangmanStatus.classList.remove("hidden");
 
     function updateProgress() {
@@ -659,14 +695,24 @@ function showHangmanResults(won, figureText, lines, onComplete) {
     const titleColor = won ? "text-primary-container" : "text-error";
     const subtitle = won ? t("hangman_win_subtitle") : t("hangman_lose_subtitle");
 
-    resultsUI.innerHTML = `
-        <pre class="text-label-code font-label-code leading-tight">${figureText}</pre>
-        <h3 class="text-headline-md font-headline-md ${titleColor}">${title}</h3>
-        <p class="text-body-md font-body-md opacity-70 mb-2">${subtitle}</p>
-        <div class="flex flex-col gap-1">
-            ${lines.map(line => `<p>${line}</p>`).join("")}
-        </div>
-    `;
+    // armado con textContent (no innerHTML): el dibujo y las lineas llevan texto de la partida
+    function createText(tag, className, text) {
+        const element = document.createElement(tag);
+        element.className = className;
+        element.textContent = text;
+        return element;
+    }
+
+    const linesBox = document.createElement("div");
+    linesBox.className = "flex flex-col gap-1";
+    linesBox.append(...lines.map(line => createText("p", "", line)));
+
+    resultsUI.replaceChildren(
+        createText("pre", "text-label-code font-label-code leading-tight", figureText),
+        createText("h3", `text-headline-md font-headline-md ${titleColor}`, title),
+        createText("p", "text-body-md font-body-md opacity-70 mb-2", subtitle),
+        linesBox
+    );
     resultsUI.classList.remove("hidden");
     acceptButton.classList.remove("hidden");
 
@@ -698,12 +744,6 @@ function runHangmanGame_1_1(event, mode) {
     const hangmanHint = document.getElementById("hangman-hint");
     const hangmanProgress = document.getElementById("hangman-progress");
     const hangmanFigure = document.getElementById("hangman-figure");
-    const hangmanUsedButtons = document.getElementById("hangman-used-buttons");
-    const hangmanLettersButton = document.getElementById("hangman-letters-button");
-    const hangmanWordsButton = document.getElementById("hangman-words-button");
-    const hangmanUsedModal = document.getElementById("hangman-used-modal");
-    const hangmanUsedModalContent = document.getElementById("hangman-used-modal-content");
-    const hangmanUsedCloseButton = document.getElementById("hangman-used-close-button");
     const hintButton = document.getElementById("hint-button");
     const hintCooldownText = document.getElementById("hint-cooldown");
     const hintConfirmUI = document.getElementById("hint-confirm-ui");
@@ -736,10 +776,8 @@ function runHangmanGame_1_1(event, mode) {
     updateHint();
     updateProgress();
     updateFigure();
+    setupHangmanUsedModal(() => guessedLetters, () => guessedWords);
     hangmanStatus.classList.remove("hidden");
-    hangmanUsedModal.classList.add("hidden");
-    hangmanFigure.classList.remove("hidden");
-    hangmanUsedButtons.classList.remove("hidden");
 
     if (hintsEnabled) {
         hintButton.classList.remove("hidden");
@@ -807,33 +845,6 @@ function runHangmanGame_1_1(event, mode) {
         hangmanStatus.classList.remove("hidden");
     }
 
-    // Abre el modal de letras/palabras usadas, reemplazando el dibujo ASCII dentro de la misma caja
-    function openUsedModal(kind) {
-        hangmanFigure.classList.add("hidden");
-        hangmanUsedButtons.classList.add("hidden");
-
-        const isLetters = kind === "letters";
-        const items = isLetters ? guessedLetters : guessedWords;
-        const label = isLetters ? t("hangman_used_letters") : t("hangman_used_words");
-
-        hangmanUsedModalContent.textContent = items.length > 0
-            ? t("hangman_used_list", { label, items: items.join(", ") })
-            : t("hangman_used_empty", { label });
-
-        hangmanUsedModal.classList.remove("hidden");
-    }
-
-    // Cierra el modal y vuelve a mostrar el dibujo ASCII y los botones
-    function closeUsedModal() {
-        hangmanUsedModal.classList.add("hidden");
-        hangmanFigure.classList.remove("hidden");
-        hangmanUsedButtons.classList.remove("hidden");
-    }
-
-    hangmanLettersButton.onclick = () => openUsedModal("letters");
-    hangmanWordsButton.onclick = () => openUsedModal("words");
-    hangmanUsedCloseButton.onclick = closeUsedModal;
-
     function useHint() {
         const unrevealed = getUniqueLetters(secretWord).filter(letter => !guessedLetters.includes(letter));
         if (unrevealed.length === 0) return;
@@ -867,10 +878,6 @@ function runHangmanGame_1_1(event, mode) {
         }
 
         showQuickMessage(message);
-
-        setTimeout(() => {
-            dialogueContainer.style.opacity = 0;
-        }, 2000);
     }
 
     function isWordFullyRevealed() {
