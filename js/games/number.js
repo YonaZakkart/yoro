@@ -74,6 +74,7 @@ function startGuessingGame(event) {
 
             stats.games.number.plays++;
             stats.games.number.wins++;
+            yoroCelebrate();
             stats.games.number.totalAttempts += attempts;
             if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
                 stats.games.number.bestAttempts = attempts;
@@ -118,6 +119,7 @@ function startGuessingGame_1_1(event) {
 
             stats.games.number.plays++;
             stats.games.number.wins++;
+            yoroCelebrate();
             stats.games.number.totalAttempts += attempts;
             if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
                 stats.games.number.bestAttempts = attempts;
@@ -168,6 +170,7 @@ function runGuessingGame_1_2(event, mode) {
 
             stats.games.number.plays++;
             stats.games.number.wins++;
+            yoroCelebrate();
             stats.games.number.totalAttempts += attempts;
             if (stats.games.number.bestAttempts === null || attempts < stats.games.number.bestAttempts) {
                 stats.games.number.bestAttempts = attempts;

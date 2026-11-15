@@ -103,7 +103,7 @@ function askForName(event) {
         savePlayerName(name);
         nameUI.classList.add("hidden");
 
-        showDialogue(nameDialogue3, () => {
+        showDialogue(withGesture(nameDialogue3, -1, "wave"), () => {
             markEventCompleted(event.id);
             startIdleDialogues();
             showSkipTimeButton();

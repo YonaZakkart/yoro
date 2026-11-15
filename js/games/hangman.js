@@ -138,6 +138,7 @@ function startHangmanGame(event) {
     function finishGame() {
         guessInput.disabled = true;
         guessButton.disabled = true;
+        yoroCelebrate(); // la version base solo termina al adivinar la palabra
 
         setTimeout(() => {
             dialogueContainer.style.opacity = 0;
@@ -512,6 +513,7 @@ function runHangmanGame_1_1(event, mode) {
             hangmanRewardModal.classList.add("hidden");
             guessInput.disabled = false;
             guessButton.disabled = false;
+            if (won) yoroCelebrate(); // Yoro estaba oculto tras la tabla: celebra al volver
             finishEvent(event);
         });
     }
